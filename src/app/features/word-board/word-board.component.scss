@@ -6,7 +6,6 @@
 }
 .title{
   width: 100%;
-  display: inline-flex;
   justify-content: center;
   align-items: center;
   font-size: 2rem;
@@ -20,6 +19,15 @@
   border: 2px solid var(--surface-400);
   border-radius: 40px
 }
+.unused{
+  background-color:var(--surface-d) !important;
+}
+.correct{
+  background-color:var(--primary-color) !important;
+}
+.present{
+  background-color:var(--cyan-700) !important;
+}
 .letter-button{
   font-family: inherit;
   font-weight: bold;
@@ -30,7 +38,7 @@
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
-  background-color: var(--surface-100);
+  background-color: var(--surface-200);
   color: var(--text-color);
   flex: 1;
   display: flex;
@@ -41,17 +49,17 @@
   min-width: auto !important;
 }
 .letter-button:enabled:hover {
-  background-color: var(--surface-100);
+  background-color: var(--surface-200);
   color: var(--text-color);
   border-color: transparent;
 }
 .letter-button:enabled:focus {
-  background-color: var(--surface-100);
+  background-color: var(--surface-200);
   color: var(--text-color);
   border-color: transparent;
 }
 .letter-button:enabled:visited {
-  background-color: var(--surface-100);
+  background-color: var(--surface-200);
   color: var(--text-color);
   border-color: transparent;
 }
