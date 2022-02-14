@@ -1,17 +1,15 @@
-<div class="flex justify-content-center">
+<div class="flex justify-content-center pt-2">
   <div class="" style="width: 600px;">
-    <div class="grid p-4 pb-1" style="height: 40rem">
-      <div class="col-12">
+    <div class="grid pb-1" style="height: 100%">
+      <div class="col-12 p-0">
         <div
-          class="surface-card p-3 shadow-2 w-full h-full flex justify-content-start align-items-center flex-column text-600 font-medium"
-          style="border-radius: 1.5rem">
-          <div class="flex h-full w-full flex-column align-items-center justify-content-evenly" style="padding-inline: 50px;">
-            <div  style="display: grid; width: 350px; height: 420px; grid-gap: 5px; padding: 10px; margin-bottom: 50px;">
-              <div style="display: grid; grid-auto-flow: column;"
-                   [ngStyle]="{'grid-gap':'5px'}"
+          class="w-full flex justify-content-start align-items-center flex-column text-600 font-medium"
+          >
+          <div class="flex h-full w-full flex-column align-items-center justify-content-evenly" style="padding-inline: 100px;">
+            <div  style="display: grid; width: 22rem; height: 26.4rem; grid-gap: 5px; padding: 10px; margin-bottom: 5px;">
+              <div style="display: grid; grid-auto-flow: column; grid-gap: 5px;"
                    *ngFor="let guess of [].constructor(guesses); let i = index">
                 <div style="border: 2px solid var(--surface-d); border-radius: 10px" class="title"
-                     [ngStyle]="{'grid-gap':'5px'}"
                      *ngFor="let guess of [].constructor(letters); let i = index">
                 </div>
               </div>

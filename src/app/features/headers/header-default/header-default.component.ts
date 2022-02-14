@@ -14,16 +14,14 @@ const VIEW_MODE_KEY = "view-mode";
 })
 export class HeaderDefaultComponent {
 
-  accountInfoItems: MenuItem[] = [];
   user?: any;
-
-
   viewMode: string = "dark";
+  viewModeIcon: string = 'fa fa-solid fa-sun';
 
   constructor(private app: AppComponent, public themeService: ThemeService, private http: HttpClient, public router: Router) {
 
     let viewMode = localStorage.getItem(VIEW_MODE_KEY);
-    if (viewMode){
+    if (viewMode && (viewMode === 'dark' || viewMode === 'light')){
       this.viewMode = viewMode;
       this.themeService.switchTheme(this.viewMode);
     }
@@ -33,12 +31,14 @@ export class HeaderDefaultComponent {
   }
 
 
-  private toggleViewMode() {
+  toggleViewMode() {
     if (this.viewMode === "dark"){
       this.viewMode = "light";
+      this.viewModeIcon = 'fa fa-solid fa-moon';
     }
     else{
       this.viewMode = "dark";
+      this.viewModeIcon = 'fa fa-solid fa-sun';
     }
     localStorage.setItem(VIEW_MODE_KEY, this.viewMode);
     this.themeService.switchTheme(this.viewMode);
