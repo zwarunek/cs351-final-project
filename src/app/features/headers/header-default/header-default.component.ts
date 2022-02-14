@@ -15,10 +15,16 @@ const VIEW_MODE_KEY = "view-mode";
 export class HeaderDefaultComponent {
 
   user?: any;
+  wordlist: string[] = [];
   viewMode: string = "dark";
   viewModeIcon: string = 'fa fa-solid fa-sun';
 
   constructor(private app: AppComponent, public themeService: ThemeService, private http: HttpClient, public router: Router) {
+    http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
+    .subscribe(data => {
+      this.wordlist = data.split(/\r?\n/);
+      console.log(this.wordlist[Math.floor(Math.random() * this.wordlist.length)])
+    });
 
     let viewMode = localStorage.getItem(VIEW_MODE_KEY);
     if (viewMode && (viewMode === 'dark' || viewMode === 'light')){
