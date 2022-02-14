@@ -1,0 +1,18 @@
+.divider-footer .divider-inner {
+  height: 44px;
+  margin-bottom: -18px;
+  background: -webkit-linear-gradient(to bottom,rgba(0,0,0,.14),rgba(0,0,0,.03) 3px,transparent);
+  background: linear-gradient(to bottom,rgba(0,0,0,.14),rgba(0,0,0,.03) 3px,transparent);
+  z-index: 0;
+  zoom: 1;
+}
+.divider-footer .divider-inner:after{
+  display: block;
+  width: 100%;
+  height: 44px;
+  background-color: transparent;
+  background: -webkit-linear-gradient(to right,var(--surface-b),rgba(255,255,255,0),var(--surface-b));
+  background: linear-gradient(to right,var(--surface-b),rgba(255,255,255,0),var(--surface-b));
+  z-index: 1;
+  content: "";
+}

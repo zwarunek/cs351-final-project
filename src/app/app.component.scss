@@ -1,0 +1,66 @@
+.progress-spinner {
+  position: fixed;
+  z-index: 100000;
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  backdrop-filter: blur(3px);
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+:host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+  animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 6s ease-in-out infinite;
+}
+
+@keyframes custom-progress-spinner-color {
+
+  0% {
+    stroke: var(--primary-color);
+  }
+  50% {
+    stroke: var(--surface-d);
+  }
+  100% {
+    stroke: var(--primary-color);
+  }
+}
+
+@keyframes custom-progress-spinner-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+.layout-content {
+  background-color: var(--surface-b);
+  color: var(--text-color);
+}
+.env-overlay {
+  position: absolute;
+  top: 30px;
+  left: -90px;
+  width: 20rem;
+  height: 5rem;
+  transform: rotate(
+    315deg);
+  pointer-events: none;
+}
+.dev{
+  background-color: rgb(255 255 0 / 10%);
+}
+.staging{
+  background-color: rgb(0 255 0 / 10%);
+}

@@ -1,0 +1,96 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~primeicons/primeicons.css";
+@import "~primeng/resources/primeng.min.css";
+@import "~primeflex/primeflex.css";
+
+html,body{
+  height:100%;
+  background-color: var(--surface-b);
+  font-family: Ember, Arial,sans-serif;
+}
+body .p-component{
+  font-family: Ember, Arial,sans-serif;
+}
+html{
+  font-size: 14px;
+}
+body{
+  margin: 0;
+  padding: 8px;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_He.ttf) format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_HeIt.ttf) format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_Bd.ttf) format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_BdIt.ttf) format("truetype");
+  font-weight: 6006;
+  font-style: italic;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/Amazon-Ember-Medium.ttf) format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/Amazon-Ember-MediumItalic.ttf) format("truetype");
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_Rg.ttf) format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_RgIt.ttf) format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_Lt.ttf) format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_LtIt.ttf) format("truetype");
+  font-weight: 300;
+  font-style: italic;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_Th.ttf) format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: Ember;
+  src: url(assets/fonts/Ember/AmazonEmber_ThIt.ttf) format("truetype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+:host ::ng-deep .p-component{
+  font-family: Ember, Arial,sans-serif !important;
+}

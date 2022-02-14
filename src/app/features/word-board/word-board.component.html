@@ -1,0 +1,62 @@
+<div class="flex justify-content-center">
+  <div class="" style="width: 600px;">
+    <div class="grid p-4 pb-1" style="height: 40rem">
+      <div class="col-12">
+        <div
+          class="surface-card p-3 shadow-2 w-full h-full flex justify-content-start align-items-center flex-column text-600 font-medium"
+          style="border-radius: 1.5rem">
+          <div class="flex h-full w-full flex-column align-items-center justify-content-evenly" style="padding-inline: 50px;">
+            <div  style="display: grid; width: 350px; height: 420px; grid-gap: 5px; padding: 10px; margin-bottom: 50px;">
+              <div style="display: grid; grid-auto-flow: column;"
+                   [ngStyle]="{'grid-gap':'5px'}"
+                   *ngFor="let guess of [].constructor(guesses); let i = index">
+                <div style="border: 2px solid var(--surface-d); border-radius: 10px" class="title"
+                     [ngStyle]="{'grid-gap':'5px'}"
+                     *ngFor="let guess of [].constructor(letters); let i = index">
+                </div>
+              </div>
+            </div>
+            <div id="keyboard" style="width: 100%">
+              <div class="" style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
+                <button pButton class="letter-button" label="Q"></button>
+                <button pButton class="letter-button" label="W"></button>
+                <button pButton class="letter-button" label="E"></button>
+                <button pButton class="letter-button" label="R"></button>
+                <button pButton class="letter-button" label="T"></button>
+                <button pButton class="letter-button" label="Y"></button>
+                <button pButton class="letter-button" label="U"></button>
+                <button pButton class="letter-button" label="I"></button>
+                <button pButton class="letter-button" label="O"></button>
+                <button pButton class="letter-button" label="P"></button>
+              </div>
+              <div class="" style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
+                <div style="flex: .5"></div>
+                <button pButton class="letter-button" label="A"></button>
+                <button pButton class="letter-button" label="S"></button>
+                <button pButton class="letter-button" label="D"></button>
+                <button pButton class="letter-button" label="F"></button>
+                <button pButton class="letter-button" label="G"></button>
+                <button pButton class="letter-button" label="H"></button>
+                <button pButton class="letter-button" label="J"></button>
+                <button pButton class="letter-button" label="K"></button>
+                <button pButton class="letter-button" label="L"></button>
+                <div style="flex: .5"></div>
+              </div>
+              <div class="" style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
+                <button pButton class="letter-button" label="ENTER" style="flex: 1.5"></button>
+                <button pButton class="letter-button" label="z"></button>
+                <button pButton class="letter-button" label="x"></button>
+                <button pButton class="letter-button" label="c"></button>
+                <button pButton class="letter-button" label="v"></button>
+                <button pButton class="letter-button" label="b"></button>
+                <button pButton class="letter-button" label="n"></button>
+                <button pButton class="letter-button" label="m"></button>
+                <button pButton class="letter-button" icon="fa fa-delete-left" style="flex: 1.5"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
