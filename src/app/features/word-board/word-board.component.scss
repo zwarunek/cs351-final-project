@@ -17,7 +17,8 @@
   text-transform: uppercase;
   user-select: none;
   border: 2px solid var(--surface-400);
-  border-radius: 40px
+  border-radius: 40px;
+  padding-bottom: calc(100% - 4px);
 }
 .unused{
   background-color:var(--surface-d) !important;
@@ -26,7 +27,7 @@
   background-color:var(--primary-color) !important;
 }
 .present{
-  background-color:var(--cyan-700) !important;
+  background-color:var(--cyan-900) !important;
 }
 .letter-button{
   font-family: inherit;
@@ -66,3 +67,13 @@
 button:last-of-type{
   margin: 0;
 }
+.layout-content {
+  background-color: var(--surface-b);
+  color: var(--text-color);
+}
+.test {
+  display: grid;
+  grid-template-columns: repeat(5, calc(20% - 5px));
+  grid-gap: 5px;
+}
+

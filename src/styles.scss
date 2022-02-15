@@ -5,6 +5,7 @@
 
 html,body{
   height:100%;
+  padding: 0;
   background-color: var(--surface-b);
   font-family: Ember, Arial,sans-serif;
 }
@@ -16,7 +17,7 @@ html{
 }
 body{
   margin: 0;
-  padding: 8px;
+  //padding: 8px;
 }
 @font-face {
   font-family: Ember;

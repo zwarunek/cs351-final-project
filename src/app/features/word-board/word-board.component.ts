@@ -10,35 +10,16 @@ import {HttpClient} from "@angular/common/http";
 export class WordBoardComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    this.key = event.key.toLowerCase();
-    if(this.allowedChars.includes(this.key)) {
-
-      if (this.key === 'enter') {
-        console.log(this.guesses[this.currentGuess].join(""))
-        this.checkWord(this.guesses[this.currentGuess].join(""),this.word);
-        this.currentGuess ++;
-        this.currentGuessChars = 0;
-
-      }
-      else if (this.key === 'backspace') {
-        this.currentGuessChars --;
-        this.guesses[this.currentGuess][this.currentGuessChars]= "";
-      }
-      else{
-        if (this.currentGuessChars < this.letters) {
-          this.guesses[this.currentGuess][this.currentGuessChars]= this.key;
-          this.currentGuessChars ++;
-        }
-
-      }
-    }
+    this.handleKeyPress(event.key);
   }
+
 
   gameState: any;
   guesses: any[] = []
   guessResults: any[] = []
   key: any;
-  wordlist: string[] = [];
+  wordlistAnswers: string[] = [];
+  wordlistGuesses: string[] = [];
   letters = 5;
   numberOfGuesses = 6;
   allowedChars:any[];
@@ -51,9 +32,13 @@ export class WordBoardComponent implements OnInit {
 
     http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
     .subscribe(data => {
-      this.wordlist = data.split(/\r?\n/);
-      this.word = this.wordlist[Math.floor(Math.random() * this.wordlist.length)];
+      this.wordlistAnswers = data.split(/\r?\n/);
+      this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
       console.log(this.word);
+    });
+    http.get('assets/wordlists/5-letter.txt', { responseType: 'text' })
+    .subscribe(data => {
+      this.wordlistGuesses = data.split(/\r?\n/);
     });
     this.guessResults = [
       ["unknown","unknown","unknown","unknown","unknown"],
@@ -79,6 +64,32 @@ export class WordBoardComponent implements OnInit {
       "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"
     ];
     this.allowedChars = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
+  }
+  handleKeyPress(key: string){
+    this.key = key.toLowerCase();
+    if(this.allowedChars.includes(this.key)) {
+
+      if (this.key === 'enter') {
+        console.log(this.guesses[this.currentGuess].join(""))
+        if(this.wordlistGuesses.includes(this.guesses[this.currentGuess].join("")) || this.wordlistAnswers.includes(this.guesses[this.currentGuess].join(""))) {
+          this.checkWord(this.guesses[this.currentGuess].join(""), this.word);
+          this.currentGuess++;
+          this.currentGuessChars = 0;
+        }
+
+      }
+      else if (this.key === 'backspace') {
+        this.currentGuessChars --;
+        this.guesses[this.currentGuess][this.currentGuessChars]= "";
+      }
+      else{
+        if (this.currentGuessChars < this.letters) {
+          this.guesses[this.currentGuess][this.currentGuessChars]= this.key;
+          this.currentGuessChars ++;
+        }
+
+      }
+    }
   }
 
   ngOnInit(): void {

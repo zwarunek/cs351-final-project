@@ -1,36 +1,36 @@
-<div class="flex justify-content-center pt-2">
+<div class="flex justify-content-center pt-2 layout-content h-full">
   <div class="" style="width: 600px;">
     <div class="grid pb-1" style="height: 100%">
       <div class="col-12 p-0">
         <div
-          class="w-full flex justify-content-start align-items-center flex-column text-600 font-medium"
+          class="w-full flex justify-content-start align-items-center flex-column text-600 font-medium h-full"
           >
           <div class="flex h-full w-full flex-column align-items-center justify-content-evenly" style="padding-inline: 100px;">
-            <div  style="display: grid; width: 22rem; height: 26.4rem; grid-gap: 5px; padding: 10px; margin-bottom: 5px;">
-              <div style="display: grid; grid-auto-flow: column; grid-gap: 5px;"
+            <div  style="display: grid; width: 100%; grid-gap: 5px; margin-bottom: 5px;">
+              <div style="display: grid; grid-auto-flow: column; grid-gap: 5px; position: relative" class="test"
                    *ngFor="let rowGuess of guesses; let row = index">
                 <div class="title flex " [ngClass]="{
                 'present': guessResults[row][col] === 'present',
                 'correct': guessResults[row][col] === 'correct',
                 'unused': guessResults[row][col] === 'unused'}"
                      *ngFor="let guess of rowGuess; let col = index">
-                  <span style="position: absolute">{{guess}}</span>
+                  <span style="position: absolute; top: 30%;">{{guess}}</span>
                 </div>
               </div>
             </div>
             <div id="keyboard" style="width: 100%">
               <div class="" style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
-                <button pButton *ngFor="let key of [].constructor(10); let i = index" class="letter-button {{keyboardResults[i]}}" label="{{keyboardKeys[i] | uppercase}}"></button>
+                <button pButton *ngFor="let key of [].constructor(10); let i = index" (click)="handleKeyPress(keyboardKeys[i])" class="letter-button {{keyboardResults[i]}}" label="{{keyboardKeys[i] | uppercase}}"></button>
               </div>
               <div class="" style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
                 <div style="flex: .5"></div>
-                <button pButton *ngFor="let key of [].constructor(9); let i = index" class="letter-button {{keyboardResults[i+10]}}" label="{{keyboardKeys[i+10] | uppercase}}"></button>
+                <button pButton *ngFor="let key of [].constructor(9); let i = index" (click)="handleKeyPress(keyboardKeys[i+10])" class="letter-button {{keyboardResults[i+10]}}" label="{{keyboardKeys[i+10] | uppercase}}"></button>
                 <div style="flex: .5"></div>
               </div>
               <div class="" style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
-                <button pButton class="letter-button" label="ENTER" style="flex: 1.5"></button>
-                <button pButton *ngFor="let key of [].constructor(7); let i = index" class="letter-button {{keyboardResults[i+19]}}" label="{{keyboardKeys[i+19] | uppercase}}"></button>
-                <button pButton class="letter-button" icon="fa fa-delete-left" style="flex: 1.5"></button>
+                <button pButton class="letter-button" label="ENTER" (click)="handleKeyPress('enter')" style="flex: 1.5"></button>
+                <button pButton *ngFor="let key of [].constructor(7); let i = index" (click)="handleKeyPress(keyboardKeys[i+19])" class="letter-button {{keyboardResults[i+19]}}" label="{{keyboardKeys[i+19] | uppercase}}"></button>
+                <button pButton class="letter-button" icon="fa fa-delete-left" (click)="handleKeyPress('backspace')" style="flex: 1.5"></button>
               </div>
             </div>
           </div>
