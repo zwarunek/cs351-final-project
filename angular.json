@@ -27,6 +27,7 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "tsconfig.app.json",
 						"assets": [
+              "src/favicon.ico",
 							"src/assets"
 						],
 						"styles": [
@@ -214,3 +215,4 @@
 	},
 	"defaultProject": "MultiplayerWordGame"
 }
+fMy name iois xach an

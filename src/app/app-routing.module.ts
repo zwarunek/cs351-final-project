@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from "@angular/router";
+import {HomePageModule} from "@app/pages/home-page/home-page.module";
 
 const routes: Routes = [
 
   {
     path: '',
-    loadChildren: () => import('./pages/home-page/home-page.module').then((m) => m.HomePageModule),
+    loadChildren: () => HomePageModule,
   },
   {path: '**', redirectTo: ''},
   // {
