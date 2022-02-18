@@ -1,6 +1,7 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {MessageService} from "primeng/api";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 
 @Component({
@@ -28,10 +29,9 @@ export class WordBoardComponent implements OnInit {
   currentGuess = 0
   keyboardResults: any[];
   keyboardKeys: any[];
-  private word: string = '';
+  word: string = '';
   guessedWords: any[] = [];
   constructor(public http: HttpClient, private messageService: MessageService) {
-
     http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
     .subscribe(data => {
       this.wordlistAnswers = data.split(/\r?\n/);
@@ -70,10 +70,10 @@ export class WordBoardComponent implements OnInit {
   }
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
-    if(this.allowedChars.includes(this.key)) {
+    if(this.allowedChars.includes(this.key) && this.gameState === 'playing') {
       let rowElement = document.getElementById('board-row-'+this.currentGuess);
 
-      if (this.key === 'enter' && this.gameState === 'playing') {
+      if (this.key === 'enter') {
         let guess = this.guesses[this.currentGuess].join("");
         if(guess.length == this.letters && (this.wordlistGuesses.includes(guess) || this.wordlistAnswers.includes(guess))) {
           this.currentGuess++;
@@ -82,14 +82,14 @@ export class WordBoardComponent implements OnInit {
           this.checkWord(guess, this.word);
           if(guess === this.word){
             this.gameState = 'won';
-            this.messageService.clear();
-            this.messageService.add({severity:'success', sticky: false, summary: 'You Won!',
+            // this.messageService.clear();
+            this.messageService.add({severity:'success',key: 'replay', sticky: false, summary: 'You Won!',
               detail:''});
           }
           else if(this.currentGuess === this.numberOfGuesses){
             this.gameState = 'lost'
-            this.messageService.clear();
-            this.messageService.add({severity:'warn', sticky: true, summary: 'You Lost!',
+            // this.messageService.clear();
+            this.messageService.add({severity:'warn',key: 'replay', sticky: true, summary: 'You Lost!',
               detail: 'The word was <b>'+this.word+'</b>'});
           }
         }
@@ -157,9 +157,13 @@ export class WordBoardComponent implements OnInit {
   getDefinition(guess: any) {
     this.http.get('https://api.dictionaryapi.dev/api/v2/entries/en/' + guess).subscribe((data: any) => {
       this.messageService.clear();
-      this.messageService.add({severity:'custom', sticky: true, summary: guess.charAt(0).toUpperCase() + guess.slice(1),
+      this.messageService.add({severity:'custom',key: 'message',  sticky: true, summary: guess.charAt(0).toUpperCase() + guess.slice(1),
         detail: (data[0].meanings[0].partOfSpeech.charAt(0).toUpperCase() + data[0].meanings[0].partOfSpeech.slice(1)).bold()
           +': ' + data[0].meanings[0].definitions[0].definition});
     })
+  }
+
+  reload() {
+    location.reload();
   }
 }
