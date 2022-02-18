@@ -70,8 +70,9 @@ export class WordBoardComponent implements OnInit {
     if(this.allowedChars.includes(this.key)) {
 
       if (this.key === 'enter') {
-        console.log(this.guesses[this.currentGuess].join(""))
-        if(this.wordlistGuesses.includes(this.guesses[this.currentGuess].join("")) || this.wordlistAnswers.includes(this.guesses[this.currentGuess].join(""))) {
+        let guess = this.guesses[this.currentGuess].join("");
+        console.log(guess)
+        if(guess.length == this.letters && (this.wordlistGuesses.includes(guess) || this.wordlistAnswers.includes(guess))) {
           this.checkWord(this.guesses[this.currentGuess].join(""), this.word);
           this.currentGuess++;
           this.currentGuessChars = 0;
@@ -79,8 +80,10 @@ export class WordBoardComponent implements OnInit {
 
       }
       else if (this.key === 'backspace') {
-        this.currentGuessChars --;
-        this.guesses[this.currentGuess][this.currentGuessChars]= "";
+        if(this.currentGuessChars > 0){
+          this.currentGuessChars --;
+          this.guesses[this.currentGuess][this.currentGuessChars]= "";
+        }
       }
       else{
         if (this.currentGuessChars < this.letters) {
@@ -113,7 +116,9 @@ export class WordBoardComponent implements OnInit {
       }
       else if(word.charAt(i) !== '*'){
         this.guessResults[this.currentGuess][i] = 'unused'
-        this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'unused'
+        if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct'
+          && this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'present')
+          this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'unused'
       }
     }
     console.log(word)
