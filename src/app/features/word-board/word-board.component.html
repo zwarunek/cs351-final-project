@@ -1,6 +1,16 @@
-<!-- TODO Definition of guessed word-->
 <!-- TODO Show correct word if guessed all wrong-->
 <!-- TODO Button to refresh-->
+<!-- TODO Animations-->
+<p-toast position="top-center" [baseZIndex]="5000">
+  <ng-template let-message pTemplate="message">
+    <div class="p-flex p-flex-column" style="flex: 1">
+      <div class="p-text-center">
+        <h3>{{message.summary}}</h3>
+        <span [innerHTML]="message.detail"></span>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>
 <div class="flex flex-column layout-content h-full" style="justify-content: space-evenly;
     max-width: 500px;
     margin-inline: auto;">
@@ -8,6 +18,7 @@
     <div style="display: grid; grid-auto-flow: column; grid-gap: 5px; position: relative"
          class="test"
          *ngFor="let rowGuess of guesses; let row = index">
+      <i class="fa-solid fa-book" *ngIf="currentGuess > row" style="position: absolute; left: 100%; font-size: 1.5rem; top: calc(50% - 0.75rem); cursor: pointer" (click)="getDefinition(guessedWords[row])"></i>
       <div class="title " [ngClass]="{
                 'present': guessResults[row][col] === 'present',
                 'correct': guessResults[row][col] === 'correct',
