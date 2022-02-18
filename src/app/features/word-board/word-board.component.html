@@ -10,10 +10,10 @@
     </div>
   </ng-template>
 </p-toast>
-<div class="flex flex-column layout-content h-full" style="justify-content: space-evenly;
+<div class="flex flex-column layout-content h-full" style="justify-content: space-between;
     max-width: 500px;
     margin-inline: auto;">
-  <div style="display: grid; width: 55%; margin-inline: auto; grid-gap: 5px; margin-bottom: 5px;">
+  <div class="board">
     <div id="board-row-{{row}}" style="display: grid; grid-auto-flow: column; grid-gap: 5px; position: relative"
          class="test"
          *ngFor="let rowGuess of guesses; let row = index">
@@ -47,13 +47,13 @@
     </div>
     <div class=""
          style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
-      <button pButton class="letter-button" label="ENTER" (click)="handleKeyPress('enter')"
+      <button pButton class="letter-button unknown" label="ENTER" (click)="handleKeyPress('enter')"
               style="flex: 1.5"></button>
       <button pButton *ngFor="let key of [].constructor(7); let i = index"
               (click)="handleKeyPress(keyboardKeys[i+19])"
               class="letter-button {{keyboardResults[i+19]}}"
               label="{{keyboardKeys[i+19] | uppercase}}"></button>
-      <button pButton class="letter-button" icon="fa fa-delete-left"
+      <button pButton class="letter-button unknown" icon="fa fa-delete-left"
               (click)="handleKeyPress('backspace')" style="flex: 1.5"></button>
     </div>
   </div>
