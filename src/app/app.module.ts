@@ -7,6 +7,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HeadersModule} from "@features/headers/headers.module";
+import {MessageService} from "primeng/api";
 
 
 @NgModule({
@@ -20,7 +21,7 @@ import {HeadersModule} from "@features/headers/headers.module";
     HttpClientModule,
     BrowserAnimationsModule, HeadersModule
   ],
-  providers: [],
+  providers: [MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

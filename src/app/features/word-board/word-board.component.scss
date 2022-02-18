@@ -28,8 +28,8 @@
   background-color:var(--pink-300) !important;
 }
 .present{
-  background-color:var(--teal-200) !important;
-  color:var(--surface-b);
+  background-color:var(--primary-color) !important;
+  color:var(--primary-color-text) !important;
 }
 .letter-button{
   font-family: inherit;
@@ -78,4 +78,14 @@ button:last-of-type{
   grid-template-columns: repeat(5, calc(20% - 5px));
   grid-gap: 5px;
 }
-
+:host ::ng-deep {
+  .p-toast-message-custom {
+    background-color: var(--primary-color);
+    border: var(--surface-border);
+    border-width: 0 0 0 6px;
+    color: var(--primary-color-text);
+    .p-toast-icon-close {
+      color: var(--primary-color-text);
+    }
+  }
+}

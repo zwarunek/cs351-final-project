@@ -1,5 +1,6 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {MessageService} from "primeng/api";
 
 
 @Component({
@@ -28,7 +29,8 @@ export class WordBoardComponent implements OnInit {
   keyboardResults: any[];
   keyboardKeys: any[];
   private word: string = '';
-  constructor(http: HttpClient) {
+  guessedWords: any[] = [];
+  constructor(public http: HttpClient, private messageService: MessageService) {
 
     http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
     .subscribe(data => {
@@ -73,9 +75,10 @@ export class WordBoardComponent implements OnInit {
         let guess = this.guesses[this.currentGuess].join("");
         console.log(guess)
         if(guess.length == this.letters && (this.wordlistGuesses.includes(guess) || this.wordlistAnswers.includes(guess))) {
-          this.checkWord(this.guesses[this.currentGuess].join(""), this.word);
+          this.checkWord(guess, this.word);
           this.currentGuess++;
           this.currentGuessChars = 0;
+          this.guessedWords.push(guess);
         }
 
       }
@@ -124,4 +127,12 @@ export class WordBoardComponent implements OnInit {
     console.log(word)
   }
 
+  getDefinition(guess: any) {
+    this.http.get('https://api.dictionaryapi.dev/api/v2/entries/en/' + guess).subscribe((data: any) => {
+      console.log(data[0].meanings);
+      this.messageService.add({severity:'custom', sticky: true, summary: guess.charAt(0).toUpperCase() + guess.slice(1),
+        detail: (data[0].meanings[0].partOfSpeech.charAt(0).toUpperCase() + data[0].meanings[0].partOfSpeech.slice(1)).bold()
+          +': ' + data[0].meanings[0].definitions[0].definition});
+    })
+  }
 }
