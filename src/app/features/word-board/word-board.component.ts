@@ -130,6 +130,7 @@ export class WordBoardComponent implements OnInit {
   getDefinition(guess: any) {
     this.http.get('https://api.dictionaryapi.dev/api/v2/entries/en/' + guess).subscribe((data: any) => {
       console.log(data[0].meanings);
+      this.messageService.clear();
       this.messageService.add({severity:'custom', sticky: true, summary: guess.charAt(0).toUpperCase() + guess.slice(1),
         detail: (data[0].meanings[0].partOfSpeech.charAt(0).toUpperCase() + data[0].meanings[0].partOfSpeech.slice(1)).bold()
           +': ' + data[0].meanings[0].definitions[0].definition});

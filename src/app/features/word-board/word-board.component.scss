@@ -25,7 +25,8 @@
   background-color:var(--surface-d) !important;
 }
 .correct{
-  background-color:var(--pink-300) !important;
+  background-color:var(--secondary-color) !important;
+  color:var(--primary-color-text) !important;
 }
 .present{
   background-color:var(--primary-color) !important;
@@ -87,5 +88,8 @@ button:last-of-type{
     .p-toast-icon-close {
       color: var(--primary-color-text);
     }
+  }
+  .p-toast{
+    z-index: 5;
   }
 }
