@@ -8,8 +8,8 @@
   width: 100%;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
-  line-height: 2rem;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
   font-weight: bold;
   vertical-align: middle;
   box-sizing: border-box;
@@ -19,6 +19,7 @@
   border: 2px solid var(--surface-400);
   border-radius: 40px;
   padding-bottom: calc(100% - 4px);
+  position: relative;
 }
 .unused{
   background-color:var(--surface-d) !important;

@@ -8,12 +8,12 @@
     <div style="display: grid; grid-auto-flow: column; grid-gap: 5px; position: relative"
          class="test"
          *ngFor="let rowGuess of guesses; let row = index">
-      <div class="title flex " [ngClass]="{
+      <div class="title " [ngClass]="{
                 'present': guessResults[row][col] === 'present',
                 'correct': guessResults[row][col] === 'correct',
                 'unused': guessResults[row][col] === 'unused'}"
            *ngFor="let guess of rowGuess; let col = index">
-        <span style="position: absolute; top: 30%;">{{guess}}</span>
+        <span style="position: absolute; top: calc(50% - 10px); width: 100%; text-align: center">{{guess}}</span>
       </div>
     </div>
   </div>
