@@ -1,4 +1,12 @@
 @import "~primeng/resources/themes/md-light-indigo/theme.css";
 :root{
   --secondary-color: var(--pink-600);
+  --unused: #787C78;
+  --unknown: var(--surface-b);
+  --correct: var(--secondary-color);
+  --present: var(--primary-color);
+  --unused-text: var(--primary-color-text);
+  --unknown-text: var(--text-color);
+  --correct-text: var(--primary-color-text);
+  --present-text: var(--primary-color-text);
 }

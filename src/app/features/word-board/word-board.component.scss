@@ -13,7 +13,6 @@
   font-weight: bold;
   vertical-align: middle;
   box-sizing: border-box;
-  color: var(--text-color);
   text-transform: uppercase;
   user-select: none;
   border: 2px solid var(--surface-400);
@@ -22,15 +21,34 @@
   position: relative;
 }
 .unused{
-  background-color:var(--surface-d) !important;
+  background-color:var(--unused);
+  color:var(--unused-text);
 }
 .correct{
-  background-color:var(--secondary-color) !important;
-  color:var(--primary-color-text) !important;
+  background-color:var(--correct);
+  color:var(--correct-text);
 }
 .present{
-  background-color:var(--primary-color) !important;
-  color:var(--primary-color-text) !important;
+  background-color:var(--present);
+  color:var(--present-text);
+}
+.unknown.title{
+  background-color: var(--unknown);
+  color: var(--unknown-text);
+}
+.reveal{
+  animation-name: tile-flip;
+  animation-duration: 600ms;
+}
+@keyframes tile-flip {
+
+  0% {
+    background-color:var(--unknown);
+  }
+  50.0% {
+    background-color:var(--unknown);
+    transform: scale(0, 0);
+  }
 }
 .letter-button{
   font-family: inherit;
@@ -53,18 +71,18 @@
   min-width: auto !important;
 }
 .letter-button:enabled:hover {
-  background-color: var(--surface-200);
-  color: var(--text-color);
+  background-color: var(--unknown);
+  color: var(--unknown-text);
   border-color: transparent;
 }
 .letter-button:enabled:focus {
-  background-color: var(--surface-200);
-  color: var(--text-color);
+  background-color: var(--unknown);
+  color: var(--unknown-text);
   border-color: transparent;
 }
 .letter-button:enabled:visited {
-  background-color: var(--surface-200);
-  color: var(--text-color);
+  background-color: var(--unknown);
+  color: var(--unknown-text);
   border-color: transparent;
 }
 button:last-of-type{
@@ -91,5 +109,23 @@ button:last-of-type{
   }
   .p-toast{
     z-index: 5;
+  }
+}
+.invalid{
+  animation-name: shake;
+  animation-duration: 600ms;
+}
+@keyframes shake {
+  10%, 90%{
+    transform: translate(-1px, 0);
+  }
+  20%, 80%{
+    transform: translate(2px, 0);
+  }
+  30%, 50%, 70%{
+    transform: translate(-4px, 0);
+  }
+  40%, 60%{
+    transform: translate(4px, 0);
   }
 }

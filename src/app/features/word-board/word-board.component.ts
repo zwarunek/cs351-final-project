@@ -70,6 +70,7 @@ export class WordBoardComponent implements OnInit {
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
     if(this.allowedChars.includes(this.key)) {
+      let rowElement = document.getElementById('board-row-'+this.currentGuess);
 
       if (this.key === 'enter') {
         let guess = this.guesses[this.currentGuess].join("");
@@ -80,10 +81,22 @@ export class WordBoardComponent implements OnInit {
           this.currentGuessChars = 0;
           this.guessedWords.push(guess);
         }
+        else{
+          if(rowElement) {
+            rowElement.classList.add('invalid')
+            setTimeout(function () {
+              if(rowElement)
+                rowElement.classList.remove('invalid');
+            }, 600);
+          }
+
+        }
 
       }
       else if (this.key === 'backspace') {
         if(this.currentGuessChars > 0){
+          // if(rowElement)
+          //   rowElement.classList.remove('invalid')
           this.currentGuessChars --;
           this.guesses[this.currentGuess][this.currentGuessChars]= "";
         }
@@ -102,28 +115,57 @@ export class WordBoardComponent implements OnInit {
   }
 
   checkWord(guess: string, word:string){
-    for(let i = 0; i < guess.length; i++){
-      console.log(guess.charAt(i), word.charAt(i), guess.charAt(i) === word.charAt(i))
-      if(guess.charAt(i) === word.charAt(i)){
-        word = word.substring(0, i) + '*' + word.substring(i + 1)
-        this.guessResults[this.currentGuess][i] = 'correct'
-        this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'correct'
-      }
+    let i = 0;
+    const myLoop = () => {
+      setTimeout(() => {
+        console.log(i)
+        if(guess.charAt(i) === word.charAt(i)){
+          word = word.substring(0, i) + '*' + word.substring(i + 1)
+          this.guessResults[this.currentGuess-1][i] = 'correct'
+          this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'correct'
+        }
+        else if(word.includes(guess.charAt(i)) && word.charAt(i) !== '*'){
+          word = word.substring(0, word.indexOf(guess.charAt(i))) + '-' + word.substring(word.indexOf(guess.charAt(i)) + 1)
+          this.guessResults[this.currentGuess-1][i] = 'present'
+          if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct')
+            this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'present'
+        }
+        else if(word.charAt(i) !== '*'){
+          this.guessResults[this.currentGuess-1][i] = 'unused'
+          if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct'
+            && this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'present')
+            this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'unused'
+        }
+        if (i < this.letters) {
+          i++;
+          myLoop();
+        }
+      }, 200)
     }
-    for(let i = 0; i < guess.length; i++){
-      if(word.includes(guess.charAt(i)) && word.charAt(i) !== '*'){
-        word = word.substring(0, word.indexOf(guess.charAt(i))) + '-' + word.substring(word.indexOf(guess.charAt(i)) + 1)
-        this.guessResults[this.currentGuess][i] = 'present'
-        if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct')
-          this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'present'
-      }
-      else if(word.charAt(i) !== '*'){
-        this.guessResults[this.currentGuess][i] = 'unused'
-        if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct'
-          && this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'present')
-          this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'unused'
-      }
-    }
+
+    myLoop();
+    // for(let i = 0; i < guess.length; i++){
+    //   console.log(guess.charAt(i), word.charAt(i), guess.charAt(i) === word.charAt(i))
+    //   if(guess.charAt(i) === word.charAt(i)){
+    //     word = word.substring(0, i) + '*' + word.substring(i + 1)
+    //     this.guessResults[this.currentGuess][i] = 'correct'
+    //     this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'correct'
+    //   }
+    // }
+    // for(let i = 0; i < guess.length; i++){
+    //   if(word.includes(guess.charAt(i)) && word.charAt(i) !== '*'){
+    //     word = word.substring(0, word.indexOf(guess.charAt(i))) + '-' + word.substring(word.indexOf(guess.charAt(i)) + 1)
+    //     this.guessResults[this.currentGuess][i] = 'present'
+    //     if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct')
+    //       this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'present'
+    //   }
+    //   else if(word.charAt(i) !== '*'){
+    //     this.guessResults[this.currentGuess][i] = 'unused'
+    //     if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct'
+    //       && this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'present')
+    //       this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'unused'
+    //   }
+    // }
     console.log(word)
   }
 
