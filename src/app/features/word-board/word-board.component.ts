@@ -2,6 +2,7 @@ import {Component, HostListener, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {MessageService} from "primeng/api";
 import {animate, style, transition, trigger} from "@angular/animations";
+import {SocketService} from "@core/services/socket.service";
 
 
 @Component({
@@ -31,7 +32,7 @@ export class WordBoardComponent implements OnInit {
   keyboardKeys: any[];
   word: string = '';
   guessedWords: any[] = [];
-  constructor(public http: HttpClient, private messageService: MessageService) {
+  constructor(public http: HttpClient, private messageService: MessageService, public socket: SocketService) {
     http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
     .subscribe(data => {
       this.wordlistAnswers = data.split(/\r?\n/);
@@ -65,11 +66,12 @@ export class WordBoardComponent implements OnInit {
     this.keyboardKeys = [
       "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"
     ];
-    this.allowedChars = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
+    this.allowedChars = ["arrowleft","arrowup","arrowdown","arrowright","q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
     this.gameState = 'playing';
   }
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
+    console.log(this.key);
     if(this.allowedChars.includes(this.key) && this.gameState === 'playing') {
       let rowElement = document.getElementById('board-row-'+this.currentGuess);
 
@@ -80,18 +82,10 @@ export class WordBoardComponent implements OnInit {
           this.currentGuessChars = 0;
           this.guessedWords.push(guess);
           this.checkWord(guess, this.word);
-          if(guess === this.word){
+          if(guess === this.word)
             this.gameState = 'won';
-            // this.messageService.clear();
-            this.messageService.add({severity:'success',key: 'replay', sticky: false, summary: 'You Won!',
-              detail:''});
-          }
-          else if(this.currentGuess === this.numberOfGuesses){
+          else if(this.currentGuess === this.numberOfGuesses)
             this.gameState = 'lost'
-            // this.messageService.clear();
-            this.messageService.add({severity:'warn',key: 'replay', sticky: true, summary: 'You Lost!',
-              detail: 'The word was <b>'+this.word+'</b>'});
-          }
         }
         else{
           if(rowElement) {
@@ -111,12 +105,18 @@ export class WordBoardComponent implements OnInit {
           this.guesses[this.currentGuess][this.currentGuessChars]= "";
         }
       }
+      else if(this.key === 'arrowup'){
+        this.socket.connect();
+      }
+      else if(this.key === 'arrowleft'){
+        console.log('listening');
+        this.socket.getJoined().subscribe((message: any) => console.log(message))
+      }
       else{
         if (this.currentGuessChars < this.letters) {
           this.guesses[this.currentGuess][this.currentGuessChars]= this.key;
           this.currentGuessChars ++;
         }
-
       }
     }
   }

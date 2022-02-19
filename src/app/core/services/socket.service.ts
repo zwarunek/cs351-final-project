@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Socket } from 'ngx-socket-io';
 import {map} from "rxjs/operators";
 import {Observable} from "rxjs";
+import { v4 as uuid } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,14 @@ export class SocketService {
 
   }
   public connect(){
-    this.socket.once('connect', (message: any) => {
-      console.log(message, 'hello');
+    this.socket.emit('join-room', {
+      'username': uuid(),
+      'room': 1234
     });
+
+  }
+  public getJoined() {
+    return this.socket.fromEvent('joined');
   }
 
   public getMessages (){
