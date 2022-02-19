@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { WordBoardComponent } from './word-board.component';
 import {ButtonModule} from "primeng/button";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {ToastModule} from "primeng/toast";
+import {MessagesModule} from "primeng/messages";
+import {MessageModule} from 'primeng/message';
 
 
 
@@ -16,7 +19,10 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
   imports: [
     CommonModule,
     ButtonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ToastModule,
+    MessagesModule,
+    MessageModule
   ]
 })
 export class WordBoardModule { }

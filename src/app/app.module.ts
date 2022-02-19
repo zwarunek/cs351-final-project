@@ -7,6 +7,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HeadersModule} from "@features/headers/headers.module";
+import {MessageService} from "primeng/api";
 import {SocketIoModule} from "ngx-socket-io";
 
 
@@ -24,7 +25,7 @@ import {SocketIoModule} from "ngx-socket-io";
     SocketIoModule.forRoot({ url: 'http://127.0.0.1:5000', options: {} })
 
   ],
-  providers: [],
+  providers: [MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

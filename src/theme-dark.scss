@@ -1,1 +1,13 @@
-@import "~primeng/resources/themes/md-dark-deeppurple/theme.css";
+@import "~primeng/resources/themes/md-dark-indigo/theme.css";
+:root{
+  --secondary-color: var(--pink-300);
+  --unused: #3A3A3C;
+  --unknown: var(--surface-b);
+  --unknown-letter: var(--gray-300);
+  --correct: var(--secondary-color);
+  --present: var(--primary-color);
+  --unused-text: var(--text-color);
+  --unknown-text: var(--text-color);
+  --correct-text: var(--primary-color-text);
+  --present-text: var(--primary-color-text);
+}

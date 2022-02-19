@@ -1,2 +1,2 @@
-ng run MultiplayerWordGame:prerender
+ng build --base-href=/cs351-final-project/
 ng deploy --no-build --cname=https://zwarunek.github.io/cs351-final-project/
