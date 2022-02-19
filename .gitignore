@@ -25,6 +25,7 @@ chrome-profiler-events*.json
 *.iws
 *.iml
 *.ipr
+package-lock.json
 
 # IDE - VSCode
 .vscode/
