@@ -1,7 +1,6 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {MessageService} from "primeng/api";
-import {animate, style, transition, trigger} from "@angular/animations";
 
 
 @Component({
@@ -79,19 +78,12 @@ export class WordBoardComponent implements OnInit {
           this.currentGuess++;
           this.currentGuessChars = 0;
           this.guessedWords.push(guess);
-          this.checkWord(guess, this.word);
-          if(guess === this.word){
+          let results = this.checkWord(guess, this.word);
+          this.displayResults(guess, results);
+          if(guess === this.word)
             this.gameState = 'won';
-            // this.messageService.clear();
-            this.messageService.add({severity:'success',key: 'replay', sticky: false, summary: 'You Won!',
-              detail:''});
-          }
-          else if(this.currentGuess === this.numberOfGuesses){
+          else if(this.currentGuess === this.numberOfGuesses)
             this.gameState = 'lost'
-            // this.messageService.clear();
-            this.messageService.add({severity:'warn',key: 'replay', sticky: true, summary: 'You Lost!',
-              detail: 'The word was <b>'+this.word+'</b>'});
-          }
         }
         else{
           if(rowElement) {
@@ -125,33 +117,22 @@ export class WordBoardComponent implements OnInit {
   }
 
   checkWord(guess: string, word:string){
-    let i = 0;
-    const myLoop = () => {
-      setTimeout(() => {
-        if(guess.charAt(i) === word.charAt(i)){
-          word = word.substring(0, i) + '*' + word.substring(i + 1)
-          this.guessResults[this.currentGuess-1][i] = 'correct'
-          this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'correct'
-        }
-        else if(word.includes(guess.charAt(i)) && word.charAt(i) !== '*'){
-          word = word.substring(0, word.indexOf(guess.charAt(i))) + '-' + word.substring(word.indexOf(guess.charAt(i)) + 1)
-          this.guessResults[this.currentGuess-1][i] = 'present'
-          if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct')
-            this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'present'
-        }
-        else if(word.charAt(i) !== '*'){
-          this.guessResults[this.currentGuess-1][i] = 'unused'
-          if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'correct'
-            && this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] !== 'present')
-            this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = 'unused'
-        }
-        if (i < this.letters) {
-          i++;
-          myLoop();
-        }
-      }, 200)
+
+    let tempLayout = ['unused','unused','unused','unused','unused'];
+    for(let i = 0; i < this.letters; i++){
+      if(guess.charAt(i) === word.charAt(i)){
+        word = word.substring(0, i) + '*' + word.substring(i + 1);
+        guess = guess.substring(0, i) + '*' + guess.substring(i + 1);
+        tempLayout[i] = 'correct';
+      }
     }
-    myLoop();
+    for(let i = 0; i < this.letters; i++){
+      if(word.includes(guess.charAt(i)) && word.charAt(i) !== '*' && guess.charAt(i) !== '*'){
+        word = word.substring(0, word.indexOf(guess.charAt(i))) + '-' + word.substring(word.indexOf(guess.charAt(i)) + 1);
+        tempLayout[i] = 'present'
+      }
+    }
+    return tempLayout;
   }
 
   getDefinition(guess: any) {
@@ -165,5 +146,20 @@ export class WordBoardComponent implements OnInit {
 
   reload() {
     location.reload();
+  }
+
+  displayResults(guess: any, results: string[]) {
+    let i = 0;
+    const loop = () => {
+      setTimeout( () => {
+        this.guessResults[this.currentGuess-1][i] = results[i]
+        this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = results[i]
+        if(i < results.length){
+          i++
+          loop();
+        }
+      }, 200)
+    };
+    loop();
   }
 }
