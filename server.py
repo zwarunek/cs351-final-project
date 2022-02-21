@@ -16,22 +16,39 @@ thread = None
 clients = 0
 log = logging.getLogger('werkzeug')
 log.disabled = True
-clientList = []
+clientList = {}
+
+
+@socketio.on('connect')
+def connect():
+    print('Session ID:', request.sid)
+    session['sid'] = request.sid
+
+
+@socketio.on('set-client')
+def connect(data):
+    clientList[data['uuid']] = {}
+    session['uuid'] = data['uuid']
+    # session['uuid'] = data['uuid']
+    # emit('connected', {'msg': session['uuid']}, room=session['room'])
 
 
 @socketio.on('join-room')
-def connect(data):
+def joinRoom(data):
+    session['room'] = data['room']
+    session['nickname'] = data['nickname']
+
     global clients
     clients += 1
-    username = data['username']
-    room = data['room']
-    print(username)
-    print(room)
-    join_room(room)
+    print(session['nickname'])
+    print(session['uuid'])
+    print(session['room'])
+    join_room(session['room'])
+
     #
     # # emit to the first client that joined the room
     # emit('status', {'msg': session.get('name') + ' has entered the room.'}, room=clientList[0])
-    emit('joined', {'msg': username + ' has entered the room ' + str(room) + '.'}, room=room)
+    emit('joined', {'msg': session['nickname'] + ' has entered the room ' + str(session['room']) + '.'}, room=session['room'])
 
 
 # Read data from client

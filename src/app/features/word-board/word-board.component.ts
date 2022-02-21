@@ -105,13 +105,6 @@ export class WordBoardComponent implements OnInit {
           this.guesses[this.currentGuess][this.currentGuessChars]= "";
         }
       }
-      else if(this.key === 'arrowup'){
-        this.socket.connect();
-      }
-      else if(this.key === 'arrowleft'){
-        console.log('listening');
-        this.socket.getJoined().subscribe((message: any) => console.log(message))
-      }
       else{
         if (this.currentGuessChars < this.letters) {
           this.guesses[this.currentGuess][this.currentGuessChars]= this.key;

@@ -13,15 +13,18 @@ export class SocketService {
   // private socket: SocketIOClient.Socket;
   // private messages: Array<any>;
   constructor(private socket: Socket) {
-
-  }
-  public connect(){
-    this.socket.emit('join-room', {
-      'username': uuid(),
-      'room': 1234
+    this.socket.emit('set-client', {
+      'uuid': uuid()
     });
-
   }
+
+  public joinLobby(nickname: any, pin: any){
+    this.socket.emit('connect2', {
+      'nickname': nickname,
+      'room': pin
+    });
+  }
+
   public getJoined() {
     return this.socket.fromEvent('joined');
   }
