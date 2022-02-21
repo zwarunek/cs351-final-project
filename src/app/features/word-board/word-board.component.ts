@@ -110,6 +110,10 @@ export class WordBoardComponent implements OnInit {
         }
 
       }
+    }else{
+      if (this.key === 'enter'){
+        this.reload();
+      }
     }
   }
 
