@@ -81,9 +81,13 @@ export class WordBoardComponent implements OnInit {
           let results = this.checkWord(guess, this.word);
           this.displayResults(guess, results);
           if(guess === this.word)
-            this.gameState = 'won';
+            setTimeout(() => {
+              this.gameState = 'won';
+            }, 1500)
           else if(this.currentGuess === this.numberOfGuesses)
-            this.gameState = 'lost'
+            setTimeout(() => {
+              this.gameState = 'lost';
+            }, 1500)
         }
         else{
           if(rowElement) {
