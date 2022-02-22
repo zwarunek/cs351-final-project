@@ -17,6 +17,7 @@ export class HeaderDefaultComponent {
   user?: any;
   viewMode: string = "dark";
   viewModeIcon: string = 'fa fa-solid fa-sun';
+  displayHowTo: boolean = false;
 
   constructor(private app: AppComponent, public themeService: ThemeService, private http: HttpClient, public router: Router) {
 
@@ -43,5 +44,14 @@ export class HeaderDefaultComponent {
     }
     localStorage.setItem(VIEW_MODE_KEY, this.viewMode);
     this.themeService.switchTheme(this.viewMode);
+  }
+
+  displayHelp() {
+    console.log(this.displayHowTo)
+    this.displayHowTo = true;
+  }
+
+  howToClosed() {
+    console.log('hello')
   }
 }

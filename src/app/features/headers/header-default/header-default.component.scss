@@ -34,6 +34,12 @@
 ::ng-deep .no-label>.p-button-label {
   display: none;
 }
+::ng-deep .p-dialog .p-dialog-header{
+  background-color: var(--surface-b);
+}
+::ng-deep .p-dialog .p-dialog-content{
+  background-color: var(--surface-b);
+}
 .menu-bar{
   padding: 0.5rem 1rem;
   background-color: var(--surface-a);
@@ -41,3 +47,20 @@
   color: var(--text-color);
 }
 
+
+.unused{
+  background-color:var(--unused);
+  color:var(--unused-text);
+}
+.correct{
+  background-color:var(--correct);
+  color:var(--correct-text);
+}
+.present{
+  background-color:var(--present);
+  color:var(--present-text);
+}
+.unknown{
+  background-color: var(--unknown);
+  color: var(--unknown-text);
+}

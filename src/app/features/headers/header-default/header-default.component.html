@@ -1,13 +1,95 @@
 <div class="menu-bar">
   <div style="display: flex">
-    <div style="width: 20%"></div>
+    <div style="width: 20%">
+      <button class="p-button-rounded p-button-text" style="font-size: 2rem" pButton icon="fa fa-circle-question" (click)="displayHelp()" (close)="howToClosed()"></button>
+    </div>
     <div style="width: 60%; margin-inline: auto; text-align: center">
       <span class="text-5xl" >
         Multiplayer Word Game
       </span>
     </div>
     <div class="flex justify-content-end" style="width: 20%">
-      <button class="p-button-rounded p-button-text" pButton icon="fa fa-solid fa-moon" (click)="toggleViewMode()"></button>
+      <button class="p-button-rounded p-button-text" style="font-size: 2rem" pButton icon="fa fa-solid fa-moon" (click)="toggleViewMode()"></button>
     </div>
   </div>
 </div>
+<p-dialog header="How To Play" [breakpoints]="{'500px': '100vw'}" [(visible)]="displayHowTo" [modal]="true" [style]="{width: '500px'}"
+          [draggable]="false" [resizable]="false" (onHide)="howToClosed()">
+  <div style="border-bottom: 1px solid gray" class="mb-4">
+    <div class="mb-2">
+      <span>You must guess the word in six tries.</span>
+    </div>
+    <div class="mb-2">
+      <span>Every guess must be a valid word in our word list.</span>
+    </div>
+    <div class="mb-2">
+      <span>After every guess, the tiles will change colors depending on their correctness.</span>
+    </div>
+  </div>
+  <div style="border-bottom: 1px solid gray">
+    <div class="mb-3 text-xl">
+      <span>Examples</span>
+    </div>
+    <div class="mb-2" style="display: flex; position: relative; font-weight: bold; font-size: 1.5rem">
+      <div class="correct mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">C</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">R</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">U</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">D</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">E</span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <span>The letter C is in the word and in the correct spot</span>
+    </div>
+    <div class="mb-2" style="display: flex; position: relative; font-weight: bold; font-size: 1.5rem">
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">S</span>
+      </div>
+      <div class="present mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">P</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">I</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">N</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">E</span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <span>The letter P is in the word and in the correct spot</span>
+    </div>
+    <div class="mb-2" style="display: flex; position: relative; font-weight: bold; font-size: 1.5rem">
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">I</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">R</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">A</span>
+      </div>
+      <div class="unused mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">T</span>
+      </div>
+      <div class="unknown mr-2" style="position: relative; width: 40px; height: 40px; border: 2px solid var(--surface-400); border-radius: 40px;">
+        <span style="position: absolute; top: calc(50% - 13.5px); width: 100%; text-align: center">E</span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <span>The letter T is not in the word</span>
+    </div>
+  </div>
+</p-dialog>
+
