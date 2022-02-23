@@ -13,8 +13,14 @@ export class WordBoardComponent implements OnInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     this.handleKeyPress(event.key);
   }
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.width = event.target.innerWidth;
+    this.height = event.target.innerHeight;
+  }
 
-
+  width: any
+  height: any;
   gameState: any;
   guesses: any[] = []
   guessResults: any[] = []
@@ -169,5 +175,13 @@ export class WordBoardComponent implements OnInit {
       }, 200)
     };
     loop();
+  }
+  getWidth(id: string){
+    // @ts-ignore
+    return document.getElementById(id).getBoundingClientRect().width
+  }
+  getHeight(id: string){
+    // @ts-ignore
+    return document.getElementById(id).getBoundingClientRect().height
   }
 }

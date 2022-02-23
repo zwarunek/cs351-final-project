@@ -143,9 +143,8 @@ button:last-of-type{
   {
     width: 90%;
   }
-  .title{
+  .tile{
     font-size: 3rem;
-    line-height: 3rem;
   }
 }
 @media (max-width: 540px) {
@@ -153,9 +152,8 @@ button:last-of-type{
   {
     width: 70%;
   }
-  .title{
+  .tile{
     font-size: 2rem;
-    line-height: 2rem;
   }
 }
 @media (max-width: 400px) {
@@ -163,9 +161,8 @@ button:last-of-type{
   {
     width: 70%;
   }
-  .title{
+  .tile{
     font-size: 1.5rem;
-    line-height: 1.5rem;
   }
 }
 .box {
@@ -192,4 +189,20 @@ button:last-of-type{
   font-size: 1.5rem;
   top: calc(50% - 0.75rem);
   cursor: pointer
+}
+.tile{
+  height: 100%;
+  margin-right: 7px;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  vertical-align: middle;
+  text-transform: uppercase;
+  user-select: none;
+  border: 2px solid var(--surface-400);
+  border-radius: 80px;
+  position: relative;
+}
+.tile:last-child{
+  margin-right: 0;
 }
