@@ -1,6 +1,7 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, Renderer2} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {MessageService} from "primeng/api";
+import * as confetti from 'canvas-confetti';
 
 
 @Component({
@@ -36,7 +37,10 @@ export class WordBoardComponent implements OnInit {
   keyboardKeys: any[];
   word: string = '';
   guessedWords: any[] = [];
-  constructor(public http: HttpClient, private messageService: MessageService) {
+  constructor(public http: HttpClient,
+              private messageService: MessageService,
+              private renderer2: Renderer2,
+              private elementRef: ElementRef) {
     http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
     .subscribe(data => {
       this.wordlistAnswers = data.split(/\r?\n/);
@@ -89,6 +93,7 @@ export class WordBoardComponent implements OnInit {
           if(guess === this.word)
             setTimeout(() => {
               this.gameState = 'won';
+              this.showWin();
             }, 1500)
           else if(this.currentGuess === this.numberOfGuesses)
             setTimeout(() => {
@@ -161,12 +166,43 @@ export class WordBoardComponent implements OnInit {
   reload() {
     location.reload();
   }
+  showWin(){
+    let i = 0;
+    const loop = () => {
+      setTimeout( () => {
+        // @ts-ignore
+        document.getElementById('board-tile-'+(this.currentGuess-1)+'-'+i).classList.add('game-won');
+        if(i < this.letters){
+          i++
+          loop();
+        }
+      }, 100)
+    };
+    loop();
+    const canvas = this.renderer2.createElement('canvas');
 
+    this.renderer2.appendChild(this.elementRef.nativeElement, canvas);
+
+    const myConfetti = confetti.create(canvas, {
+      resize: true // will fit all screen sizes
+    });
+
+    myConfetti({
+      particleCount: 100,
+      // spread: 360,
+      angle: 90,
+      startVelocity: 30,
+      colors: [this.readProperty('primary-color'), this.readProperty('secondary-color')],
+      shapes: ['square'],
+    });
+  }
   displayResults(guess: any, results: string[]) {
     let i = 0;
     const loop = () => {
       setTimeout( () => {
         this.guessResults[this.currentGuess-1][i] = results[i]
+        if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'unknown'
+          || (this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'present' && results[i] === 'correct'))
         this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = results[i]
         if(i < results.length){
           i++
@@ -183,5 +219,9 @@ export class WordBoardComponent implements OnInit {
   getHeight(id: string){
     // @ts-ignore
     return document.getElementById(id).getBoundingClientRect().height
+  }
+  readProperty(name: string): string {
+    let bodyStyles = window.getComputedStyle(document.body);
+    return bodyStyles.getPropertyValue('--' + name);
   }
 }

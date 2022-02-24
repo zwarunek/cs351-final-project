@@ -69,6 +69,29 @@
     transform: scale(0, 0);
   }
 }
+.game-won{
+  animation-name: win-animation;
+  animation-duration: 600ms;
+}
+@keyframes win-animation {
+
+  0% {
+    transform: translate(0, 0);
+    z-index: 999;
+  }
+  33.0% {
+    transform: translate(0, -30px);
+    z-index: 999;
+  }
+  66.0% {
+    transform: translate(0, 20px);
+    z-index: 999;
+  }
+  100%{
+    transform: translate(0, 0);
+    z-index: 999;
+  }
+}
 .letter-button{
   font-family: inherit;
   font-weight: bold;
@@ -138,31 +161,56 @@ button:last-of-type{
   margin-bottom: 5px;
   padding-top: 10px;
 }
-@media (min-width: 540px) {
-  .board
+@media (min-width: 640px) {
+  .board-container
   {
-    width: 80%;
+    width: 100%;
   }
   .tile{
     font-size: 3rem;
   }
+  .dict-icon{
+    font-size: 3rem;
+    top: calc(50% - 1.5rem);
+  }
 }
-@media (max-width: 540px) {
-  .board
+@media (max-width: 640px) {
+  .board-container
   {
-    width: 70%;
+    width: 75%;
   }
   .tile{
     font-size: 2rem;
   }
+  .dict-icon{
+    font-size: 2rem;
+    top: calc(50% - 1rem);
+  }
 }
 @media (max-width: 400px) {
-  .board
+  .board-container
   {
     width: 70%;
   }
   .tile{
     font-size: 1.5rem;
+  }
+  .dict-icon{
+    font-size: 1.5rem;
+    top: calc(50% - .75rem);
+  }
+}
+@media (max-width: 250px) {
+  .board-container
+  {
+    width: 70%;
+  }
+  .tile{
+    font-size: 1rem;
+  }
+  .dict-icon{
+    font-size: 1rem;
+    top: calc(50% - 0.5rem);
   }
 }
 .box {
@@ -205,4 +253,10 @@ button:last-of-type{
 }
 .tile:last-child{
   margin-right: 0;
+}
+canvas {
+  height: 100%; /* we need these for full-screen effect */
+  width: 100%;
+  top: 0;
+  position: absolute;
 }
