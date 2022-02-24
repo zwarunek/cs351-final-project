@@ -16,7 +16,10 @@
        [ngStyle]="{'max-width': 'calc(((' + getHeight('board-container') + 'px - 7px * ('+numberOfGuesses+' - 1)) / '+numberOfGuesses+') * '+letters+' + 7px * ('+letters+' - 1) - 20px)'}">
     <div class="fle w-full flex-column" style="position: relative;"
          [ngStyle]="{'height': 'calc(((' + getWidth('board-container') + 'px - 7px * ('+letters+' - 1)) / '+letters+') * '+numberOfGuesses+' + 7px * ('+numberOfGuesses+' - 1))'}">
-      <div id="board-row-{{row}}" *ngFor="let rowGuess of guesses; let row = index" class="flex w-full mb-2" style="height: calc((100%  - 7px * 5) / 6)">
+      <div id="board-row-{{row}}" *ngFor="let rowGuess of guesses; let row = index" class="relative flex w-full mb-2" style="height: calc((100%  - 7px * 5) / 6)">
+        <i class="fa-solid fa-book" *ngIf="currentGuess > row"
+           style="position: absolute; left: 105%; font-size: 2rem; top: calc(50% - 0.75rem); cursor: pointer"
+           (click)="getDefinition(guessedWords[row])"></i>
         <div class="tile" style="width: calc((100%  - 7px * 4) / 5)" [ngClass]="{
                 'present': guessResults[row][col] === 'present',
                 'correct': guessResults[row][col] === 'correct',
