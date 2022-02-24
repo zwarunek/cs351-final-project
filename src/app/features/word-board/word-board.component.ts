@@ -10,6 +10,7 @@ import * as confetti from 'canvas-confetti';
   styleUrls: ['./word-board.component.scss']
 })
 export class WordBoardComponent implements OnInit {
+  private myConfetti: any;
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     this.handleKeyPress(event.key);
@@ -37,6 +38,7 @@ export class WordBoardComponent implements OnInit {
   keyboardKeys: any[];
   word: string = '';
   guessedWords: any[] = [];
+  gameStateForInput: any;
   constructor(public http: HttpClient,
               private messageService: MessageService,
               private renderer2: Renderer2,
@@ -76,10 +78,11 @@ export class WordBoardComponent implements OnInit {
     ];
     this.allowedChars = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
     this.gameState = 'playing';
+    this.gameStateForInput = 'playing';
   }
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
-    if(this.allowedChars.includes(this.key) && this.gameState === 'playing') {
+    if(this.allowedChars.includes(this.key) && this.gameStateForInput === 'playing') {
       let rowElement = document.getElementById('board-row-'+this.currentGuess);
 
       if (this.key === 'enter') {
@@ -90,15 +93,19 @@ export class WordBoardComponent implements OnInit {
           this.guessedWords.push(guess);
           let results = this.checkWord(guess, this.word);
           this.displayResults(guess, results);
-          if(guess === this.word)
+          if(guess === this.word) {
+            this.gameStateForInput = 'not playing';
             setTimeout(() => {
               this.gameState = 'won';
               this.showWin();
             }, 1500)
-          else if(this.currentGuess === this.numberOfGuesses)
+          }
+          else if(this.currentGuess === this.numberOfGuesses) {
+            this.gameStateForInput = 'not playing';
             setTimeout(() => {
               this.gameState = 'lost';
             }, 1500)
+          }
         }
         else{
           if(rowElement) {
@@ -125,7 +132,7 @@ export class WordBoardComponent implements OnInit {
         }
 
       }
-    }else{
+    }else if(this.gameState !== 'playing'){
       if (this.key === 'enter'){
         this.reload();
       }
@@ -133,6 +140,13 @@ export class WordBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const canvas = this.renderer2.createElement('canvas');
+
+    this.renderer2.appendChild(this.elementRef.nativeElement, canvas);
+
+    this.myConfetti = confetti.create(canvas, {
+      resize: true // will fit all screen sizes
+    });
   }
 
   checkWord(guess: string, word:string){
@@ -172,29 +186,39 @@ export class WordBoardComponent implements OnInit {
       setTimeout( () => {
         // @ts-ignore
         document.getElementById('board-tile-'+(this.currentGuess-1)+'-'+i).classList.add('game-won');
+        i++
         if(i < this.letters){
-          i++
           loop();
         }
       }, 100)
     };
     loop();
-    const canvas = this.renderer2.createElement('canvas');
+    setTimeout(() => {
 
-    this.renderer2.appendChild(this.elementRef.nativeElement, canvas);
-
-    const myConfetti = confetti.create(canvas, {
-      resize: true // will fit all screen sizes
-    });
-
-    myConfetti({
-      particleCount: 100,
-      // spread: 360,
-      angle: 90,
-      startVelocity: 30,
-      colors: [this.readProperty('primary-color'), this.readProperty('secondary-color')],
-      shapes: ['square'],
-    });
+      this.fire(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
+      this.fire(0.2, {
+        spread: 60,
+      });
+      this.fire(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+      });
+      this.fire(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+      });
+      this.fire(0.1, {
+        spread: 120,
+        startVelocity: 45,
+      });
+    }, 200*this.letters)
+    // confetti(Object.assign({}, {origin: { y: 0.7}}, {spread: 26,startVelocity: 55}, {particleCount: Math.floor(200 * .25)}))
   }
   displayResults(guess: any, results: string[]) {
     let i = 0;
@@ -223,5 +247,20 @@ export class WordBoardComponent implements OnInit {
   readProperty(name: string): string {
     let bodyStyles = window.getComputedStyle(document.body);
     return bodyStyles.getPropertyValue('--' + name);
+  }
+  randomInRange(min: number, max: number) {
+    return Math.random() * (max - min) + min;
+  }
+  fire(particleRatio: number, opts: { spread?: number; startVelocity?: number; decay?: number; scalar?: number; }) {
+    this.myConfetti({
+      colors: [this.readProperty('primary-color'), this.readProperty('secondary-color')],
+      angle: this.randomInRange(75, 105),
+      particleCount: (200 * particleRatio),
+      origin: { y: 0.8 },
+      spread: opts.spread,
+      startVelocity: opts.startVelocity,
+      scalar: opts.scalar,
+      decay: opts.decay
+    });
   }
 }
