@@ -11,10 +11,12 @@ export class JoinLobbyComponent implements OnInit {
   lobbyPinInput: string = '';
   nicknameInput: string = '';
 
-  constructor(public socket: SocketService) { }
+  constructor(public socket: SocketService) {
+  }
 
   ngOnInit(): void {
     // this.socket.connect();
+    this.socket.getJoined().subscribe((message: any) => console.log(message))
   }
 
   createLobby(){
@@ -22,7 +24,6 @@ export class JoinLobbyComponent implements OnInit {
   }
   joinLobby(){
     this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput);
-    this.socket.getJoined().subscribe((message: any) => console.log(message))
 
   }
 

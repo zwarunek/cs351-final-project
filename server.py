@@ -41,14 +41,13 @@ def joinRoom(data):
     global clients
     clients += 1
     print(session['nickname'])
-    print(session['uuid'])
     print(session['room'])
     join_room(session['room'])
 
     #
     # # emit to the first client that joined the room
     # emit('status', {'msg': session.get('name') + ' has entered the room.'}, room=clientList[0])
-    emit('joined', {'msg': session['nickname'] + ' has entered the room ' + str(session['room']) + '.'}, room=session['room'])
+    emit('joined', {'sid': session['sid']}, room=session['room'])
 
 
 # Read data from client

@@ -19,7 +19,7 @@ export class SocketService {
   }
 
   public joinLobby(nickname: any, pin: any){
-    this.socket.emit('connect2', {
+    this.socket.emit('join-room', {
       'nickname': nickname,
       'room': pin
     });
