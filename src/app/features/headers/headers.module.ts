@@ -7,6 +7,7 @@ import {AvatarModule} from "primeng/avatar";
 import {MenuModule} from "primeng/menu";
 import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
+import {DialogModule} from "primeng/dialog";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {RippleModule} from "primeng/ripple";
     AvatarModule,
     MenuModule,
     ButtonModule,
-    RippleModule
+    RippleModule,
+    DialogModule
   ]
 })
 export class HeadersModule { }
