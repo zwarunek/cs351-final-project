@@ -2,6 +2,7 @@ import {Component, ElementRef, HostListener, OnInit, Renderer2} from '@angular/c
 import {HttpClient} from "@angular/common/http";
 import {MessageService} from "primeng/api";
 import * as confetti from 'canvas-confetti';
+import {environment} from "@environment/environment";
 
 
 @Component({
@@ -47,7 +48,8 @@ export class WordBoardComponent implements OnInit {
     .subscribe(data => {
       this.wordlistAnswers = data.split(/\r?\n/);
       this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
-      console.log(this.word);
+      if(environment.env === 'DEV')
+        console.log(this.word);
     });
     http.get('assets/wordlists/5-letter.txt', { responseType: 'text' })
     .subscribe(data => {
@@ -211,19 +213,19 @@ export class WordBoardComponent implements OnInit {
   }
   displayResults(guess: any, results: string[]) {
     let i = 0;
-    const loop = () => {
+    const loop = (currentGuess: number) => {
       setTimeout( () => {
-        this.guessResults[this.currentGuess-1][i] = results[i]
+        this.guessResults[currentGuess][i] = results[i]
         if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'unknown'
           || (this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'present' && results[i] === 'correct'))
         this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = results[i]
         if(i < results.length){
           i++
-          loop();
+          loop(currentGuess);
         }
       }, 200)
     };
-    loop();
+    loop(this.currentGuess-1);
   }
   getWidth(id: string){
     // @ts-ignore
