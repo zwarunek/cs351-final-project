@@ -376,6 +376,9 @@ Awesome, nor vice versa. **Please do not use brand logos for any purpose except
 to represent the company, product, or service to which they refer.**
 
 
+angular-google-tag-manager
+MIT
+
 canvas-confetti
 ISC
 ISC License
