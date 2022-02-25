@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Socket } from 'ngx-socket-io';
+import {Socket, SocketIoConfig} from 'ngx-socket-io';
 import {map} from "rxjs/operators";
 import {Observable} from "rxjs";
 import { v4 as uuid } from 'uuid';
@@ -10,12 +10,14 @@ import { v4 as uuid } from 'uuid';
 })
 export class SocketService {
 
-  // private socket: SocketIOClient.Socket;
+  private socket: any;
   // private messages: Array<any>;
-  constructor(private socket: Socket) {
-    this.socket.emit('set-client', {
-      'uuid': uuid()
-    });
+  constructor() {
+    const socketIoConfig: SocketIoConfig = {  url: 'http://127.0.0.1:5000', options: {}  };
+    this.socket = new Socket(socketIoConfig);
+    // this.socket.emit('set-client', {
+    //   'uuid': uuid()
+    // });
   }
 
   public joinLobby(nickname: any, pin: any){
