@@ -47,21 +47,48 @@ export class WordBoardComponent implements OnInit {
               private renderer2: Renderer2,
               private elementRef: ElementRef,
               private gtmService: GoogleTagManagerService,) {
+    this.keyboardKeys = [
+      "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"
+    ];
+    this.allowedChars = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
+
+    if(localStorage.getItem('gameState') === null)
+      this.initGameBoard();
+    else
+      this.loadGameBoard();
     http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
     .subscribe(data => {
       this.wordlistAnswers = data.split(/\r?\n/);
-      this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
-      if (environment.env === 'DEV')
-        console.log(this.word);
+      if(this.word === undefined) {
+        this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
+        this.saveGameState();
+        if (environment.env === 'DEV')
+          console.log(this.word);
+      }
     });
     http.get('assets/wordlists/5-letter.txt', { responseType: 'text' })
     .subscribe(data => {
       this.wordlistGuesses = data.split(/\r?\n/);
     });
-    this.initGameBoard();
+  }
+  loadGameBoard(){
+    // @ts-ignore
+    let data = JSON.parse(localStorage.getItem('gameState'));
+    this.word = data.word;
+    this.guessResults = data.guessResults;
+    this.guesses = data.guesses;
+    this.keyboardResults = data.keyboardResults;
+    this.gameStateForInput = data.gameState;
+    this.gameState = data.gameState;
+    this.currentGuess = data.currentGuess;
+    this.currentGuessChars = data.currentGuessChars;
+    this.guessedWords = data.guessedWords;
+    if (environment.env === 'DEV')
+      console.log(this.word);
+
   }
   initGameBoard(){
-    if(this.wordlistAnswers !== []) {
+    if(this.wordlistAnswers.length !== 0) {
       this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
       if (environment.env === 'DEV')
         console.log(this.word);
@@ -72,10 +99,6 @@ export class WordBoardComponent implements OnInit {
     this.keyboardResults = [
       "unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown", "unknown","unknown","unknown","unknown","unknown","unknown","unknown"
     ];
-    this.keyboardKeys = [
-      "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"
-    ];
-    this.allowedChars = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
     this.gameState = 'playing';
     this.gameStateForInput = 'playing';
     this.currentGuess = 0;
@@ -99,7 +122,7 @@ export class WordBoardComponent implements OnInit {
           let results = this.checkWord(guess, this.word);
           this.displayResults(guess, results);
           if(guess === this.word) {
-            this.gameStateForInput = 'not playing';
+            this.gameStateForInput = 'won';
             this.gtmService.pushTag({'event': 'game-won',
               'word': this.word,
               'guesses': this.currentGuess,
@@ -111,8 +134,7 @@ export class WordBoardComponent implements OnInit {
             }, 1500)
           }
           else if(this.currentGuess === this.numberOfGuesses) {
-            this.gameStateForInput = 'not playing';
-
+            this.gameStateForInput = 'lost';
             this.gtmService.pushTag({'event': 'game-lost',
               'word': this.word,
               'letters': this.letters,
@@ -122,11 +144,15 @@ export class WordBoardComponent implements OnInit {
             }, 1500)
           }
           else{
+            this.saveGameState()
             this.gtmService.pushTag({'event': 'guess',
               'guessed-word': guess,
               'word': this.word,
               'letters': this.letters});
           }
+          setTimeout(() => {
+            this.saveGameState()
+          }, 1200)
         }
         else{
           if(rowElement) {
@@ -161,6 +187,7 @@ export class WordBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     const canvas = this.renderer2.createElement('canvas');
@@ -309,5 +336,18 @@ export class WordBoardComponent implements OnInit {
       scalar: opts.scalar,
       decay: opts.decay
     });
+  }
+  saveGameState(){
+    let data = {
+      'word': this.word,
+      'guessResults': this.guessResults,
+      'guesses': this.guesses,
+      'keyboardResults': this.keyboardResults,
+      'gameState': this.gameStateForInput,
+      'currentGuess': this.currentGuess,
+      'currentGuessChars': this.currentGuessChars,
+      'guessedWords': this.guessedWords
+    }
+    localStorage.setItem('gameState', JSON.stringify(data));
   }
 }
