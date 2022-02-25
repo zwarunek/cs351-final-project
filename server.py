@@ -21,7 +21,7 @@ clientList = {}
 
 @socketio.on('connect')
 def connect():
-    print('Session ID:', request.sid)
+    print('Session ID:', request.sid, request.args['sessionid'])
     session['sid'] = request.sid
 
 

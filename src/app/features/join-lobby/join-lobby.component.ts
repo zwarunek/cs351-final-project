@@ -14,13 +14,11 @@ export class JoinLobbyComponent implements OnInit {
   nicknameInput: string = '';
 
   constructor(public socket: SocketService, public cookieService: CookieService) {
+
   }
 
   ngOnInit(): void {
-    this.socket.getJoined().subscribe((message: any) => {
-      console.log(Date.now());
-      // this.cookieService.set('sid', message.sid, new Date().getTime())
-    });
+
   }
 
   createLobby(){
@@ -28,6 +26,11 @@ export class JoinLobbyComponent implements OnInit {
   }
   joinLobby(){
     this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput);
+    let joinedSubscription = this.socket.getJoined().subscribe((message: any) => {
+      console.log(message)
+      this.cookieService.set('sid', message.sid, new Date(new Date().getTime() + 10*60000))
+      joinedSubscription.unsubscribe();
+    })
   }
 
 }

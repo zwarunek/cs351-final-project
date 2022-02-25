@@ -1,26 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Socket, SocketIoConfig} from 'ngx-socket-io';
-import {map} from "rxjs/operators";
+import {map, take} from "rxjs/operators";
 import {Observable} from "rxjs";
 import { v4 as uuid } from 'uuid';
+import {CookieService} from "ngx-cookie-service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
-
+  socketIoConfig: any;
   private socket: any;
-  // private messages: Array<any>;
-  constructor() {
-    const socketIoConfig: SocketIoConfig = {  url: 'http://127.0.0.1:5000', options: {}  };
-    this.socket = new Socket(socketIoConfig);
-    // this.socket.emit('set-client', {
-    //   'uuid': uuid()
-    // });
+
+  constructor(public cookieService: CookieService) {
+    let sid = cookieService.get('sid');
+    console.log('sid', sid);
+    // @ts-ignore
+    this.socketIoConfig = {  url: 'http://127.0.0.1:5000', options: {query: "sessionid=" + sid} };
+
   }
 
   public joinLobby(nickname: any, pin: any){
+    this.socket = new Socket(this.socketIoConfig);
     this.socket.emit('join-room', {
       'nickname': nickname,
       'room': pin
