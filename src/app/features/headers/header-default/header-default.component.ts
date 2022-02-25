@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 import {ThemeService} from "@core/services/theme.service";
 import {AppComponent} from "@app/app.component";
+import {GoogleTagManagerService} from "angular-google-tag-manager";
 
 const VIEW_MODE_KEY = "view-mode";
 
@@ -19,7 +20,9 @@ export class HeaderDefaultComponent {
   viewModeIcon: string = 'fa fa-solid fa-sun';
   displayHowTo: boolean = false;
 
-  constructor(private app: AppComponent, public themeService: ThemeService, private http: HttpClient, public router: Router) {
+  constructor(public themeService: ThemeService,
+              public router: Router,
+              private gtmService: GoogleTagManagerService) {
 
 
     let viewMode = localStorage.getItem(VIEW_MODE_KEY);
@@ -42,6 +45,7 @@ export class HeaderDefaultComponent {
       this.viewMode = "dark";
       this.viewModeIcon = 'fa fa-solid fa-sun';
     }
+    this.gtmService.pushTag({'event': 'toggle-light-dark-mode', 'view-mode': this.viewMode});
     localStorage.setItem(VIEW_MODE_KEY, this.viewMode);
     this.themeService.switchTheme(this.viewMode);
   }
@@ -49,6 +53,7 @@ export class HeaderDefaultComponent {
   displayHelp() {
     console.log(this.displayHowTo)
     this.displayHowTo = true;
+    this.gtmService.pushTag({'event': 'display-help'});
   }
 
   howToClosed() {

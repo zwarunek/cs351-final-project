@@ -21,7 +21,8 @@ import {MessageService} from "primeng/api";
     HttpClientModule,
     BrowserAnimationsModule, HeadersModule
   ],
-  providers: [MessageService],
+  providers: [MessageService,
+    {provide: 'googleTagManagerId',  useValue: 'GTM-N6KF3RJ'}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

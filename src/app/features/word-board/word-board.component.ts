@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {MessageService} from "primeng/api";
 import * as confetti from 'canvas-confetti';
 import {environment} from "@environment/environment";
+import {GoogleTagManagerService} from "angular-google-tag-manager";
 
 
 @Component({
@@ -25,53 +26,49 @@ export class WordBoardComponent implements OnInit {
   width: any
   height: any;
   gameState: any;
-  guesses: any[] = []
-  guessResults: any[] = []
+  guesses!: any[];
+  guessResults!: any[];
   key: any;
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
   letters = 5;
   numberOfGuesses = 6;
-  allowedChars:any[];
-  currentGuessChars = 0
-  currentGuess = 0
-  keyboardResults: any[];
-  keyboardKeys: any[];
-  word: string = '';
-  guessedWords: any[] = [];
+  allowedChars!:any[];
+  currentGuessChars!: number;
+  currentGuess!: number;
+  keyboardResults!: any[];
+  keyboardKeys!: any[];
+  word!: string;
+  guessedWords!: any[];
+  startTime: any;
   gameStateForInput: any;
   constructor(public http: HttpClient,
               private messageService: MessageService,
               private renderer2: Renderer2,
-              private elementRef: ElementRef) {
+              private elementRef: ElementRef,
+              private gtmService: GoogleTagManagerService,) {
     http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
     .subscribe(data => {
       this.wordlistAnswers = data.split(/\r?\n/);
       this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
-      if(environment.env === 'DEV')
+      if (environment.env === 'DEV')
         console.log(this.word);
     });
     http.get('assets/wordlists/5-letter.txt', { responseType: 'text' })
     .subscribe(data => {
       this.wordlistGuesses = data.split(/\r?\n/);
     });
-    this.guessResults = [
-      ["unknown","unknown","unknown","unknown","unknown"],
-      ["unknown","unknown","unknown","unknown","unknown"],
-      ["unknown","unknown","unknown","unknown","unknown"],
-      ["unknown","unknown","unknown","unknown","unknown"],
-      ["unknown","unknown","unknown","unknown","unknown"],
-      ["unknown","unknown","unknown","unknown","unknown"],
-    ];
+    this.initGameBoard();
+  }
+  initGameBoard(){
+    if(this.wordlistAnswers !== []) {
+      this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
+      if (environment.env === 'DEV')
+        console.log(this.word);
+    }
+    this.guessResults = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => 'unknown'))
 
-    this.guesses = [
-      ["","","","",""],
-      ["","","","",""],
-      ["","","","",""],
-      ["","","","",""],
-      ["","","","",""],
-      ["","","","",""],
-    ];
+    this.guesses = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => ''))
     this.keyboardResults = [
       "unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown","unknown", "unknown","unknown","unknown","unknown","unknown","unknown","unknown"
     ];
@@ -81,6 +78,9 @@ export class WordBoardComponent implements OnInit {
     this.allowedChars = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
     this.gameState = 'playing';
     this.gameStateForInput = 'playing';
+    this.currentGuess = 0;
+    this.currentGuessChars = 0;
+    this.guessedWords = [];
   }
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
@@ -90,6 +90,9 @@ export class WordBoardComponent implements OnInit {
       if (this.key === 'enter') {
         let guess = this.guesses[this.currentGuess].join("");
         if(guess.length == this.letters && (this.wordlistGuesses.includes(guess) || this.wordlistAnswers.includes(guess))) {
+          if(this.currentGuess===0){
+            this.startTime = Date.now();
+          }
           this.currentGuess++;
           this.currentGuessChars = 0;
           this.guessedWords.push(guess);
@@ -97,6 +100,11 @@ export class WordBoardComponent implements OnInit {
           this.displayResults(guess, results);
           if(guess === this.word) {
             this.gameStateForInput = 'not playing';
+            this.gtmService.pushTag({'event': 'game-won',
+              'word': this.word,
+              'guesses': this.currentGuess,
+              'letters': this.letters,
+              'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
             setTimeout(() => {
               this.gameState = 'won';
               this.showWin();
@@ -104,9 +112,20 @@ export class WordBoardComponent implements OnInit {
           }
           else if(this.currentGuess === this.numberOfGuesses) {
             this.gameStateForInput = 'not playing';
+
+            this.gtmService.pushTag({'event': 'game-lost',
+              'word': this.word,
+              'letters': this.letters,
+              'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
             setTimeout(() => {
               this.gameState = 'lost';
             }, 1500)
+          }
+          else{
+            this.gtmService.pushTag({'event': 'guess',
+              'guessed-word': guess,
+              'word': this.word,
+              'letters': this.letters});
           }
         }
         else{
@@ -136,7 +155,7 @@ export class WordBoardComponent implements OnInit {
       }
     }else if(this.gameState !== 'playing'){
       if (this.key === 'enter'){
-        this.reload();
+        this.playAgain();
       }
     }
   }
@@ -174,15 +193,18 @@ export class WordBoardComponent implements OnInit {
 
   getDefinition(guess: any) {
     this.http.get('https://api.dictionaryapi.dev/api/v2/entries/en/' + guess).subscribe((data: any) => {
+      console.log(data);
       this.messageService.clear();
       this.messageService.add({severity:'custom',key: 'message',  sticky: true, summary: guess.charAt(0).toUpperCase() + guess.slice(1),
         detail: (data[0].meanings[0].partOfSpeech.charAt(0).toUpperCase() + data[0].meanings[0].partOfSpeech.slice(1)).bold()
           +': ' + data[0].meanings[0].definitions[0].definition});
     })
+    this.gtmService.pushTag({'event': 'definition', 'word': this.word,});
   }
 
-  reload() {
-    location.reload();
+  playAgain() {
+    this.initGameBoard();
+    this.gtmService.pushTag({'event': 'play-again'});
   }
   showWin(){
     let i = 0;

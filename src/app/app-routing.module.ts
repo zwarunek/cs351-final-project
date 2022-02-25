@@ -8,12 +8,7 @@ const routes: Routes = [
     path: '',
     loadChildren: () => HomePageModule,
   },
-  {path: '**', redirectTo: ''},
-  // {
-  //   path: '',
-  //   loadChildren: () => import('./pages/under-construction-page/under-construction-page.module').then((m) => m.UnderConstructionPageModule),
-  // },
-  // {path: '**', redirectTo: ''}
+  {path: '**', redirectTo: ''}
 
 ];
 
