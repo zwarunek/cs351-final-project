@@ -83,6 +83,7 @@ export class WordBoardComponent implements OnInit {
     this.currentGuess = data.currentGuess;
     this.currentGuessChars = data.currentGuessChars;
     this.guessedWords = data.guessedWords;
+    this.startTime = data.startTime;
     if (environment.env === 'DEV')
       console.log(this.word);
 
@@ -104,6 +105,8 @@ export class WordBoardComponent implements OnInit {
     this.currentGuess = 0;
     this.currentGuessChars = 0;
     this.guessedWords = [];
+    this.startTime = undefined;
+    this.saveGameState();
   }
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
@@ -346,7 +349,8 @@ export class WordBoardComponent implements OnInit {
       'gameState': this.gameStateForInput,
       'currentGuess': this.currentGuess,
       'currentGuessChars': this.currentGuessChars,
-      'guessedWords': this.guessedWords
+      'guessedWords': this.guessedWords,
+      'startTime': this.startTime
     }
     localStorage.setItem('gameState', JSON.stringify(data));
   }
