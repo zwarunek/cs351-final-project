@@ -13,12 +13,7 @@ const routes: Routes = [
     path: 'join',
     loadChildren: () => JoinLobbyPageModule,
   },
-  {path: '**', redirectTo: ''},
-  // {
-  //   path: '',
-  //   loadChildren: () => import('./pages/under-construction-page/under-construction-page.module').then((m) => m.UnderConstructionPageModule),
-  // },
-  // {path: '**', redirectTo: ''}
+  {path: '**', redirectTo: ''}
 
 ];
 

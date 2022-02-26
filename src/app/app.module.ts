@@ -8,7 +8,6 @@ import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HeadersModule} from "@features/headers/headers.module";
 import {MessageService} from "primeng/api";
-import {SocketIoModule} from "ngx-socket-io";
 import {CookieService} from "ngx-cookie-service";
 
 
@@ -21,12 +20,12 @@ import {CookieService} from "ngx-cookie-service";
     AppRoutingModule,
     ProgressSpinnerModule,
     HttpClientModule,
-    BrowserAnimationsModule, HeadersModule,
-    //@ts-ignore
-    // SocketIoModule.forRoot({ url: 'http://127.0.0.1:5000', options: {withCredentials: true} })
+    BrowserAnimationsModule,
+    HeadersModule,
 
   ],
-  providers: [MessageService, CookieService],
+  providers: [MessageService, CookieService,
+    {provide: 'googleTagManagerId',  useValue: 'GTM-N6KF3RJ'}],
   bootstrap: [AppComponent]
 })
 export class AppModule {
