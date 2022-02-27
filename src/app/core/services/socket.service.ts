@@ -5,24 +5,18 @@ import {map, take} from "rxjs/operators";
 import {Observable} from "rxjs";
 import { v4 as uuid } from 'uuid';
 import {CookieService} from "ngx-cookie-service";
+import {GameSocket} from "@app/app.module";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
   socketIoConfig: any;
-  private socket: any;
 
-  constructor(public cookieService: CookieService) {
-    let sid = cookieService.get('sid');
-    console.log('sid', sid);
-    // @ts-ignore
-    this.socketIoConfig = {  url: 'http://127.0.0.1:5000', options: {query: "sessionid=" + sid} };
-
+  constructor(public cookieService: CookieService, public socket: GameSocket) {
   }
 
   public joinLobby(nickname: any, pin: any){
-    this.socket = new Socket(this.socketIoConfig);
     this.socket.emit('join-room', {
       'nickname': nickname,
       'room': pin

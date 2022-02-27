@@ -28,7 +28,6 @@ export class JoinLobbyComponent implements OnInit {
     this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput);
     let joinedSubscription = this.socket.getJoined().subscribe((message: any) => {
       console.log(message)
-      this.cookieService.set('sid', message.sid, new Date(new Date().getTime() + 10*60000))
       joinedSubscription.unsubscribe();
     })
   }
