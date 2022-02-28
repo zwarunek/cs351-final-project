@@ -14,7 +14,7 @@ thread = None
 clients = 0
 log = logging.getLogger('werkzeug')
 log.disabled = True
-clientList = {}
+clientList = []
 
 
 @app.before_first_request
@@ -34,7 +34,7 @@ def connect():
     clientuuid = request.args['uuid']
     if clientuuid == '' or clientuuid not in clientList:
         clientuuid = str(uuid.uuid4())
-        clientList[clientuuid] = {'uuid': clientuuid}
+        clientList.append({'uuid': clientuuid})
         print('new user uuid:', clientuuid)
     clientList[clientuuid]['timestamp'] = time.time()
     session['client'] = clientList[clientuuid]
