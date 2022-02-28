@@ -17,21 +17,20 @@ export class SocketService {
   }
 
   public joinLobby(nickname: any, pin: any){
-    this.socket.emit('join-room', {
-      'nickname': nickname,
-      'room': pin
-    });
+    console.log('joining...')
+    this.socket.emit('join-room');
   }
 
-  public getJoined() {
-    return this.socket.fromEvent('joined');
+  public getJoined(func: any) {
+    this.socket.on('joined', func);
   }
 
   public getMessages (){
     this.socket.emit('new-message-s');
-    this.socket.once('message', (message: any) => {
-      console.log(message);
-    });
+
+    // this.socket.once('message', (message: any) => {
+    //   console.log(message);
+    // });
   }
 
   public sendMessage(message: any) {

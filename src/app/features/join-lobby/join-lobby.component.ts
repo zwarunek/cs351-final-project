@@ -14,7 +14,7 @@ export class JoinLobbyComponent implements OnInit {
   nicknameInput: string = '';
 
   constructor(public socket: SocketService, public cookieService: CookieService) {
-
+    socket.getJoined(this.onJoin)
   }
 
   ngOnInit(): void {
@@ -26,10 +26,13 @@ export class JoinLobbyComponent implements OnInit {
   }
   joinLobby(){
     this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput);
-    let joinedSubscription = this.socket.getJoined().subscribe((message: any) => {
-      console.log(message)
-      joinedSubscription.unsubscribe();
-    })
+    // this.socket.getMessages()
+    // let joinedSubscription = this.socket.getJoined().subscribe((message: any) => {
+    //   console.log(message)
+    //   joinedSubscription.unsubscribe();
+    // })
   }
-
+  onJoin(){
+    console.log('here')
+  }
 }

@@ -16,18 +16,16 @@ log.disabled = True
 clientList = {}
 
 
+
 @app.before_first_request
 def testLoop():
     def run_job():
         global clientList
         while True:
             time.sleep(60)
-            print("looking for clients to delete...")
             for key in list(clientList.keys()):
                 if time.time() - clientList[key]['timestamp'] > 600 and clientList[key]['status'] == 'disconnected':
-                    print('deleting', key)
                     del clientList[key]
-            print(clientList)
 
     thread1 = threading.Thread(target=run_job)
     thread1.start()
@@ -39,29 +37,26 @@ def connect():
     if clientuuid == '' or clientuuid not in clientList:
         clientuuid = str(uuid.uuid4())
         clientList[clientuuid] = {}
-        print('new user uuid:', clientuuid)
+    print('Client connected:', clientuuid)
     clientList[clientuuid]['timestamp'] = time.time()
     clientList[clientuuid]['status'] = 'connected'
     clientList[clientuuid]['uuid'] = clientuuid
     session['client'] = clientList[clientuuid]
-    emit('set-uuid', {'uuid': clientuuid})
 
 
 @socketio.on('join-room')
 def joinRoom(data):
-    session['room'] = data['room']
-    session['nickname'] = data['nickname']
-
-    global clients
-    clients += 1
-    print(session['nickname'])
-    print(session['room'])
-    join_room(session['room'])
+    print('in here')
+    # session['room'] = data['room']
+    # session['nickname'] = data['nickname']
+    #
+    # print(session['nickname'])
+    # print(session['room'])
 
     #
     # # emit to the first client that joined the room
     # emit('status', {'msg': session.get('name') + ' has entered the room.'}, room=clientList[0])
-    emit('joined', {'sid': session['sid']}, room=session['room'])
+    # emit('joined', {'uuid': session['client']['uuid']})
 
 
 # Read data from client
