@@ -18,7 +18,6 @@ export class GameSocket extends Socket{
     // @ts-ignore
     super({  url: 'http://127.0.0.1:5000', options: {query: "uuid=" + cookieService.get('uuid')} });
     this.on('set-uuid',(msg: any)=>{
-      console.log('hello')
       cookieService.set('uuid', msg.uuid, new Date(new Date().getTime() + 10*60000))
     });
   }

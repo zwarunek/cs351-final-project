@@ -6,6 +6,7 @@ import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
 import {RippleModule} from "primeng/ripple";
 import {FormsModule} from "@angular/forms";
+import {InputNumberModule} from "primeng/inputnumber";
 
 
 
@@ -16,13 +17,14 @@ import {FormsModule} from "@angular/forms";
   exports: [
     JoinLobbyComponent
   ],
-  imports: [
-    CommonModule,
-    ToolbarModule,
-    ButtonModule,
-    InputTextModule,
-    RippleModule,
-    FormsModule
-  ]
+    imports: [
+        CommonModule,
+        ToolbarModule,
+        ButtonModule,
+        InputTextModule,
+        RippleModule,
+        FormsModule,
+        InputNumberModule
+    ]
 })
 export class JoinLobbyModule { }

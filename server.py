@@ -1,19 +1,23 @@
 import logging
+import random
 import threading
 import time
 
+import mpmath
 from flask import Flask, session, request
 from flask_socketio import SocketIO, emit, join_room
 import uuid
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app)
+socketio.init_app(app, cors_allowed_origins="*")
 thread = None
 clients = 0
 log = logging.getLogger('werkzeug')
 log.disabled = True
 clientList = {}
+rooms = {}
 
 
 
@@ -34,31 +38,47 @@ def testLoop():
 @socketio.on('connect')
 def connect():
     clientuuid = request.args['uuid']
-    if clientuuid == '' or clientuuid not in clientList:
+    if clientuuid == '' or clientuuid not in clientList.keys() or clientList[clientuuid]['status'] == 'connected':
         clientuuid = str(uuid.uuid4())
         clientList[clientuuid] = {}
-    print('Client connected:', clientuuid)
+        print('NEW Client connected:', clientuuid)
+    else:
+        print('Client connected:', clientuuid)
     clientList[clientuuid]['timestamp'] = time.time()
     clientList[clientuuid]['status'] = 'connected'
     clientList[clientuuid]['uuid'] = clientuuid
     session['client'] = clientList[clientuuid]
 
+    emit('set-uuid', {'uuid': clientuuid})
 
 @socketio.on('join-room')
 def joinRoom(data):
-    session['client']['room'] = data['room']
+    if data['room'] in rooms.keys():
+        session['client']['room'] = data['room']
+        session['client']['nickname'] = data['nickname']
+        rooms[data['room']]['players'].append(session['client'])
+        join_room(session['client']['room'])
+        emit('joined', {'msg': session['client']['nickname'] + ' joined room ' + session['client']['room']}, room=session['client']['room'])
+    else:
+        emit('room-not-found')
+
+
+@socketio.on('create-room')
+def createRoom(data):
     session['client']['nickname'] = data['nickname']
-    print(session['client']['room'])
-    print(session['client']['nickname'])
-    join_room(session['client']['room'])
-    emit('joined', {'msg': session['client']['nickname'] + ' joined room ' + session['client']['room']}, room=session['client']['room'])
+    pin = random.randint(1111, 9999)
+    while pin in rooms.keys():
+        pin = random.randint(1111, 9999)
+    session['client']['nickname'] = pin
+    rooms[pin] = {'players': [session['client']]}
+    join_room(pin)
+    emit('created-room', {'msg': 'Created lobby with pin ' + str(pin)}, room=pin)
 
 
 # Read data from client
-@socketio.on('new-message')
-def handle_message(message):
-    print('received message:', message)
-    send_data()
+@socketio.on('get-room-info')
+def getRoomInfo():
+    socketio.emit('room-data', rooms[session['client']['room']])
 
 
 # Send data to client
@@ -70,11 +90,12 @@ def send_data():
 
 @socketio.on('disconnect')
 def disconnect():
+    # emit('player-left', {'msg': session['client']['nickname'] + ' has left the lobby'}, room=session['client']['room'])
+    # rooms[session['client']['room']]['players'].pop(rooms[session['client']['room']]['players'].indexOf(session['client']))
     session['client']['status'] = 'disconnected'
-    print(session['client'])
-    print('Client disconnected')
+    print('Client disconnected', clientList[session['client']['uuid']])
 
 
 if __name__ == "__main__":
     testLoop()
-    app.run()
+    socketio.run(app)

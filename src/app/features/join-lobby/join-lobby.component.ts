@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
 })
 export class JoinLobbyComponent implements OnInit {
 
-  lobbyPinInput: string = '';
+  lobbyPinInput: any;
   nicknameInput: string = '';
 
   constructor(public socket: SocketService, public cookieService: CookieService, public router: Router) {
