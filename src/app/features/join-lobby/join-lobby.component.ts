@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {CookieService} from "ngx-cookie-service";
 import {Socket, SocketIoConfig} from "ngx-socket-io";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-join-lobby',
@@ -13,8 +14,7 @@ export class JoinLobbyComponent implements OnInit {
   lobbyPinInput: string = '';
   nicknameInput: string = '';
 
-  constructor(public socket: SocketService, public cookieService: CookieService) {
-    socket.getJoined(this.onJoin)
+  constructor(public socket: SocketService, public cookieService: CookieService, public router: Router) {
   }
 
   ngOnInit(): void {
@@ -26,8 +26,6 @@ export class JoinLobbyComponent implements OnInit {
   }
   joinLobby(){
     this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput);
-  }
-  onJoin(data: any){
-    console.log(data['msg'])
+    this.router.navigate(['/lobby/' + this.lobbyPinInput]);
   }
 }
