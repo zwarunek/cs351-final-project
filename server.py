@@ -21,7 +21,7 @@ def testLoop():
     def run_job():
         global clientList
         while True:
-            time.sleep(3)
+            time.sleep(60)
             print("looking for clients to delete...")
             for key in list(clientList.keys()):
                 if time.time() - clientList[key]['timestamp'] > 600 and clientList[key]['status'] == 'disconnected':
