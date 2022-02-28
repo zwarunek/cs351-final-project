@@ -17,8 +17,10 @@ export class SocketService {
   }
 
   public joinLobby(nickname: any, pin: any){
-    console.log('joining...')
-    this.socket.emit('join-room');
+    this.socket.emit('join-room', {
+      'nickname': nickname,
+      'room': pin
+    });
   }
 
   public getJoined(func: any) {

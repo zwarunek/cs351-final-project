@@ -46,17 +46,12 @@ def connect():
 
 @socketio.on('join-room')
 def joinRoom(data):
-    print('in here')
-    # session['room'] = data['room']
-    # session['nickname'] = data['nickname']
-    #
-    # print(session['nickname'])
-    # print(session['room'])
-
-    #
-    # # emit to the first client that joined the room
-    # emit('status', {'msg': session.get('name') + ' has entered the room.'}, room=clientList[0])
-    # emit('joined', {'uuid': session['client']['uuid']})
+    session['client']['room'] = data['room']
+    session['client']['nickname'] = data['nickname']
+    print(session['client']['room'])
+    print(session['client']['nickname'])
+    join_room(session['client']['room'])
+    emit('joined', {'msg': session['client']['nickname'] + ' joined room ' + session['client']['room']}, room=session['client']['room'])
 
 
 # Read data from client

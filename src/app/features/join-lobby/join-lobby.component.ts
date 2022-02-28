@@ -26,13 +26,8 @@ export class JoinLobbyComponent implements OnInit {
   }
   joinLobby(){
     this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput);
-    // this.socket.getMessages()
-    // let joinedSubscription = this.socket.getJoined().subscribe((message: any) => {
-    //   console.log(message)
-    //   joinedSubscription.unsubscribe();
-    // })
   }
-  onJoin(){
-    console.log('here')
+  onJoin(data: any){
+    console.log(data['msg'])
   }
 }
