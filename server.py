@@ -4,7 +4,6 @@ import time
 
 from flask import Flask, session, request
 from flask_socketio import SocketIO, emit, join_room
-from flask_script import Manager
 import uuid
 
 app = Flask(__name__)
@@ -14,16 +13,21 @@ thread = None
 clients = 0
 log = logging.getLogger('werkzeug')
 log.disabled = True
-clientList = []
+clientList = {}
 
 
 @app.before_first_request
 def testLoop():
     def run_job():
+        global clientList
         while True:
-            time.sleep(5)
-            print("Run recurring task")
-            {k : v for k, v in clientList.iteritems()}
+            time.sleep(3)
+            print("looking for clients to delete...")
+            for key in list(clientList.keys()):
+                if time.time() - clientList[key]['timestamp'] > 600 and clientList[key]['status'] == 'disconnected':
+                    print('deleting', key)
+                    del clientList[key]
+            print(clientList)
 
     thread1 = threading.Thread(target=run_job)
     thread1.start()
@@ -34,9 +38,11 @@ def connect():
     clientuuid = request.args['uuid']
     if clientuuid == '' or clientuuid not in clientList:
         clientuuid = str(uuid.uuid4())
-        clientList.append({'uuid': clientuuid})
+        clientList[clientuuid] = {}
         print('new user uuid:', clientuuid)
     clientList[clientuuid]['timestamp'] = time.time()
+    clientList[clientuuid]['status'] = 'connected'
+    clientList[clientuuid]['uuid'] = clientuuid
     session['client'] = clientList[clientuuid]
     emit('set-uuid', {'uuid': clientuuid})
 
@@ -73,8 +79,9 @@ def send_data():
 
 
 @socketio.on('disconnect')
-def test_disconnect():
-    print(session['client']['uuid'])
+def disconnect():
+    session['client']['status'] = 'disconnected'
+    print(session['client'])
     print('Client disconnected')
 
 
