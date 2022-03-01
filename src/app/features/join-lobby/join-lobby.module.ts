@@ -7,6 +7,9 @@ import {InputTextModule} from "primeng/inputtext";
 import {RippleModule} from "primeng/ripple";
 import {FormsModule} from "@angular/forms";
 import {InputNumberModule} from "primeng/inputnumber";
+import {ToastModule} from "primeng/toast";
+import {MessagesModule} from "primeng/messages";
+import {MessageModule} from "primeng/message";
 
 
 
@@ -24,7 +27,10 @@ import {InputNumberModule} from "primeng/inputnumber";
         InputTextModule,
         RippleModule,
         FormsModule,
-        InputNumberModule
+        InputNumberModule,
+        ToastModule,
+        MessagesModule,
+        MessageModule
     ]
 })
 export class JoinLobbyModule { }

@@ -15,10 +15,11 @@ import {Socket, SocketIoModule} from "ngx-socket-io";
 @Injectable()
 export class GameSocket extends Socket{
   constructor(cookieService: CookieService) {
+    console.log(cookieService.get('uuid'))
     // @ts-ignore
     super({  url: 'http://127.0.0.1:5000', options: {query: "uuid=" + cookieService.get('uuid')} });
     this.on('set-uuid',(msg: any)=>{
-      cookieService.set('uuid', msg.uuid, new Date(new Date().getTime() + 10*60000))
+      cookieService.set('uuid', msg.uuid, new Date(new Date().getTime() + 10*60000), '/')
     });
   }
 

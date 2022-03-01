@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {Socket, SocketIoConfig} from 'ngx-socket-io';
-import {map, take} from "rxjs/operators";
-import {Observable} from "rxjs";
-import { v4 as uuid } from 'uuid';
 import {CookieService} from "ngx-cookie-service";
 import {GameSocket} from "@app/app.module";
+import {MessageService} from "primeng/api";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +9,7 @@ import {GameSocket} from "@app/app.module";
 export class SocketService {
   socketIoConfig: any;
 
-  constructor(public cookieService: CookieService, public socket: GameSocket) {
+  constructor(public cookieService: CookieService, public socket: GameSocket, public messageService: MessageService) {
   }
 
   public joinLobby(nickname: any, pin: any){
@@ -23,19 +19,29 @@ export class SocketService {
     });
   }
 
-  public getJoined(func: any) {
-    this.socket.on('joined', func);
+  public getJoined() {
+    return this.socket.fromEvent('joined-room');
   }
 
-  public getMessages (){
-    this.socket.emit('new-message-s');
-
-    // this.socket.once('message', (message: any) => {
-    //   console.log(message);
-    // });
+  createLobby(nickname: string) {
+    this.socket.emit('create-room', {
+      'nickname': nickname
+    });
   }
 
-  public sendMessage(message: any) {
-    // this.socket.on('new-message-s');
+  public getCreated() {
+    return this.socket.fromEvent('created-room');
+  }
+
+  public roomInfo() {
+    return this.socket.fromEvent('room-info');
+  }
+
+  public getRoomInfo() {
+    this.socket.emit('get-room-info');
+  }
+
+  public playerLeft() {
+    return this.socket.fromEvent('player-left');
   }
 }
