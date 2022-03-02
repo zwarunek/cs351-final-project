@@ -1,0 +1,22 @@
+.main-container{
+  width: 80%;
+  max-width: 500px;
+  height: 80%;
+  background-color: var(--surface-a);
+  border-radius: 8px;
+}
+.player-in{
+  color: var(--text-color);
+}
+.empty{
+  color: var(--surface-200);
+}
+.player-row{
+  border-bottom: 2px var(--surface-100) solid;
+  display: flex;
+  align-items: center;
+  padding: 14px
+}
+.player-row:first-child{
+  border-top: 2px var(--surface-100) solid;
+}

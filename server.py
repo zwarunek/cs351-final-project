@@ -4,7 +4,7 @@ import threading
 import time
 
 from flask import Flask, session, request
-from flask_socketio import SocketIO, emit, join_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
 
 app = Flask(__name__)
@@ -30,6 +30,9 @@ def testLoop():
                 if time.time() - clientList[key]['timestamp'] > 600 \
                         and clientList[key]['status'] == 'disconnected':
                     del clientList[key]
+            for room in list(rooms.keys()):
+                if rooms[room]['players'] == 0:
+                    del rooms[room]
 
     thread1 = threading.Thread(target=run_job)
     thread1.start()
@@ -49,7 +52,9 @@ def connect():
     else:
         print('connected:', clientuuid)
         if 'room' in clientList[session['uuid']].keys():
-            join_room(clientList[session['uuid']]['room'])
+            joinRoom({'room': clientList[session['uuid']]['room'], 'nickname': clientList[session['uuid']]['nickname']})
+
+
     clientList[clientuuid]['timestamp'] = time.time()
     clientList[clientuuid]['status'] = 'connected'
     clientList[clientuuid]['uuid'] = clientuuid
@@ -65,7 +70,26 @@ def joinRoom(data):
         join_room(data['room'])
         emit('joined-room', {'success': True, 'pin': data['room']}, room=request.sid)
     else:
+        del clientList[session['uuid']]['room']
+        del clientList[session['uuid']]['nickname']
         emit('joined-room', {'success': False}, room=request.sid)
+
+
+@socketio.on('get-client-info')
+def getClientInfo():
+    emit('client-info', clientList[session['uuid']], room=request.sid)
+
+
+@socketio.on('leave-lobby')
+def leaveLobby(data):
+    emit('player-left', clientList[session['uuid']]['nickname'] + ' has left the lobby', room=clientList[session['uuid']]['room'])
+    leave_room(clientList[session['uuid']]['room'])
+    rooms[clientList[session['uuid']]['room']]['players'].remove(session['uuid'])
+    if len(rooms[clientList[session['uuid']]['room']]['players']) != 0:
+        getRoomInfo()
+    if data:
+        del clientList[session['uuid']]['room']
+    print(clientList[session['uuid']])
 
 
 @socketio.on('create-room')
@@ -76,30 +100,29 @@ def createRoom(data):
         pin = random.randint(1111, 9999)
     clientList[session['uuid']]['room'] = pin
     rooms[pin] = {'players': []}
-    data['room'] = pin
-    joinRoom(data)
+    clientList[session['uuid']]['room'] = pin
+    clientList[session['uuid']]['nickname'] = data['nickname']
+    rooms[pin]['players'].append(session['uuid'])
+    join_room(pin)
+    print('Created lobby', pin)
+    # joinRoom(data)
 
 
 # Read data from client
 @socketio.on('get-room-info')
 def getRoomInfo():
-    # print(clientList[session['uuid']])
-    room = rooms[clientList[session['uuid']]['room']]
-    playerList = []
-    for id in room['players']:
-        playerList.append(clientList[id]['nickname'])
-    socketio.emit('room-info', playerList, room=clientList[session['uuid']]['room'])
-
+    if 'room' in clientList[session['uuid']] and clientList[session['uuid']]['room'] in rooms:
+        room = rooms[clientList[session['uuid']]['room']]
+        playerList = []
+        for id in room['players']:
+            playerList.append(clientList[id]['nickname'])
+        socketio.emit('room-info', {'exists': True, 'players': playerList, 'pin': clientList[session['uuid']]['room']}, room=clientList[session['uuid']]['room'])
+    else:
+        socketio.emit('room-info', {'exists': False})
 @socketio.on('disconnect')
 def disconnect():
     if 'room' in clientList[session['uuid']].keys():
-        emit('player-left', clientList[session['uuid']]['nickname'] + ' has left the lobby', room=clientList[session['uuid']]['room'])
-
-        rooms[clientList[session['uuid']]['room']]['players'].remove(session['uuid'])
-        if len(rooms[clientList[session['uuid']]['room']]['players']) == 0:
-            del rooms[clientList[session['uuid']]['room']]
-        else:
-            getRoomInfo()
+        leaveLobby(False)
     clientList[session['uuid']]['status'] = 'disconnected'
     print('disconnected:', session['uuid'])
 

@@ -41,6 +41,18 @@ export class SocketService {
     this.socket.emit('get-room-info');
   }
 
+  public clientInfo() {
+    return this.socket.fromEvent('client-info');
+  }
+
+  public getClientInfo() {
+    this.socket.emit('get-client-info');
+  }
+
+  public leaveLobby(){
+    this.socket.emit('leave-lobby', true);
+  }
+
   public playerLeft() {
     return this.socket.fromEvent('player-left');
   }
