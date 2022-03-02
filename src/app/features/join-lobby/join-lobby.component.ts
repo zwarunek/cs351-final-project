@@ -40,7 +40,7 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit {
   }
   getJoined(data: any){
     if(data.success)
-      this.router.navigate(['/lobby/' + data.pin]);
+      this.router.navigate(['/lobby']);
     else
       this.messageService.add({severity:'error', summary: 'Error', detail: 'Lobby not found'});
   }
