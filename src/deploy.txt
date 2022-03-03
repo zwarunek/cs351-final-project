@@ -1,2 +1,4 @@
 ng build --base-href=/cs351-final-project/
 ng deploy --no-build --cname=https://zwarunek.github.io/cs351-final-project/
+ng build --base-href=/
+ng deploy --no-build --cname=https://cs351.zacharywarunek.com/
