@@ -56,4 +56,8 @@ export class SocketService {
   public playerLeft() {
     return this.socket.fromEvent('player-left');
   }
+
+  public playerJoined() {
+    return this.socket.fromEvent('player-joined');
+  }
 }

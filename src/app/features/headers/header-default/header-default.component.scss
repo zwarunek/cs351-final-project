@@ -64,3 +64,32 @@
   background-color: var(--unknown);
   color: var(--unknown-text);
 }
+.main-text{
+  cursor: pointer;
+  user-select: none;
+}
+.menu-side{
+  width: 15%;
+  min-width: 100px
+}
+.menu-main-text{
+  width: 80%
+}
+@media (min-width: 565px) {
+  .main-text
+  {
+    font-size: 2.5rem;
+  }
+}
+@media (max-width: 565px) {
+  .main-text
+  {
+    font-size: 1.5rem;
+  }
+}
+@media (max-width: 420px) {
+  .main-text
+  {
+    font-size: 1rem;
+  }
+}

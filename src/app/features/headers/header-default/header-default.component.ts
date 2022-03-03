@@ -19,35 +19,36 @@ export class HeaderDefaultComponent {
   viewMode: string = "dark";
   viewModeIcon: string = 'fa fa-solid fa-sun';
   displayHowTo: boolean = false;
+  sidebarVisible = false;
 
   constructor(public themeService: ThemeService,
               public router: Router,
               private gtmService: GoogleTagManagerService) {
 
 
-    let viewMode = localStorage.getItem(VIEW_MODE_KEY);
-    if (viewMode && (viewMode === 'dark' || viewMode === 'light')){
-      this.viewMode = viewMode;
-      this.themeService.switchTheme(this.viewMode);
-    }
-    else{
-      localStorage.setItem(VIEW_MODE_KEY, this.viewMode);
-    }
+    // let viewMode = localStorage.getItem(VIEW_MODE_KEY);
+    // if (viewMode && (viewMode === 'dark' || viewMode === 'light')){
+    //   this.viewMode = viewMode;
+    //   this.themeService.switchTheme(this.viewMode);
+    // }
+    // else{
+    //   localStorage.setItem(VIEW_MODE_KEY, this.viewMode);
+    // }
   }
 
 
   toggleViewMode() {
-    if (this.viewMode === "dark"){
-      this.viewMode = "light";
-      this.viewModeIcon = 'fa fa-solid fa-moon';
-    }
-    else{
-      this.viewMode = "dark";
-      this.viewModeIcon = 'fa fa-solid fa-sun';
-    }
-    this.gtmService.pushTag({'event': 'toggle-light-dark-mode', 'view-mode': this.viewMode});
-    localStorage.setItem(VIEW_MODE_KEY, this.viewMode);
-    this.themeService.switchTheme(this.viewMode);
+    // if (this.viewMode === "dark"){
+    //   this.viewMode = "light";
+    //   this.viewModeIcon = 'fa fa-solid fa-moon';
+    // }
+    // else{
+    //   this.viewMode = "dark";
+    //   this.viewModeIcon = 'fa fa-solid fa-sun';
+    // }
+    // this.gtmService.pushTag({'event': 'toggle-light-dark-mode', 'view-mode': this.viewMode});
+    // localStorage.setItem(VIEW_MODE_KEY, this.viewMode);
+    // this.themeService.switchTheme(this.viewMode);
   }
 
   displayHelp() {
@@ -58,5 +59,8 @@ export class HeaderDefaultComponent {
 
   howToClosed() {
     console.log('hello')
+  }
+  enableSidebar(){
+    this.sidebarVisible = true;
   }
 }

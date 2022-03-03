@@ -1,22 +1,24 @@
 <div class="p-5 mx-auto main-container flex flex-column">
-  <div class="flex-column flex" style="height: 100%">
+  <div class="p-5 h-full flex flex-column" style=" background-color: var(--surface-a); border-radius: 8px;">
+    <div class="flex-column flex" style="height: 100%">
 
-    <div class="w-full mb-3 text-6xl flex justify-content-center" style="color: var(--text-color)">
-      <span class=" h-3rem">{{lobbyPin}}</span>
-    </div>
-    <div class="flex-column flex h-full" style="position:relative;">
-      <div class="h-full w-full text-4xl player-row" [ngClass]="{'player-in': player.occupied,
+      <div class="w-full mb-3 text-6xl flex justify-content-center" style="color: var(--text-color)">
+        <span class=" h-3rem">{{lobbyPin}}</span>
+      </div>
+      <div class="flex-column flex h-full" style="position:relative;">
+        <div class="h-full w-full text-4xl player-row" [ngClass]="{'player-in': player.occupied,
                                                     'empty': !player.occupied}"
-           *ngFor="let player of players; let i = index">
-        <div>
-          {{player.name}}
+             *ngFor="let player of players; let i = index">
+          <div>
+            {{player.name}}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="w-full mt-5">
-    <div class="p-inputgroup">
-      <button type="button" class="w-full p-button-secondary" pButton pRipple label="Leave Lobby" (click)="leaveLobby()"></button>
+    <div class="w-full mt-5">
+      <div class="p-inputgroup">
+        <button type="button" class="w-full p-button-secondary" pButton pRipple label="Leave Lobby" (click)="leaveLobby()"></button>
+      </div>
     </div>
   </div>
 </div>

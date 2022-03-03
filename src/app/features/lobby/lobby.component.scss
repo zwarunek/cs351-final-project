@@ -1,9 +1,6 @@
 .main-container{
-  width: 80%;
+  width: 100%;
   max-width: 500px;
-  height: 80%;
-  background-color: var(--surface-a);
-  border-radius: 8px;
 }
 .player-in{
   color: var(--text-color);
@@ -19,4 +16,10 @@
 }
 .player-row:first-child{
   border-top: 2px var(--surface-100) solid;
+}
+@media (min-height: 250px) {
+  .main-container
+  {
+    height: 625px;
+  }
 }

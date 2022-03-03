@@ -67,6 +67,8 @@ def joinRoom(data):
         clientList[session['uuid']]['room'] = data['room']
         clientList[session['uuid']]['nickname'] = data['nickname']
         rooms[data['room']]['players'].append(session['uuid'])
+        emit('player-left', clientList[session['uuid']]['nickname'] + ' has joined the lobby', room=data['room'])
+
         join_room(data['room'])
         emit('joined-room', {'success': True, 'pin': data['room']}, room=request.sid)
     else:
@@ -78,18 +80,6 @@ def joinRoom(data):
 @socketio.on('get-client-info')
 def getClientInfo():
     emit('client-info', clientList[session['uuid']], room=request.sid)
-
-
-@socketio.on('leave-lobby')
-def leaveLobby(data):
-    emit('player-left', clientList[session['uuid']]['nickname'] + ' has left the lobby', room=clientList[session['uuid']]['room'])
-    leave_room(clientList[session['uuid']]['room'])
-    rooms[clientList[session['uuid']]['room']]['players'].remove(session['uuid'])
-    if len(rooms[clientList[session['uuid']]['room']]['players']) != 0:
-        getRoomInfo()
-    if data:
-        del clientList[session['uuid']]['room']
-    print(clientList[session['uuid']])
 
 
 @socketio.on('create-room')
@@ -111,14 +101,36 @@ def createRoom(data):
 # Read data from client
 @socketio.on('get-room-info')
 def getRoomInfo():
-    if 'room' in clientList[session['uuid']] and clientList[session['uuid']]['room'] in rooms:
-        room = rooms[clientList[session['uuid']]['room']]
+    if 'room' in clientList[session['uuid']]:
+        getRoomInfoPin(clientList[session['uuid']]['room'])
+
+def getRoomInfoPin(pin):
+    if pin in rooms:
+        room = rooms[pin]
         playerList = []
         for id in room['players']:
-            playerList.append(clientList[id]['nickname'])
-        socketio.emit('room-info', {'exists': True, 'players': playerList, 'pin': clientList[session['uuid']]['room']}, room=clientList[session['uuid']]['room'])
+            playerList.append(clientList[id])
+        socketio.emit('room-info', {'exists': True, 'players': playerList, 'pin': pin}, room=pin)
     else:
         socketio.emit('room-info', {'exists': False})
+
+@socketio.on('leave-lobby')
+def leaveLobby(data):
+    emit('player-left', clientList[session['uuid']]['nickname'] + ' has left the lobby', room=clientList[session['uuid']]['room'])
+
+    leave_room(clientList[session['uuid']]['room'])
+    rooms[clientList[session['uuid']]['room']]['players'].remove(session['uuid'])
+
+    getRoomInfoPin(clientList[session['uuid']]['room'])
+    if data:
+        del clientList[session['uuid']]['room']
+
+
+# Read data from client
+@socketio.on('get-client-info')
+def getRoomInfo():
+    socketio.emit('client-info', clientList[session['uuid']], room=request.sid)
+
 @socketio.on('disconnect')
 def disconnect():
     if 'room' in clientList[session['uuid']].keys():
