@@ -1,0 +1,25 @@
+.main-container{
+  width: 100%;
+  max-width: 500px;
+}
+.player-in{
+  color: var(--text-color);
+}
+.empty{
+  color: var(--surface-200);
+}
+.player-row{
+  border-bottom: 2px var(--surface-100) solid;
+  display: flex;
+  align-items: center;
+  padding: 14px
+}
+.player-row:first-child{
+  border-top: 2px var(--surface-100) solid;
+}
+@media (min-height: 250px) {
+  .main-container
+  {
+    height: 625px;
+  }
+}

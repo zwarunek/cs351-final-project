@@ -1,0 +1,8 @@
+.main-container{
+  width: 100%;
+  max-width: 500px;
+}
+::ng-deep .p-inputgroup input:last-child::ng-deep{
+  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
