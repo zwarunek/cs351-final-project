@@ -2,10 +2,10 @@ import logging
 import random
 import threading
 import time
-
-from flask import Flask, session, request, render_template
-from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
+
+from flask import Flask, session, request
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'secret!'
