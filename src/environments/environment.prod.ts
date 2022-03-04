@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   env: "PROD",
-  url: 'https://cs351api.zacharywarunek.com'
+  url: 'http://ec2-54-163-50-157.compute-1.amazonaws.com:4997'
 };

@@ -3,7 +3,7 @@ import random
 import threading
 import time
 
-from flask import Flask, session, request
+from flask import Flask, session, request, render_template
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
 
@@ -138,6 +138,9 @@ def disconnect():
     clientList[session['uuid']]['status'] = 'disconnected'
     print('disconnected:', session['uuid'])
 
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == "__main__":
     testLoop()
