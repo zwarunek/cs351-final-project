@@ -6,6 +6,7 @@ import time
 from flask import Flask, session, request, render_template
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
+from celery import Celery
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'secret!'
@@ -18,6 +19,22 @@ log.disabled = True
 clientList = {}
 rooms = {}
 
+
+def make_celery(app):
+    celery = Celery(
+        app.import_name,
+        backend=app.config['CELERY_RESULT_BACKEND'],
+        broker=app.config['CELERY_BROKER_URL']
+    )
+    celery.conf.update(app.config)
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
 
 
 @app.before_first_request
@@ -54,12 +71,12 @@ def connect():
         if 'room' in clientList[session['uuid']].keys():
             joinRoom({'room': clientList[session['uuid']]['room'], 'nickname': clientList[session['uuid']]['nickname']})
 
-
     clientList[clientuuid]['timestamp'] = time.time()
     clientList[clientuuid]['status'] = 'connected'
     clientList[clientuuid]['uuid'] = clientuuid
     session['uuid'] = clientuuid
     emit('set-uuid', {'uuid': clientuuid})
+
 
 @socketio.on('join-room')
 def joinRoom(data):
@@ -104,6 +121,7 @@ def getRoomInfo():
     if 'room' in clientList[session['uuid']]:
         getRoomInfoPin(clientList[session['uuid']]['room'])
 
+
 def getRoomInfoPin(pin):
     if pin in rooms:
         room = rooms[pin]
@@ -114,9 +132,11 @@ def getRoomInfoPin(pin):
     else:
         socketio.emit('room-info', {'exists': False})
 
+
 @socketio.on('leave-lobby')
 def leaveLobby(data):
-    emit('player-left', clientList[session['uuid']]['nickname'] + ' has left the lobby', room=clientList[session['uuid']]['room'])
+    emit('player-left', clientList[session['uuid']]['nickname'] + ' has left the lobby',
+         room=clientList[session['uuid']]['room'])
 
     leave_room(clientList[session['uuid']]['room'])
     rooms[clientList[session['uuid']]['room']]['players'].remove(session['uuid'])
@@ -130,6 +150,7 @@ def leaveLobby(data):
 @socketio.on('get-client-info')
 def getRoomInfo():
     socketio.emit('client-info', clientList[session['uuid']], room=request.sid)
+
 
 @socketio.on('disconnect')
 def disconnect():
