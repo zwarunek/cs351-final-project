@@ -8,6 +8,7 @@ const Session = require('express-session')
 const session = Session({ secret: 'pass', resave: true, saveUninitialized: true });
 const ios = require('socket.io-express-session');
 io.use(ios(session));
+const PORT = process.env.PORT || 5000
 
 const handler = require("./handler");
 const {randomUUID} = require("crypto");
@@ -50,8 +51,8 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log('listening on *:3000');
+server.listen(PORT, () => {
+    console.log('listening on', PORT);
 });
 function myLoop() {
     setTimeout(function() {
