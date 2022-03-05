@@ -9,8 +9,8 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
-socketio.init_app(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
+# socketio.init_app(app, cors_allowed_origins="*")
 thread = None
 clients = 0
 clientList = {}
@@ -38,6 +38,7 @@ def testLoop():
 @socketio.on('connect')
 def connect():
     clientuuid = request.args['uuid']
+    print(request.headers)
     session['uuid'] = clientuuid
     if clientuuid == '' \
             or clientuuid not in clientList.keys() \
@@ -56,6 +57,7 @@ def connect():
     clientList[clientuuid]['uuid'] = clientuuid
     session['uuid'] = clientuuid
     emit('set-uuid', {'uuid': clientuuid})
+    print('hello')
 
 
 @socketio.on('join-room')
@@ -143,3 +145,10 @@ def disconnect():
 @app.route('/')
 def index():
     return "<h1>Hello from the server</h1>"
+
+
+if __name__ == "__main__":
+    # main.testLoop()
+    print('hello')
+    socketio.run(app, debug=True, port=5000)
+    print('hello')
