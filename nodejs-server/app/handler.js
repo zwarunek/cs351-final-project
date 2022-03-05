@@ -1,4 +1,4 @@
-module.exports = (io, socket) => {
+module.exports = (io, socket, clients,rooms) => {
     const joinRoom = function (payload) {
 
     };
@@ -7,6 +7,7 @@ module.exports = (io, socket) => {
     };
 
     const getUuid = function () {
+
         console.log(socket.handshake.session.uuid);
     };
 
