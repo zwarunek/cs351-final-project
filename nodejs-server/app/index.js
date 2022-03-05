@@ -3,7 +3,11 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});
 const Session = require('express-session')
 const session = Session({ secret: 'pass', resave: true, saveUninitialized: true });
 const ios = require('socket.io-express-session');
