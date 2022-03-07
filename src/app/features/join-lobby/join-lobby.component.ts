@@ -4,6 +4,7 @@ import {CookieService} from "ngx-cookie-service";
 import {Socket, SocketIoConfig} from "ngx-socket-io";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
+import {InputNumber} from "primeng/inputnumber";
 
 @Component({
   selector: 'app-join-lobby',
@@ -18,8 +19,10 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
   getCreatedSub
   notificationSub
   clientInfoSub: any;
+  roomExists = false;
+  roomNotFoundMessage = '';
 
-  constructor(private cdref: ChangeDetectorRef, public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
+  constructor(public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
 
     this.getCreatedSub = this.socket.getCreated().subscribe((pin: any) => this.getCreated(pin));
     this.notificationSub = this.socket.notification().subscribe((data: any) => this.notification(data));
@@ -46,9 +49,10 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createLobby(){
     this.socket.createLobby();
+    // console.log(this.lobbyPinInput)
   }
   joinLobby(){
-    this.socket.checkRoom(this.lobbyPinInput.toString());
+    this.router.navigate(['/lobby/' + this.lobbyPinInput.toString()]);
   }
   getCreated(pin: any){
     this.router.navigate(['/lobby/' + pin]);
@@ -57,19 +61,30 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.messageService.add({severity:data.severity, summary: data.header, detail: data.message});
   }
 
-  private checkLobby(data: any) {
-    console.log(data.exists, 'hello')
+  checkLobby(data: any) {
     if(data.exists){
-      this.router.navigate(['/lobby/' + data.pin]);
+      this.roomExists = true;
     }
     else{
-      this.messageService.add({severity:'error', summary: 'Error', detail: 'Lobby not found'});
+      this.roomExists = false;
+      this.roomNotFoundMessage = 'Lobby Not Found';
     }
   }
 
   clientInfo(data: any) {
     if ('pin' in data){
       this.router.navigate(['/lobby/' + data.pin]);
+    }
+  }
+
+  checkPinInput($event: any) {
+    let pin =  $event.originalEvent.target.value;
+    if(pin.length === 4){
+      this.socket.checkRoom(pin);
+    }
+    else {
+      this.roomNotFoundMessage = '';
+      this.roomExists = false;
     }
   }
 }

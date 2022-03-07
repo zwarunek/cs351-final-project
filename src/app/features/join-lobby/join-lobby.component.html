@@ -1,13 +1,16 @@
 <div class="p-5 mx-auto main-container">
   <p-toolbar>
     <div class="p-3 w-full flex flex-column align-items-center">
-      <div class="w-full p-3">
+      <div class="w-full p-3 pt-0">
+        <div class="mb-2" style="text-align: end;height: 1rem">
+          <span style="color: var(--text-color); height: 1rem">{{roomNotFoundMessage}}</span>
+        </div>
         <div class="p-inputgroup">
           <span class="p-float-label">
-            <p-inputNumber [maxlength]="4" id="pin-input" [(ngModel)]="lobbyPinInput" class="p-inputtext-sm" [useGrouping]="false"></p-inputNumber>
+            <p-inputNumber (onInput)="checkPinInput($event)" [maxlength]="4" id="pin-input"  [(ngModel)]="lobbyPinInput" class="p-inputtext-sm" [useGrouping]="false"></p-inputNumber>
             <label for="pin-input">Lobby Pin</label>
           </span>
-          <button type="button" class="w-4" pButton pRipple label="Join" (click)="joinLobby()"></button>
+          <button type="button" class="w-4" pButton pRipple label="Join" (click)="joinLobby()" [disabled]="!roomExists"></button>
         </div>
       </div>
       <div class="w-full p-3">
