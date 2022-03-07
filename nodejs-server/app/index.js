@@ -12,8 +12,6 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 5000
 
 const handler = require("./handler");
-const {randomUUID} = require("crypto");
-const {join} = require("path");
 clients = {};
 rooms = {};
 
@@ -23,37 +21,8 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    clientuuid = socket.handshake.query.uuid;
-    // console.log(clients);
-    if(clientuuid === ''
-        || !(clientuuid in clients)
-        || clients[clientuuid].status === 'connected'){
-        clientuuid = randomUUID();
-        clients[clientuuid] = {};
-        console.log('connected - New:', clientuuid);
-    }
-    else{
-        console.log('connected:', clientuuid);
-        if('room' in clients[clientuuid])
-            socket.join(clients[clientuuid].pin)
-    }
-    clients[clientuuid].timestamp = Date.now();
-    clients[clientuuid].status = 'connected';
-    clients[clientuuid].uuid = clientuuid;
-    socket.handshake.query.uuid = clientuuid;
-    // socket.handshake.session.save();
-    io.to(socket.id).emit('set-uuid', {'uuid': clientuuid})
-
     handler(io, socket, clients, rooms);
 
-    socket.conn.on("close", () => {
-        clients[socket.handshake.query.uuid].status = 'disconnected';
-        if('pin' in clients[socket.handshake.query.uuid])
-            delete clients[socket.handshake.query.uuid].pin
-        if('nickname' in clients[socket.handshake.query.uuid])
-            delete clients[socket.handshake.query.uuid].nickname
-        console.log('disconnected:', socket.handshake.query.uuid)
-    });
 });
 
 server.listen(PORT, () => {

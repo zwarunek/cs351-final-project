@@ -1,15 +1,14 @@
-const {join} = require("path");
-const {randomInt} = require("crypto");
+const {randomInt, randomUUID} = require("crypto");
 module.exports = (io, socket, clients,rooms) => {
     const joinRoom = function (data) {
         if(data.pin in rooms){
-            console.log(data);
             clients[uuid()].pin = data.pin;
             clients[uuid()].nickname = data.nickname;
-            rooms[data.pin].players.push(uuid())
+            if(rooms[data.pin].players.length === 0)
+                rooms[data.pin].leader = uuid();
+            rooms[data.pin].players.push(uuid());
             socket.join(data.pin);
             getClientInfo();
-            // getRoomInfoPin(data.pin);
             socket.to(data.pin).emit('notification', {'header': 'Joined', 'message': data.nickname + ' has joined the lobby', 'severity': 'info'});
 
         }
@@ -30,14 +29,8 @@ module.exports = (io, socket, clients,rooms) => {
         while(pin in rooms)
             pin = randomInt(1111, 9999).toString();
         rooms[pin] = {'players': []};
-        // joinRoom(pin);
         socket.emit('created-room', pin);
         console.log('Created lobby', pin);
-        // clients[uuid()].room = pin;
-        // clients[uuid()].nickname = data.nickname;
-        // rooms[pin]['players'].push(uuid());
-        // socket.join(pin);
-        // console.log(io.of("/").adapter.rooms)
     };
 
     const getRoomInfo = function () {
@@ -54,32 +47,31 @@ module.exports = (io, socket, clients,rooms) => {
     };
 
     const leaveLobby = function (data) {
-        socket.to(clients[uuid()].pin).emit('notification', {'severity': 'info', 'header': 'Info', 'message': clients[uuid()].nickname + ' has left the lobby'})
-        socket.leave(clients[uuid()].pin);
-        delete rooms[clients[uuid()].pin].players.splice(rooms[clients[uuid()].pin].players.indexOf(uuid()), 1)
-        getRoomInfoPin(clients[uuid()].pin);
-        if(rooms[clients[uuid()].pin].players.length === 0){
-            delete rooms[clients[uuid()].pin]
-            delete clients[uuid()].pin
+        if(clients[uuid()].pin in rooms){
+
+            socket.to(clients[uuid()].pin).emit('notification', {'severity': 'info', 'header': 'Info', 'message': clients[uuid()].nickname + ' has left the lobby'})
+            socket.leave(clients[uuid()].pin);
+            delete rooms[clients[uuid()].pin].players.splice(rooms[clients[uuid()].pin].players.indexOf(uuid()), 1)
+
+            if(rooms[clients[uuid()].pin].players.length !== 0 && rooms[clients[uuid()].pin].leader === uuid()){
+                rooms[clients[uuid()].pin].leader = rooms[clients[uuid()].pin].players[0]
+            }
+            getRoomInfoPin(clients[uuid()].pin);
+            if (data) {
+                delete clients[uuid()].pin
+                delete clients[uuid()].nickname
+            }
         }
-        else if(data)
-            delete clients[uuid()].pin
-
-
-
-
     };
 
     function getRoomInfoPin(pin) {
-        console.log(pin, pin in rooms, rooms)
         if(pin in rooms){
             let room = rooms[pin];
             let players = [];
             for(const id of room.players){
                 players.push(clients[id]);
             }
-            console.log('emitting to room info')
-            io.to(pin).emit('room-info', {'exists': true, 'players': players, 'pin': pin})
+            io.to(pin).emit('room-info', {'exists': true, 'players': players, 'pin': pin, 'leader': room.leader})
         }
         else
             socket.emit('room-info', {'exists': false})
@@ -94,4 +86,31 @@ module.exports = (io, socket, clients,rooms) => {
     socket.on("get-room-info-pin", getRoomInfoPin);
     socket.on("leave-lobby", leaveLobby);
     socket.on("check-lobby", checkLobby);
+    // console.log(clients);
+    if(uuid() === ''
+        || !(uuid() in clients)
+        || clients[uuid()].status === 'connected'){
+        socket.handshake.query.uuid = randomUUID();
+        clients[uuid()] = {};
+        console.log('connected - New:', uuid());
+    }
+    else{
+        console.log('connected:', uuid());
+        if('pin' in clients[uuid()] && 'nickname' in clients[uuid()])
+            joinRoom({'pin': clients[uuid()].pin, 'nickname': clients[uuid()].nickname})
+    }
+    clients[uuid()].timestamp = Date.now();
+    clients[uuid()].status = 'connected';
+    clients[uuid()].uuid = uuid();
+
+    socket.conn.on("close", () => {
+        clients[uuid()].status = 'disconnected';
+        leaveLobby(false);
+        //     delete clients[socket.handshake.query.uuid].pin
+        // if('nickname' in clients[socket.handshake.query.uuid])
+        //     delete clients[socket.handshake.query.uuid].nickname
+        console.log('disconnected:', uuid())
+    });
+    // socket.handshake.session.save();
+    io.to(socket.id).emit('set-uuid', {'uuid': uuid()})
 }

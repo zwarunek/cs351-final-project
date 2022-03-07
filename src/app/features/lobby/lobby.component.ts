@@ -61,6 +61,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
         this.players[i].name = data.players[i].nickname;
         this.players[i].uuid = data.players[i].uuid;
         this.players[i].occupied = true;
+        this.players[i].leader = data.leader === data.players[i].uuid;
       }
       let fromIndex = this.players.findIndex((element)=>{return element.uuid === this.client.uuid});
       let element = this.players[fromIndex];
@@ -77,6 +78,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
     console.log(data, 'nickname' in this.client)
     if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
       if ('nickname' in this.client) {
+        // this.socket.joinLobby(this.client.nickname, this.client.pin)
         this.socket.getRoomInfo();
       } else {
         this.displayBasic = true;
@@ -84,6 +86,9 @@ export class LobbyComponent implements OnDestroy, OnInit {
     }
     else{
       this.router.navigate(['/lobby/' + this.client.pin])
+          .then(() => {
+            window.location.reload();
+          });
     }
     // this.setPlayers();
   }
