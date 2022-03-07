@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {CookieService} from "ngx-cookie-service";
 import {Socket, SocketIoConfig} from "ngx-socket-io";
@@ -10,18 +10,27 @@ import {MessageService} from "primeng/api";
   templateUrl: './join-lobby.component.html',
   styleUrls: ['./join-lobby.component.scss']
 })
-export class JoinLobbyComponent implements OnInit, AfterViewInit {
+export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   lobbyPinInput: any;
   nicknameInput: string = '';
+  getJoinedSub
+  getCreatedSub
+  notificationSub
 
   constructor(public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
 
-    this.socket.getJoined().subscribe((success: any) => this.getJoined(success));
-    socket.getCreated().subscribe((pin: any) => this.getCreated(pin));
+    this.getJoinedSub = this.socket.getJoined().subscribe((data: any) => this.getJoined(data));
+    this.getCreatedSub = this.socket.getCreated().subscribe((pin: any) => this.getCreated(pin));
+    this.notificationSub = this.socket.notification().subscribe((data: any) => this.notification(data));
   }
 
   ngOnInit(): void {
+  }
+  ngOnDestroy() {
+    this.getJoinedSub.unsubscribe();
+    this.getCreatedSub.unsubscribe();
+    this.notificationSub.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -33,18 +42,18 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit {
 
   createLobby(){
     this.socket.createLobby(this.nicknameInput);
-    this.router.navigate(['/lobby']);
   }
   joinLobby(){
-    this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput);
+    this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput.toString());
   }
   getJoined(data: any){
     if(data.success)
       this.router.navigate(['/lobby']);
-    else
-      this.messageService.add({severity:'error', summary: 'Error', detail: 'Lobby not found'});
   }
   getCreated(pin: number){
     this.socket.joinLobby(this.nicknameInput, pin);
+  }
+  notification(data: any) {
+    this.messageService.add({severity:data.severity, summary: data.header, detail: data.message});
   }
 }

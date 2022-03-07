@@ -53,11 +53,7 @@ export class SocketService {
     this.socket.emit('leave-lobby', true);
   }
 
-  public playerLeft() {
-    return this.socket.fromEvent('player-left');
-  }
-
-  public playerJoined() {
-    return this.socket.fromEvent('player-joined');
+  public notification() {
+    return this.socket.fromEvent('notification');
   }
 }

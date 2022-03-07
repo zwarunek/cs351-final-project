@@ -9,7 +9,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "ng build --base-href=/cs351-final-project/ && angular-cli-ghpages --branch gh-pages"
+    "deploy": "ng build --base-href=/ && ng deploy --no-build --cname=cs351.zacharywarunek.com"
   },
   "private": true,
   "dependencies": {

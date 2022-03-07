@@ -1,2 +1,2 @@
 ng build --base-href=/
-ng deploy --no-build --cname=https://cs351.zacharywarunek.com/
+ng deploy --no-build --cname=cs351.zacharywarunek.com

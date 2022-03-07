@@ -15,16 +15,14 @@ export class LobbyComponent implements OnDestroy, OnInit {
   lobbyPin: any;
   client: any;
   roomInfoSub: any;
-  playerLeftSub: any;
-  playerJoinedSub: any;
+  notificationSub: any;
   clientInfoSub: any;
 
   constructor(public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
     this.setPlayers();
     this.roomInfoSub = socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
-    this.playerLeftSub = socket.playerLeft().subscribe((data: any) => this.playerLeft(data));
-    this.playerJoinedSub = socket.playerJoined().subscribe((data: any) => this.playerJoined(data));
+    this.notificationSub = socket.notification().subscribe((data: any) => this.notification(data));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
     socket.getClientInfo();
     socket.getRoomInfo();
@@ -34,8 +32,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
   ngOnDestroy() {
     this.roomInfoSub.unsubscribe();
-    this.playerLeftSub.unsubscribe();
-    this.playerJoinedSub.unsubscribe();
+    this.notificationSub.unsubscribe();
     this.clientInfoSub.unsubscribe();
   }
 
@@ -51,6 +48,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   roomInfo(data: any){
+    console.log(data);
     this.setPlayers()
     if(data.exists) {
       this.lobbyPin = data.pin;
@@ -67,10 +65,6 @@ export class LobbyComponent implements OnDestroy, OnInit {
     else this.backToJoin();
   }
 
-  playerLeft(data: any) {
-    this.messageService.add({severity:'info', summary: 'Left', detail: data});
-  }
-
   clientInfo(data: any) {
     this.client = data;
     this.setPlayers();
@@ -83,14 +77,13 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   private backToJoin() {
     this.roomInfoSub.unsubscribe();
-    this.playerLeftSub.unsubscribe();
-    this.playerJoinedSub.unsubscribe();
+    this.notificationSub.unsubscribe();
     this.clientInfoSub.unsubscribe();
     this.router.navigate(['/join']);
 
   }
 
-  playerJoined(data: any) {
-    this.messageService.add({severity:'info', summary: 'Joined', detail: data});
+  notification(data: any) {
+    this.messageService.add({severity:data.severity, summary: data.header, detail: data.message});
   }
 }

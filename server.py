@@ -6,7 +6,6 @@ import time
 from flask import Flask, session, request, render_template
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
-from celery import Celery
 
 app = Flask(__name__)
 # app.config['SECRET_KEY'] = 'secret!'
@@ -18,23 +17,6 @@ log = logging.getLogger('werkzeug')
 log.disabled = True
 clientList = {}
 rooms = {}
-
-
-def make_celery(app):
-    celery = Celery(
-        app.import_name,
-        backend=app.config['CELERY_RESULT_BACKEND'],
-        broker=app.config['CELERY_BROKER_URL']
-    )
-    celery.conf.update(app.config)
-
-    class ContextTask(celery.Task):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return self.run(*args, **kwargs)
-
-    celery.Task = ContextTask
-    return celery
 
 
 @app.before_first_request

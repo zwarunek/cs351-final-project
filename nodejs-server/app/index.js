@@ -1,5 +1,6 @@
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
+
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
@@ -8,10 +9,6 @@ const io = new Server(server, {
         origin: "*"
     }
 });
-const Session = require('cookie-session')
-const session = Session({ secret: 'pass', resave: true, saveUninitialized: true });
-const ios = require('socket.io-express-session');
-io.use(ios(session));
 const PORT = process.env.PORT || 5000
 
 const handler = require("./handler");
@@ -27,7 +24,7 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     clientuuid = socket.handshake.query.uuid;
-    console.log(clients);
+    // console.log(clients);
     if(clientuuid === ''
         || !(clientuuid in clients)
         || clients[clientuuid].status === 'connected'){
@@ -43,15 +40,15 @@ io.on('connection', (socket) => {
     clients[clientuuid].timestamp = Date.now();
     clients[clientuuid].status = 'connected';
     clients[clientuuid].uuid = clientuuid;
-    socket.handshake.session.uuid = clientuuid;
-    socket.handshake.session.save();
+    socket.handshake.query.uuid = clientuuid;
+    // socket.handshake.session.save();
     io.to(socket.id).emit('set-uuid', {'uuid': clientuuid})
 
     handler(io, socket, clients, rooms);
 
     socket.conn.on("close", () => {
-        clients[socket.handshake.session.uuid].status = 'disconnected';
-        console.log('disconnected:', socket.handshake.session.uuid)
+        clients[socket.handshake.query.uuid].status = 'disconnected';
+        console.log('disconnected:', socket.handshake.query.uuid)
     });
 });
 
