@@ -58,8 +58,14 @@ module.exports = (io, socket, clients,rooms) => {
         socket.leave(clients[uuid()].pin);
         delete rooms[clients[uuid()].pin].players.splice(rooms[clients[uuid()].pin].players.indexOf(uuid()), 1)
         getRoomInfoPin(clients[uuid()].pin);
-        if(data)
+        if(rooms[clients[uuid()].pin].players.length === 0){
+            delete rooms[clients[uuid()].pin]
             delete clients[uuid()].pin
+        }
+        else if(data)
+            delete clients[uuid()].pin
+
+
 
 
     };
