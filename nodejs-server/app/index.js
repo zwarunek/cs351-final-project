@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
     else{
         console.log('connected:', clientuuid);
         if('room' in clients[clientuuid])
-            join(clients[clientuuid].room)
+            socket.join(clients[clientuuid].pin)
     }
     clients[clientuuid].timestamp = Date.now();
     clients[clientuuid].status = 'connected';
@@ -48,6 +48,10 @@ io.on('connection', (socket) => {
 
     socket.conn.on("close", () => {
         clients[socket.handshake.query.uuid].status = 'disconnected';
+        if('pin' in clients[socket.handshake.query.uuid])
+            delete clients[socket.handshake.query.uuid].pin
+        if('nickname' in clients[socket.handshake.query.uuid])
+            delete clients[socket.handshake.query.uuid].nickname
         console.log('disconnected:', socket.handshake.query.uuid)
     });
 });

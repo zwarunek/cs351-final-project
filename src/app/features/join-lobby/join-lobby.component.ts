@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {CookieService} from "ngx-cookie-service";
 import {Socket, SocketIoConfig} from "ngx-socket-io";
@@ -14,46 +14,62 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   lobbyPinInput: any;
   nicknameInput: string = '';
-  getJoinedSub
+  roomInfoSub
   getCreatedSub
   notificationSub
+  clientInfoSub: any;
 
-  constructor(public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
+  constructor(private cdref: ChangeDetectorRef, public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
 
-    this.getJoinedSub = this.socket.getJoined().subscribe((data: any) => this.getJoined(data));
     this.getCreatedSub = this.socket.getCreated().subscribe((pin: any) => this.getCreated(pin));
     this.notificationSub = this.socket.notification().subscribe((data: any) => this.notification(data));
+    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.checkLobby(data));
+    this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
+    socket.getClientInfo();
   }
 
   ngOnInit(): void {
   }
   ngOnDestroy() {
-    this.getJoinedSub.unsubscribe();
+    this.roomInfoSub.unsubscribe();
     this.getCreatedSub.unsubscribe();
     this.notificationSub.unsubscribe();
   }
 
   ngAfterViewInit(): void {
-    this.route.queryParams.subscribe((data: any) => {
-      if(data.E === 'NF')
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'Lobby not found'});
+    setTimeout(() => {
+      if ('E' in this.route.snapshot.queryParams && this.route.snapshot.queryParams['E'] === 'NF') {
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Lobby not found'});
+      }
     });
   }
 
   createLobby(){
-    this.socket.createLobby(this.nicknameInput);
+    this.socket.createLobby();
   }
   joinLobby(){
-    this.socket.joinLobby(this.nicknameInput, this.lobbyPinInput.toString());
+    this.socket.checkRoom(this.lobbyPinInput.toString());
   }
-  getJoined(data: any){
-    if(data.success)
-      this.router.navigate(['/lobby']);
-  }
-  getCreated(pin: number){
-    this.socket.joinLobby(this.nicknameInput, pin);
+  getCreated(pin: any){
+    this.router.navigate(['/lobby/' + pin]);
   }
   notification(data: any) {
     this.messageService.add({severity:data.severity, summary: data.header, detail: data.message});
+  }
+
+  private checkLobby(data: any) {
+    console.log(data.exists, 'hello')
+    if(data.exists){
+      this.router.navigate(['/lobby/' + data.pin]);
+    }
+    else{
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'Lobby not found'});
+    }
+  }
+
+  clientInfo(data: any) {
+    if ('pin' in data){
+      this.router.navigate(['/lobby/' + data.pin]);
+    }
   }
 }

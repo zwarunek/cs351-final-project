@@ -13,9 +13,9 @@ export class SocketService {
   }
 
   public joinLobby(nickname: any, pin: any){
-    this.socket.emit('join-room', {
+    this.socket.emit('join-lobby', {
       'nickname': nickname,
-      'room': pin
+      'pin': pin
     });
   }
 
@@ -23,10 +23,8 @@ export class SocketService {
     return this.socket.fromEvent('joined-room');
   }
 
-  createLobby(nickname: string) {
-    this.socket.emit('create-room', {
-      'nickname': nickname
-    });
+  createLobby() {
+    this.socket.emit('create-room');
   }
 
   public getCreated() {
@@ -39,6 +37,14 @@ export class SocketService {
 
   public getRoomInfo() {
     this.socket.emit('get-room-info');
+  }
+
+  public getRoomInfoPin(pin: any) {
+    this.socket.emit('get-room-info-pin', pin.toString());
+  }
+
+  public checkRoom(pin: any) {
+    this.socket.emit('check-lobby', pin.toString());
   }
 
   public clientInfo() {

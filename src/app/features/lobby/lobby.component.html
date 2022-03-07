@@ -1,4 +1,4 @@
-<div class="p-5 mx-auto main-container flex flex-column">
+<div *ngIf="displayLobby" class="p-5 mx-auto main-container flex flex-column">
   <div class="p-5 h-full flex flex-column" style=" background-color: var(--surface-a); border-radius: 8px;">
     <div class="flex-column flex" style="height: 100%">
 
@@ -23,3 +23,22 @@
   </div>
 </div>
 <p-toast></p-toast>
+<div *ngIf="displayBasic" class="p-5 mx-auto main-container">
+  <p-toolbar>
+    <div class="p-3 w-full flex flex-column align-items-center">
+      <div class="w-full p-3">
+        <div class="p-inputgroup">
+          <span class="p-float-label">
+            <input id="nickname-input" pInputText [(ngModel)]="nickname" class="p-inputtext-sm">
+            <label for="nickname-input">Nickname</label>
+          </span>
+        </div>
+      </div>
+      <div class="w-full p-3">
+        <div class="p-inputgroup">
+          <button type="button" class="w-full p-button-secondary" pButton pRipple label="Join Lobby" (click)="joinLobby()"></button>
+        </div>
+      </div>
+    </div>
+  </p-toolbar>
+</div>

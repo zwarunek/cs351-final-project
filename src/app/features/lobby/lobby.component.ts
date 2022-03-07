@@ -17,6 +17,10 @@ export class LobbyComponent implements OnDestroy, OnInit {
   roomInfoSub: any;
   notificationSub: any;
   clientInfoSub: any;
+  checkRoomSub: any;
+  displayBasic = false;
+  displayLobby = false;
+  nickname: any;
 
   constructor(public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
@@ -24,11 +28,13 @@ export class LobbyComponent implements OnDestroy, OnInit {
     this.roomInfoSub = socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
     this.notificationSub = socket.notification().subscribe((data: any) => this.notification(data));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
+    this.lobbyPin = this.route.snapshot.paramMap.get('room');
     socket.getClientInfo();
-    socket.getRoomInfo();
+    this.socket.getRoomInfoPin(this.lobbyPin);
+    // socket.getRoomInfo();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
   ngOnDestroy() {
     this.roomInfoSub.unsubscribe();
@@ -48,10 +54,9 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   roomInfo(data: any){
-    console.log(data);
-    this.setPlayers()
+    console.log('inside room info', data);
     if(data.exists) {
-      this.lobbyPin = data.pin;
+      this.setPlayers()
       for (let i = 0; i < data.players.length; i++) {
         this.players[i].name = data.players[i].nickname;
         this.players[i].uuid = data.players[i].uuid;
@@ -60,30 +65,47 @@ export class LobbyComponent implements OnDestroy, OnInit {
       let fromIndex = this.players.findIndex((element)=>{return element.uuid === this.client.uuid});
       let element = this.players[fromIndex];
       this.players.splice(fromIndex, 1);
-      this.players.splice(0, 0, element)
+      this.players.splice(0, 0, element);
+      this.displayLobby = true;
+      this.displayBasic = false;
     }
-    else this.backToJoin();
+    else this.backToJoin({'E': 'NF'});
   }
 
   clientInfo(data: any) {
     this.client = data;
-    this.setPlayers();
+    console.log(data, 'nickname' in this.client)
+    if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
+      if ('nickname' in this.client) {
+        this.socket.getRoomInfo();
+      } else {
+        this.displayBasic = true;
+      }
+    }
+    else{
+      this.router.navigate(['/lobby/' + this.client.pin])
+    }
+    // this.setPlayers();
   }
 
   leaveLobby() {
     this.socket.leaveLobby();
-    this.backToJoin()
+    this.backToJoin({})
   }
 
-  private backToJoin() {
+  private backToJoin(params: any) {
     this.roomInfoSub.unsubscribe();
     this.notificationSub.unsubscribe();
     this.clientInfoSub.unsubscribe();
-    this.router.navigate(['/join']);
+    this.router.navigate(['/join'], {queryParams: params});
 
   }
 
   notification(data: any) {
     this.messageService.add({severity:data.severity, summary: data.header, detail: data.message});
+  }
+
+  joinLobby() {
+    this.socket.joinLobby(this.nickname, this.lobbyPin);
   }
 }

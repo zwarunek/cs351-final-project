@@ -15,7 +15,7 @@ const routes: Routes = [
     loadChildren: () => JoinLobbyPageModule,
   },
   {
-    path: 'lobby',
+    path: 'lobby/:room',
     loadChildren: () => LobbyPageModule,
   },
   {path: '**', redirectTo: ''}
