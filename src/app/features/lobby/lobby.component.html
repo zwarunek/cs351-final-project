@@ -6,8 +6,7 @@
         <span class=" h-3rem">{{lobbyPin}}</span>
       </div>
       <div class="flex-column flex h-full" style="position:relative;">
-        <div class="h-full w-full text-4xl player-row" [ngClass]="{'player-in': player.occupied,
-                                                    'empty': !player.occupied}"
+        <div class="h-full w-full text-4xl player-row" [ngClass]="player.status.toString()"
              *ngFor="let player of players; let i = index">
           <div>
             {{player.name}}

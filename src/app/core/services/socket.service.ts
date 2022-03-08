@@ -43,6 +43,10 @@ export class SocketService {
     this.socket.emit('get-room-info-pin', pin.toString());
   }
 
+  public getRoomInfoPinSingle(pin: any) {
+    this.socket.emit('get-room-info-pin-single', pin.toString());
+  }
+
   public checkRoom(pin: any) {
     this.socket.emit('check-lobby', pin.toString());
   }
@@ -61,5 +65,9 @@ export class SocketService {
 
   public notification() {
     return this.socket.fromEvent('notification');
+  }
+
+  joinReserved(pin: any) {
+    this.socket.emit('join-reserved', pin.toString());
   }
 }

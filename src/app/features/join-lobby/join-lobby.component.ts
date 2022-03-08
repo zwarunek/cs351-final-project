@@ -41,8 +41,15 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      if ('E' in this.route.snapshot.queryParams && this.route.snapshot.queryParams['E'] === 'NF') {
-        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Lobby not found'});
+      if ('E' in this.route.snapshot.queryParams) {
+        switch (this.route.snapshot.queryParams['E']){
+          case 'NF':
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'Lobby not found'});
+            break;
+          case 'CAP':
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'Lobby is full'});
+            break;
+        }
       }
     });
   }

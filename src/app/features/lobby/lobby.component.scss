@@ -2,11 +2,14 @@
   width: 100%;
   max-width: 500px;
 }
-.player-in{
+.occupied{
   color: var(--text-color);
 }
 .empty{
   color: var(--surface-200);
+}
+.reserved{
+  color: var(--surface-300);
 }
 .player-row{
   border-bottom: 2px var(--surface-100) solid;

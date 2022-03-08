@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {SocketService} from "@core/services/socket.service";
 import {MessageService} from "primeng/api";
+import {first, take} from "rxjs/operators";
 
 @Component({
   selector: 'app-lobby',
@@ -25,13 +26,13 @@ export class LobbyComponent implements OnDestroy, OnInit {
   constructor(public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
     this.setPlayers();
-    this.roomInfoSub = socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
+
     this.notificationSub = socket.notification().subscribe((data: any) => this.notification(data));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
     this.lobbyPin = this.route.snapshot.paramMap.get('room');
-    socket.getClientInfo();
-    this.socket.getRoomInfoPin(this.lobbyPin);
-    // socket.getRoomInfo();
+    this.socket.roomInfo().subscribe((data: any) => this.initialRoomCheck(data))
+    this.socket.getClientInfo();
+    this.socket.getRoomInfoPinSingle(this.lobbyPin);
   }
 
   ngOnInit() {
@@ -44,12 +45,12 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   setPlayers(){
     this.players = [
-      {'name': 'Empty', 'occupied': false, 'uuid': ''},
-      {'name': 'Empty', 'occupied': false, 'uuid': ''},
-      {'name': 'Empty', 'occupied': false, 'uuid': ''},
-      {'name': 'Empty', 'occupied': false, 'uuid': ''},
-      {'name': 'Empty', 'occupied': false, 'uuid': ''},
-      {'name': 'Empty', 'occupied': false, 'uuid': ''}
+      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
+      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
+      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
+      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
+      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
+      {'name': 'Empty', 'status': 'empty', 'uuid': ''}
     ]
   }
 
@@ -57,11 +58,17 @@ export class LobbyComponent implements OnDestroy, OnInit {
     console.log('inside room info', data);
     if(data.exists) {
       this.setPlayers()
-      for (let i = 0; i < data.players.length; i++) {
-        this.players[i].name = data.players[i].nickname;
-        this.players[i].uuid = data.players[i].uuid;
-        this.players[i].occupied = true;
-        this.players[i].leader = data.leader === data.players[i].uuid;
+      let room = data.room;
+      for (let i = 0; i < room.players.length; i++) {
+        this.players[i].name = room.players[i].nickname;
+        this.players[i].uuid = room.players[i].uuid;
+        this.players[i].status = 'occupied';
+        this.players[i].leader = room.leader === room.players[i].uuid;
+      }
+      for (let i = room.players.length; i < room.reserved.length; i++) {
+        this.players[i].name = 'Joining...';
+        this.players[i].status = 'reserved';
+        this.players[i].leader = false;
       }
       let fromIndex = this.players.findIndex((element)=>{return element.uuid === this.client.uuid});
       let element = this.players[fromIndex];
@@ -76,21 +83,6 @@ export class LobbyComponent implements OnDestroy, OnInit {
   clientInfo(data: any) {
     this.client = data;
     console.log(data, 'nickname' in this.client)
-    if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
-      if ('nickname' in this.client) {
-        // this.socket.joinLobby(this.client.nickname, this.client.pin)
-        this.socket.getRoomInfo();
-      } else {
-        this.displayBasic = true;
-      }
-    }
-    else{
-      this.router.navigate(['/lobby/' + this.client.pin])
-          .then(() => {
-            window.location.reload();
-          });
-    }
-    // this.setPlayers();
   }
 
   leaveLobby() {
@@ -112,5 +104,34 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   joinLobby() {
     this.socket.joinLobby(this.nickname, this.lobbyPin);
+  }
+
+  initialRoomCheck(data: any) {
+    console.log('initial room check')
+    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
+    if(data.exists){
+      let room = data.room;
+      if(room.capacity < room.players.length){
+        if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
+          if ('nickname' in this.client) {
+            this.roomInfo(data);
+          } else {
+            this.socket.joinReserved(this.lobbyPin);
+            this.displayBasic = true;
+          }
+        }
+        else{
+          this.router.navigate(['/lobby/' + this.client.pin])
+              .then(() => {
+                window.location.reload();
+              });
+        }
+      }
+      else{
+        this.backToJoin({'E': 'CAP'});
+      }
+
+    }
+    else this.backToJoin({'E': 'NF'});
   }
 }
