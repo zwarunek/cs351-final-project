@@ -55,21 +55,19 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   roomInfo(data: any){
-    console.log('inside room info', data);
+    console.log('room info', data)
     if(data.exists) {
       this.setPlayers()
       for (let i = 0; i < data.players.length; i++) {
         this.players[i].name = data.players[i].nickname;
         this.players[i].uuid = data.players[i].uuid;
-        this.players[i].status = 'occupied';
+        this.players[i].status = data.players[i].ready?'ready':'notReady';
         this.players[i].leader = data.leader === data.players[i].uuid;
-        console.log('first', this.players[i], data.players[i])
       }
       for (let i = data.players.length; i < data.players.length + data.reserved.length; i++) {
         this.players[i].name = 'Joining...';
         this.players[i].status = 'reserved';
         this.players[i].leader = false;
-        console.log('second', this.players[i], data.players[i])
       }
       let fromIndex = this.players.findIndex((element: any)=>{return element.uuid === this.client.uuid});
       let element = this.players[fromIndex];
@@ -107,7 +105,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   initialRoomCheck(data: any) {
-    console.log('initial room check', data)
+    console.log('room info', data)
     this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
     if(data.exists){
       if(data.players.length+data.players.length < data.capacity){
@@ -132,5 +130,13 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
     }
     else this.backToJoin({'E': 'NF'});
+  }
+
+  unreadyUp() {
+    this.socket.unreadyUp();
+  }
+
+  readyUp() {
+    this.socket.readyUp()
   }
 }

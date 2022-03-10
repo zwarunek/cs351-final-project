@@ -6,12 +6,30 @@
         <span class=" h-3rem">{{lobbyPin}}</span>
       </div>
       <div class="flex-column flex h-full" style="position:relative;">
-        <div class="h-full w-full text-4xl player-row" [ngClass]="player.status.toString()"
+        <div class="h-full w-full text-4xl justify-content-between player-row" [ngClass]="player.status.toString()"
              *ngFor="let player of players; let i = index">
-          <div>
-            {{player.name}}
+          <div class="flex align-items-center">
+            <div>
+              {{player.name}}
+            </div>
+            <i *ngIf="player.leader" class="pi pi-star ml-4" style="color: gold"></i>
           </div>
-          <i *ngIf="player.leader" class="pi pi-star ml-4" style="color: gold"></i>
+          <div *ngIf="i=== 0">
+            <div *ngIf="player.status === 'ready'">
+              <button type="button" class="w-full p-button-secondary" pButton pRipple label="Unready" (click)="unreadyUp()"></button>
+            </div>
+            <div *ngIf="player.status === 'notReady'">
+              <button type="button" class="w-full p-button-secondary" pButton pRipple label="Ready Up" (click)="readyUp()"></button>
+            </div>
+          </div>
+          <div *ngIf="i !== 0">
+            <div *ngIf="player.status === 'ready'" style="color: green">
+              Ready
+            </div>
+            <div *ngIf="player.status === 'notReady'" style="color: red">
+              Not Ready
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -29,7 +47,7 @@
       <div class="w-full p-3">
         <div class="p-inputgroup">
           <span class="p-float-label">
-            <input id="nickname-input" pInputText [(ngModel)]="nickname" class="p-inputtext-sm">
+            <input id="nickname-input" pInputText [(ngModel)]="nickname" class="p-inputtext-sm" (keydown.enter)="joinLobby()" (ngModelChange)="nickname = $event.toUpperCase()">
             <label for="nickname-input">Nickname</label>
           </span>
         </div>

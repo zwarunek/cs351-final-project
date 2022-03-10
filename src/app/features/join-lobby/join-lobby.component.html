@@ -7,7 +7,7 @@
         </div>
         <div class="p-inputgroup">
           <span class="p-float-label">
-            <p-inputNumber (onInput)="checkPinInput($event)" [maxlength]="4" id="pin-input"  [(ngModel)]="lobbyPinInput" class="p-inputtext-sm" [useGrouping]="false"></p-inputNumber>
+            <p-inputNumber (onInput)="checkPinInput($event)" [maxlength]="4" id="pin-input" (keydown.enter)="joinLobby()" [(ngModel)]="lobbyPinInput" class="p-inputtext-sm" [useGrouping]="false"></p-inputNumber>
             <label for="pin-input">Lobby Pin</label>
           </span>
           <button type="button" class="w-4" pButton pRipple label="Join" (click)="joinLobby()" [disabled]="!roomExists"></button>

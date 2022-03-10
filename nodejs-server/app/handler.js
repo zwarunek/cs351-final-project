@@ -41,7 +41,6 @@ module.exports = (io, socket, clients,rooms) => {
     };
 
     function getRoomInfoPin(pin) {
-        console.log('get room info', pin)
         if(pin in rooms){
             let room = rooms[pin];
             let players = [];
@@ -69,7 +68,6 @@ module.exports = (io, socket, clients,rooms) => {
             for(const id of room.reserved){
                 reserved.push(clients[id]);
             }
-            console.log(room)
             socket.emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader})
         }
         else
@@ -86,6 +84,16 @@ module.exports = (io, socket, clients,rooms) => {
             delete client()['room'];
             socket.emit('notification', {'severity': 'error', 'header': 'Error', 'message': 'An error occurred'})
         }
+    }
+
+    const readyUp = function (){
+        clients[uuid()].ready = true;
+        getRoomInfo();
+    }
+
+    const unreadyUp = function (){
+        clients[uuid()].ready = false;
+        getRoomInfo();
     }
 
     const checkLobby = function (pin) {
@@ -134,6 +142,8 @@ module.exports = (io, socket, clients,rooms) => {
     socket.on("leave-lobby", leaveLobby);
     socket.on("check-lobby", checkLobby);
     socket.on("join-reserved", joinReserved);
+    socket.on("ready-up", readyUp);
+    socket.on("unready-up", unreadyUp);
 
     if(uuid() === ''
         || !(uuid() in clients)
@@ -149,6 +159,7 @@ module.exports = (io, socket, clients,rooms) => {
     }
     client().timestamp = Date.now();
     client().status = 'connected';
+    client().ready = false;
     client().uuid = uuid();
 
     socket.conn.on("close", () => {

@@ -23,6 +23,14 @@ export class SocketService {
     return this.socket.fromEvent('joined-room');
   }
 
+  readyUp() {
+    this.socket.emit('ready-up');
+  }
+
+  unreadyUp() {
+    this.socket.emit('unready-up');
+  }
+
   createLobby() {
     this.socket.emit('create-room');
   }
