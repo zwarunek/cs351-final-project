@@ -60,10 +60,8 @@ export class WordBoardComponent implements OnInit {
     .subscribe(data => {
       this.wordlistAnswers = data.split(/\r?\n/);
       if(this.word === undefined) {
-        this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
+        this.generateWord()
         this.saveGameState();
-        if (environment.env === 'DEV')
-          console.log(this.word);
       }
     });
     http.get('assets/wordlists/5-letter.txt', { responseType: 'text' })
@@ -88,11 +86,14 @@ export class WordBoardComponent implements OnInit {
       console.log(this.word);
 
   }
+  generateWord(){
+    this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
+    if (environment.env === 'DEV')
+      console.log(this.word);
+  }
   initGameBoard(){
     if(this.wordlistAnswers.length !== 0) {
-      this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
-      if (environment.env === 'DEV')
-        console.log(this.word);
+      this.generateWord();
     }
     this.guessResults = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => 'unknown'))
 
@@ -269,8 +270,9 @@ export class WordBoardComponent implements OnInit {
       setTimeout( () => {
         this.guessResults[currentGuess][i] = results[i]
         if(this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'unknown'
-          || (this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'present' && results[i] === 'correct'))
-        this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = results[i]
+          || (this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'present' && results[i] === 'correct')
+            || (this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] === 'unused' && (results[i] === 'correct' || results[i] === 'present')))
+          this.keyboardResults[this.keyboardKeys.indexOf(guess.charAt(i))] = results[i]
         if(i < results.length){
           i++
           loop(currentGuess);
