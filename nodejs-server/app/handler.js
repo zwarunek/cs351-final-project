@@ -112,6 +112,13 @@ module.exports = (io, socket, clients,rooms) => {
             }
         }
     };
+    const leaveReserved = function () {
+        socket.leave(client().pin);
+        delete rooms[client().pin].reserved.splice(rooms[client().pin].players.indexOf(uuid()), 1)
+        getRoomInfoPin(client().pin);
+        delete client().pin
+        delete client().nickname
+    }
     const uuid = () => {
         return socket.handshake.query.uuid
     };
@@ -145,9 +152,12 @@ module.exports = (io, socket, clients,rooms) => {
     client().uuid = uuid();
 
     socket.conn.on("close", () => {
-        client().status = 'disconnected';
-        leaveLobby(false);
         console.log('disconnected:', uuid())
+        client().status = 'disconnected';
+        if(rooms[client().pin].players.includes(uuid()))
+            leaveLobby(false);
+        else if(rooms[client().pin].reserved.includes(uuid()))
+            leaveReserved();
     });
     io.to(socket.id).emit('set-uuid', {'uuid': uuid()})
 }
