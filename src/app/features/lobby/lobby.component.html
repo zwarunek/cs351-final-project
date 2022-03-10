@@ -16,10 +16,10 @@
           </div>
           <div *ngIf="i=== 0">
             <div *ngIf="player.status === 'ready'">
-              <button type="button" class="w-full p-button-secondary" pButton pRipple label="Unready" (click)="unreadyUp()"></button>
+              <button type="button" class="w-full p-button-secondary p-button-danger" pButton pRipple label="Unready" (click)="unreadyUp()"></button>
             </div>
             <div *ngIf="player.status === 'notReady'">
-              <button type="button" class="w-full p-button-secondary" pButton pRipple label="Ready Up" (click)="readyUp()"></button>
+              <button type="button" class="w-full p-button-secondary p-button-success" pButton pRipple label="Ready Up" (click)="readyUp()"></button>
             </div>
           </div>
           <div *ngIf="i !== 0">
