@@ -59,7 +59,6 @@ module.exports = (io, socket, clients,rooms) => {
     }
 
     function getRoomInfoPinSingle(pin) {
-        console.log('get room info single', pin)
         if(pin in rooms){
             let room = rooms[pin];
             let players = [];
@@ -70,6 +69,7 @@ module.exports = (io, socket, clients,rooms) => {
             for(const id of room.reserved){
                 reserved.push(clients[id]);
             }
+            console.log(room)
             socket.emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader})
         }
         else
@@ -80,12 +80,12 @@ module.exports = (io, socket, clients,rooms) => {
         if(pin in rooms){
             client().pin = pin;
             rooms[pin].reserved.push(uuid());
+            getRoomInfoPin(pin);
         }
         else {
             delete client()['room'];
             socket.emit('notification', {'severity': 'error', 'header': 'Error', 'message': 'An error occurred'})
         }
-        console.log(rooms[pin])
     }
 
     const checkLobby = function (pin) {

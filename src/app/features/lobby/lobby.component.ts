@@ -26,9 +26,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   constructor(public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
 
-    console.log(this.players)
     this.setPlayers();
-    console.log(this.players)
     this.notificationSub = socket.notification().subscribe((data: any) => this.notification(data));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
     this.lobbyPin = this.route.snapshot.paramMap.get('room');
@@ -85,7 +83,6 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   clientInfo(data: any) {
     this.client = data;
-    console.log(data, 'nickname' in this.client)
   }
 
   leaveLobby() {
