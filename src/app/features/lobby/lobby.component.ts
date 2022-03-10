@@ -12,7 +12,14 @@ import {first, take} from "rxjs/operators";
 export class LobbyComponent implements OnDestroy, OnInit {
 
   playerCap = 6;
-  players: any[] = [].constructor(this.playerCap);
+  players = [
+    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false}
+  ];
   lobbyPin: any;
   client: any;
   roomInfoSub: any;
@@ -25,17 +32,17 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   constructor(public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
-    this.setPlayers();
 
     this.notificationSub = socket.notification().subscribe((data: any) => this.notification(data));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
     this.lobbyPin = this.route.snapshot.paramMap.get('room');
-    this.socket.roomInfo().subscribe((data: any) => this.initialRoomCheck(data))
+    this.socket.roomInfo().pipe(take(1)).subscribe((data: any) => this.initialRoomCheck(data))
     this.socket.getClientInfo();
     this.socket.getRoomInfoPinSingle(this.lobbyPin);
   }
 
   ngOnInit() {
+    this.setPlayers();
   }
   ngOnDestroy() {
     this.roomInfoSub.unsubscribe();
@@ -45,12 +52,12 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   setPlayers(){
     this.players = [
-      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
-      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
-      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
-      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
-      {'name': 'Empty', 'status': 'empty', 'uuid': ''},
-      {'name': 'Empty', 'status': 'empty', 'uuid': ''}
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false}
     ]
   }
 
@@ -107,11 +114,11 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   initialRoomCheck(data: any) {
-    console.log('initial room check')
+    console.log('initial room check', data)
     this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
     if(data.exists){
       let room = data.room;
-      if(room.capacity < room.players.length){
+      if(room.players.length+room.players.length < room.capacity){
         if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
           if ('nickname' in this.client) {
             this.roomInfo(data);

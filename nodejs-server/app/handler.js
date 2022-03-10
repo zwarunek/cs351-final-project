@@ -9,6 +9,7 @@ module.exports = (io, socket, clients,rooms) => {
             rooms[data.pin].players.push(uuid());
             socket.join(data.pin);
             getClientInfo();
+            getRoomInfoPin(data.pin);
             socket.to(data.pin).emit('notification', {'header': 'Joined', 'message': data.nickname + ' has joined the lobby', 'severity': 'info'});
 
         }
@@ -59,11 +60,11 @@ module.exports = (io, socket, clients,rooms) => {
             client().pin = pin;
             rooms[pin].reserved.push(uuid());
         }
-        else{
+        else {
             delete client()['room'];
-            socket.emit('notification', {'severity':'error', 'header': 'Error', 'message': 'An error occurred'})
+            socket.emit('notification', {'severity': 'error', 'header': 'Error', 'message': 'An error occurred'})
         }
-
+        console.log(rooms[pin])
     }
 
     const checkLobby = function (pin) {
