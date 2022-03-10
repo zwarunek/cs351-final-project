@@ -199,7 +199,7 @@ export class WordBoardComponent implements OnInit {
     this.renderer2.appendChild(this.elementRef.nativeElement, canvas);
 
     this.myConfetti = confetti.create(canvas, {
-      resize: true // will fit all screen sizes
+      resize: true
     });
   }
 
@@ -262,7 +262,6 @@ export class WordBoardComponent implements OnInit {
     setTimeout(() => {
       this.winConfetti(Math.abs(num-1), 1, Math.abs(num-1)===0?angle1:angle2,Math.abs(num-1)===0?angle1:angle2);
     }, 200*this.letters+400)
-    // confetti(Object.assign({}, {origin: { y: 0.7}}, {spread: 26,startVelocity: 55}, {particleCount: Math.floor(200 * .25)}))
   }
   displayResults(guess: any, results: string[]) {
     let i = 0;
@@ -282,12 +281,10 @@ export class WordBoardComponent implements OnInit {
     loop(this.currentGuess-1);
   }
   getWidth(id: string){
-    // @ts-ignore
-    return document.getElementById(id).getBoundingClientRect().width
+    return document.getElementById(id)?.getBoundingClientRect().width
   }
   getHeight(id: string){
-    // @ts-ignore
-    return document.getElementById(id).getBoundingClientRect().height
+    return document.body.getBoundingClientRect().height-208
   }
   readProperty(name: string): string {
     let bodyStyles = window.getComputedStyle(document.body);
