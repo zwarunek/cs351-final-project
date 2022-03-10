@@ -6,6 +6,7 @@ module.exports = (io, socket, clients,rooms) => {
             client().nickname = data.nickname;
             if(rooms[data.pin].players.length === 0)
                 rooms[data.pin].leader = uuid();
+            delete rooms[data.pin].reserved.splice(rooms[data.pin].reserved.indexOf(uuid()), 1);
             rooms[data.pin].players.push(uuid());
             socket.join(data.pin);
             getClientInfo();
@@ -41,16 +42,36 @@ module.exports = (io, socket, clients,rooms) => {
 
     function getRoomInfoPin(pin) {
         console.log('get room info', pin)
-        if(pin in rooms)
-            io.to(pin).emit('room-info', {'exists': true, 'room': rooms[pin]})
+        if(pin in rooms){
+            let room = rooms[pin];
+            let players = [];
+            for(const id of room.players){
+                players.push(clients[id]);
+            }
+            let reserved = [];
+            for(const id of room.reserved){
+                reserved.push(clients[id]);
+            }
+            io.to(pin).emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader})
+        }
         else
             socket.emit('room-info', {'exists': false})
     }
 
     function getRoomInfoPinSingle(pin) {
         console.log('get room info single', pin)
-        if(pin in rooms)
-            socket.emit('room-info', {'exists': true, 'room': rooms[pin]})
+        if(pin in rooms){
+            let room = rooms[pin];
+            let players = [];
+            for(const id of room.players){
+                players.push(clients[id]);
+            }
+            let reserved = [];
+            for(const id of room.reserved){
+                reserved.push(clients[id]);
+            }
+            socket.emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader})
+        }
         else
             socket.emit('room-info', {'exists': false})
     }

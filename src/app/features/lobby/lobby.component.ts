@@ -12,14 +12,7 @@ import {first, take} from "rxjs/operators";
 export class LobbyComponent implements OnDestroy, OnInit {
 
   playerCap = 6;
-  players = [
-    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-    {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false}
-  ];
+  players = [].constructor(this.playerCap);
   lobbyPin: any;
   client: any;
   roomInfoSub: any;
@@ -33,6 +26,9 @@ export class LobbyComponent implements OnDestroy, OnInit {
   constructor(public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
 
+    console.log(this.players)
+    this.setPlayers();
+    console.log(this.players)
     this.notificationSub = socket.notification().subscribe((data: any) => this.notification(data));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
     this.lobbyPin = this.route.snapshot.paramMap.get('room');
@@ -42,7 +38,6 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.setPlayers();
   }
   ngOnDestroy() {
     this.roomInfoSub.unsubscribe();
@@ -52,12 +47,12 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   setPlayers(){
     this.players = [
-      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false},
-      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader':false}
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader': false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader': false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader': false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader': false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader': false},
+      {'name': 'Empty', 'status': 'empty', 'uuid': '', 'leader': false}
     ]
   }
 
@@ -65,19 +60,20 @@ export class LobbyComponent implements OnDestroy, OnInit {
     console.log('inside room info', data);
     if(data.exists) {
       this.setPlayers()
-      let room = data.room;
-      for (let i = 0; i < room.players.length; i++) {
-        this.players[i].name = room.players[i].nickname;
-        this.players[i].uuid = room.players[i].uuid;
+      for (let i = 0; i < data.players.length; i++) {
+        this.players[i].name = data.players[i].nickname;
+        this.players[i].uuid = data.players[i].uuid;
         this.players[i].status = 'occupied';
-        this.players[i].leader = room.leader === room.players[i].uuid;
+        this.players[i].leader = data.leader === data.players[i].uuid;
+        console.log('first', this.players[i], data.players[i])
       }
-      for (let i = room.players.length; i < room.reserved.length; i++) {
+      for (let i = data.players.length; i < data.players.length + data.reserved.length; i++) {
         this.players[i].name = 'Joining...';
         this.players[i].status = 'reserved';
         this.players[i].leader = false;
+        console.log('second', this.players[i], data.players[i])
       }
-      let fromIndex = this.players.findIndex((element)=>{return element.uuid === this.client.uuid});
+      let fromIndex = this.players.findIndex((element: any)=>{return element.uuid === this.client.uuid});
       let element = this.players[fromIndex];
       this.players.splice(fromIndex, 1);
       this.players.splice(0, 0, element);
@@ -117,8 +113,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
     console.log('initial room check', data)
     this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
     if(data.exists){
-      let room = data.room;
-      if(room.players.length+room.players.length < room.capacity){
+      if(data.players.length+data.players.length < data.capacity){
         if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
           if ('nickname' in this.client) {
             this.roomInfo(data);
