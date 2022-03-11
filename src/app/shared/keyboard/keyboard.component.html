@@ -1,20 +1,19 @@
-<div style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
+<div class="p-2">
+  <div class="" style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
     <button (click)="handleKeyPress(keyboardKeys[i])" *ngFor="let key of [].constructor(10); let i = index"
             class="letter-button {{keyboardResults[i]}}"
             label="{{keyboardKeys[i] | uppercase}}"
             pButton></button>
-</div>a
-<div class=""
-     style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
+  </div>
+  <div style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
     <div style="flex: .5"></div>
     <button (click)="handleKeyPress(keyboardKeys[i+10])" *ngFor="let key of [].constructor(9); let i = index"
             class="letter-button {{keyboardResults[i+10]}}"
             label="{{keyboardKeys[i+10] | uppercase}}"
             pButton></button>
     <div style="flex: .5"></div>
-</div>
-<div class=""
-     style="margin: 0 auto 8px; display: flex; width: 100%; touch-action: manipulation">
+  </div>
+  <div style="margin: 0 auto 0px; display: flex; width: 100%; touch-action: manipulation">
     <button (click)="handleKeyPress('enter')" class="letter-button unknown" label="ENTER"
             pButton
             style="flex: 1.5"></button>
@@ -24,4 +23,5 @@
             pButton></button>
     <button (click)="handleKeyPress('backspace')" class="letter-button unknown" icon="fa fa-delete-left"
             pButton style="flex: 1.5"></button>
+  </div>
 </div>

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WordBoardComponent } from './word-board.component';
+import { ConfettiComponent } from './confetti.component';
 
-describe('WordBoardComponent', () => {
-  let component: WordBoardComponent;
-  let fixture: ComponentFixture<WordBoardComponent>;
+describe('ConfettiComponent', () => {
+  let component: ConfettiComponent;
+  let fixture: ComponentFixture<ConfettiComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WordBoardComponent ]
+      declarations: [ ConfettiComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WordBoardComponent);
+    fixture = TestBed.createComponent(ConfettiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

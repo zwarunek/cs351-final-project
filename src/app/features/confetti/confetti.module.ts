@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WordBoardComponent } from './word-board.component';
+import { ConfettiComponent } from './confetti.component';
 
 
 
 @NgModule({
     declarations: [
-        WordBoardComponent
+        ConfettiComponent
     ],
     exports: [
-        WordBoardComponent
+        ConfettiComponent
     ],
     imports: [
         CommonModule
     ]
 })
-export class WordBoardModule { }
+export class ConfettiModule { }
