@@ -1,0 +1,68 @@
+.unknown.title{
+  background-color: var(--unknown);
+  color: var(--unknown-text);
+}
+.unknown.letter-button{
+  background-color: var(--unknown-letter);
+  color: var(--text-color);
+}
+.correct.letter-button{
+  background-color: var(--correct);
+  color: var(--correct-text);
+}
+.present.letter-button{
+  background-color: var(--present);
+  color: var(--present-text);
+}
+.unused.letter-button{
+  background-color: var(--unused);
+  color: var(--unused-text);
+}
+.letter-button:enabled:focus .letter-button:enabled:hover .letter-button:enabled:visited{
+  background-color:unset;
+  color:unset;
+  border-color: transparent;
+}
+.reveal{
+  animation-name: tile-flip;
+  animation-duration: 600ms;
+}
+.letter-button{
+  font-family: inherit;
+  font-weight: bold;
+  border: 0;
+  padding: 0;
+  margin: 0 6px 0 0;
+  height: 3rem;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+  min-width: auto !important;
+}
+button:last-of-type{
+  margin: 0;
+}
+:host ::ng-deep {
+  .p-toast-message-custom {
+    background-color: var(--primary-color);
+    border: var(--surface-border);
+    border-width: 0 0 0 6px;
+    color: var(--primary-color-text);
+    .p-toast-icon-close {
+      color: var(--primary-color-text);
+    }
+  }
+  .p-toast{
+    z-index: 5;
+  }
+}
+.invalid{
+  animation-name: shake;
+  animation-duration: 600ms;
+}

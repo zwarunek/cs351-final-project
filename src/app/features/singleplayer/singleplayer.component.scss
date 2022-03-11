@@ -1,0 +1,31 @@
+.layout-content {
+  background-color: var(--surface-b);
+  color: var(--text-color);
+}
+.board-container{
+  height: 100%;
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+canvas {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  position: absolute;
+  pointer-events:none;
+}
+:host ::ng-deep {
+  .p-toast-message-custom {
+    background-color: var(--primary-color);
+    border: var(--surface-border);
+    border-width: 0 0 0 6px;
+    color: var(--primary-color-text);
+    .p-toast-icon-close {
+      color: var(--primary-color-text);
+    }
+  }
+  .p-toast{
+    z-index: 5;
+  }
+}

@@ -4,20 +4,6 @@
   display: inline-block;
   padding-bottom: 100%;
 }
-.title{
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  vertical-align: middle;
-  box-sizing: border-box;
-  text-transform: uppercase;
-  user-select: none;
-  border: 2px solid var(--surface-400);
-  border-radius: 80px;
-  padding-bottom: calc(100% - 4px);
-  position: relative;
-}
 .unused{
   background-color:var(--unused);
   color:var(--unused-text);
@@ -33,27 +19,6 @@
 .unknown.title{
   background-color: var(--unknown);
   color: var(--unknown-text);
-}
-.unknown.letter-button{
-  background-color: var(--unknown-letter);
-  color: var(--text-color);
-}
-.correct.letter-button{
-  background-color: var(--correct);
-  color: var(--correct-text);
-}
-.present.letter-button{
-  background-color: var(--present);
-  color: var(--present-text);
-}
-.unused.letter-button{
-  background-color: var(--unused);
-  color: var(--unused-text);
-}
-.letter-button:enabled:focus .letter-button:enabled:hover .letter-button:enabled:visited{
-  background-color:unset;
-  color:unset;
-  border-color: transparent;
 }
 .reveal{
   animation-name: tile-flip;
@@ -91,36 +56,6 @@
     transform: translate(0, 0);
     z-index: 999;
   }
-}
-.letter-button{
-  font-family: inherit;
-  font-weight: bold;
-  border: 0;
-  padding: 0;
-  margin: 0 6px 0 0;
-  height: 3rem;
-  border-radius: 4px;
-  cursor: pointer;
-  user-select: none;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: uppercase;
-  -webkit-tap-highlight-color: rgba(0,0,0,0.3);
-  min-width: auto !important;
-}
-button:last-of-type{
-  margin: 0;
-}
-.layout-content {
-  background-color: var(--surface-b);
-  color: var(--text-color);
-}
-.test {
-  display: grid;
-  grid-template-columns: repeat(5, calc(20% - 5px));
-  grid-gap: 5px;
 }
 :host ::ng-deep {
   .p-toast-message-custom {
@@ -162,8 +97,7 @@ button:last-of-type{
   padding-top: 10px;
 }
 @media (min-width: 640px) {
-  .board-container
-  {
+  .board-container{
     width: 100%;
   }
   .tile{
@@ -175,8 +109,7 @@ button:last-of-type{
   }
 }
 @media (max-width: 640px) {
-  .board-container
-  {
+  .board-container{
     width: 75%;
   }
   .tile{
@@ -188,8 +121,7 @@ button:last-of-type{
   }
 }
 @media (max-width: 400px) {
-  .board-container
-  {
+  .board-container{
     width: 70%;
   }
   .tile{
@@ -201,8 +133,7 @@ button:last-of-type{
   }
 }
 @media (max-width: 250px) {
-  .board-container
-  {
+  .board-container{
     width: 70%;
   }
   .tile{
@@ -212,18 +143,6 @@ button:last-of-type{
     font-size: 1rem;
     top: calc(50% - 0.5rem);
   }
-}
-.box {
-  position: absolute;
-  height: 50%;
-}
-.inner {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 153, .8);
 }
 .board-container{
   height: 100%;
@@ -253,11 +172,4 @@ button:last-of-type{
 }
 .tile:last-child{
   margin-right: 0;
-}
-canvas {
-  height: 100%; /* we need these for full-screen effect */
-  width: 100%;
-  top: 0;
-  position: absolute;
-  pointer-events:none;
 }
