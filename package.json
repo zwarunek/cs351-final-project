@@ -16,7 +16,7 @@
     "build:ssr": "ng build && ng run MultiplayerWordGame:server",
     "prerender": "ng run MultiplayerWordGame:prerender",
     "start:heroku": "npm run serve:ssr",
-    "postinstall": "ng build --aot --configuration=${ENV}"
+    "postinstall": "ng build --aot"
   },
   "private": true,
   "dependencies": {
