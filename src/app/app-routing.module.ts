@@ -1,22 +1,22 @@
 import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from "@angular/router";
-import {JoinLobbyPageModule} from "@app/pages/join-lobby-page/join-lobby-page.module";
-import {LobbyPageModule} from "@app/pages/lobby-page/lobby-page.module";
-import {SingleplayerPageModule} from "@app/pages/singleplayer-page/singleplayer-page.module";
 
 const routes: Routes = [
 
   {
     path: '',
-    loadChildren: () => SingleplayerPageModule,
+    loadChildren: () => import('./pages/singleplayer-page/singleplayer-page.module')
+        .then((m) => m.SingleplayerPageModule),
   },
   {
     path: 'join',
-    loadChildren: () => JoinLobbyPageModule,
+    loadChildren: () => import('./pages/join-lobby-page/join-lobby-page.module')
+        .then((m) => m.JoinLobbyPageModule),
   },
   {
     path: 'lobby/:room',
-    loadChildren: () => LobbyPageModule,
+    loadChildren: () => import('./pages/lobby-page/lobby-page.module')
+        .then((m) => m.LobbyPageModule),
   },
   {path: '**', redirectTo: ''}
 
