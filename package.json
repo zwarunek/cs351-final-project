@@ -15,6 +15,7 @@
     "serve:ssr": "node dist/MultiplayerWordGame/server/main.js",
     "build:ssr": "ng build --configuration=staging && ng run MultiplayerWordGame:server",
     "prerender": "ng run MultiplayerWordGame:prerender",
+    "start:heroku": "node dist-server/main.js",
     "heroku-postbuild": "ng build --configuration=staging && ng run MultiplayerWordGame:server"
   },
   "private": true,
