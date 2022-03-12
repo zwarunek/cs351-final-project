@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node dist-server/main.js",
     "start:qa": "ng serve --configuration staging",
     "start:prod": "ng serve --configuration production",
     "build": "ng build",
@@ -15,7 +15,6 @@
     "serve:ssr": "node dist/MultiplayerWordGame/server/main.js",
     "build:ssr": "ng build --configuration=staging && ng run MultiplayerWordGame:server",
     "prerender": "ng run MultiplayerWordGame:prerender",
-    "start:heroku": "node dist-server/main.js",
     "heroku-postbuild": "ng build --configuration=staging && ng run MultiplayerWordGame:server"
   },
   "private": true,
