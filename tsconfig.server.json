@@ -2,6 +2,14 @@
 {
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
+    "paths": {
+      "@core/*": ["src/app/core/*"],
+      "@features/*": ["src/app/features/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@environment/*": ["src/environments/*"],
+      "@app/*": ["src/app/*"],
+      "@assets/*": ["src/assets/*"]
+    },
     "outDir": "./out-tsc/server",
     "target": "es2019",
     "types": [

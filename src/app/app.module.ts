@@ -6,11 +6,11 @@ import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {HeadersModule} from "@features/headers/headers.module";
+import {HeadersModule} from "src/app/features/headers/headers.module";
 import {MessageService} from "primeng/api";
 import {CookieService} from "ngx-cookie-service";
 import {Socket, SocketIoModule} from "ngx-socket-io";
-import { environment } from '@environment/environment';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable()
@@ -44,6 +44,7 @@ export class GameSocket extends Socket{
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  environment = environment
   constructor() {
   }
 }

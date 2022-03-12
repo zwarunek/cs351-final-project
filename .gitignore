@@ -53,3 +53,4 @@ Thumbs.db
 /.angular/
 /package-lock.json
 /firstinstancekeypair.pem
+/dist-server/
