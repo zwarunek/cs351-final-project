@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from "@angular/router";
+import {JoinLobbyPageModule} from "@app/pages/join-lobby-page/join-lobby-page.module";
 
 const routes: Routes = [
 

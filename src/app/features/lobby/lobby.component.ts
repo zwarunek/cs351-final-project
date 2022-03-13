@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {SocketService} from "@core/services/socket.service";
 import {MessageService} from "primeng/api";
@@ -18,19 +18,18 @@ export class LobbyComponent implements OnDestroy, OnInit {
   roomInfoSub: any;
   notificationSub: any;
   clientInfoSub: any;
-  checkRoomSub: any;
   displayBasic = false;
   displayLobby = false;
   nickname: any;
 
-  constructor(public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
+  constructor(public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
 
     this.setPlayers();
-    this.notificationSub = socket.notification().subscribe((data: any) => this.notification(data));
-    this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
+    this.notificationSub = socket.notification().subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));
+    this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.ngZone.run(() =>{this.clientInfo(data)}));
     this.lobbyPin = this.route.snapshot.paramMap.get('room');
-    this.socket.roomInfo().pipe(take(1)).subscribe((data: any) => this.initialRoomCheck(data))
+    this.socket.roomInfo().pipe(take(1)).subscribe((data: any) => this.ngZone.run(() =>{this.initialRoomCheck(data)}))
     this.socket.getClientInfo();
     this.socket.getRoomInfoPinSingle(this.lobbyPin);
   }
@@ -38,7 +37,8 @@ export class LobbyComponent implements OnDestroy, OnInit {
   ngOnInit() {
   }
   ngOnDestroy() {
-    this.roomInfoSub.unsubscribe();
+    if(this.roomInfoSub !== undefined)
+      this.roomInfoSub.unsubscribe();
     this.notificationSub.unsubscribe();
     this.clientInfoSub.unsubscribe();
   }
@@ -55,7 +55,6 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   roomInfo(data: any){
-    console.log('inside room info', data);
     if(data.exists) {
       this.setPlayers()
       for (let i = 0; i < data.players.length; i++) {
@@ -107,8 +106,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   initialRoomCheck(data: any) {
-    console.log('initial room check', data)
-    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.roomInfo(data));
+    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.ngZone.run(() =>{this.roomInfo(data)}));
     if(data.exists){
       if(data.players.length+data.players.length < data.capacity){
         if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {

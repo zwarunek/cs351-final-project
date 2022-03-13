@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node dist-server/main.js",
+    "start": "ng serve",
     "start:qa": "ng serve --configuration staging",
     "start:prod": "ng serve --configuration production",
     "build": "ng build",
@@ -12,11 +12,12 @@
     "deploy:prod": "ng build --base-href=/ && ng deploy --no-build --cname=cs351.zacharywarunek.com && git push heroku master",
     "deploy:staging": "git push heroku-frontend-staging master && git push heroku-backend-staging master",
     "dev:ssr": "ng run MultiplayerWordGame:serve-ssr",
-    "serve:ssr": "node dist/MultiplayerWordGame/server/main.js",
-    "build:ssr": "ng build --configuration=staging && ng run MultiplayerWordGame:server",
-    "prerender": "ng run MultiplayerWordGame:prerender",
+    "serve:ssr": "node dist-server/main.js",
+    "build:ssr": "ng build && ng run MultiplayerWordGame:server",
+    "prerender:production": "ng run MultiplayerWordGame:prerender --routes-file routes.txt",
+    "prerender:staging": "ng run MultiplayerWordGame:prerender:staging --routes-file routes.txt",
     "start:heroku": "node dist-server/main.js",
-    "heroku-postbuild": "ng build --configuration=$ENV && ng run MultiplayerWordGame:server"
+    "heroku-postbuild": "ng build --configuration=$ENV && npm run prerender:$ENV"
   },
   "private": true,
   "dependencies": {
@@ -48,6 +49,7 @@
     "primeicons": "^5.0.0",
     "primeng": "^12.2.3",
     "rxjs": "^6.5.3",
+    "socket.io-client": "^4.4.1",
     "staging": "^0.1.3",
     "tsconfig-paths": "^3.13.0",
     "tslib": "^2.3.0",
