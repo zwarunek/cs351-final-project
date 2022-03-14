@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {environment} from "@environment/environment";
 import {ActivatedRoute, Data, NavigationEnd, Router} from "@angular/router";
-import {SeoService} from "@core/services/seo.service";
+import {SeoService} from "src/app/core/services/seo.service";
 import {filter, map, mergeMap, tap} from 'rxjs/operators';
+import {AppModule} from "./app.module";
 
 @Component({
   selector: 'app-root',
@@ -19,9 +19,10 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private seoService: SeoService) {
-    this.prod = environment.production;
-    this.env = environment.env;
+    private seoService: SeoService,
+    private appModule: AppModule) {
+    this.prod = appModule.environment.production;
+    this.env = appModule.environment.env;
   }
 
   ngOnInit(): void {

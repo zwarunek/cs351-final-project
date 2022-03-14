@@ -6,24 +6,10 @@ import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {HeadersModule} from "@features/headers/headers.module";
+import {HeadersModule} from "src/app/features/headers/headers.module";
 import {MessageService} from "primeng/api";
 import {CookieService} from "ngx-cookie-service";
-import {Socket, SocketIoModule} from "ngx-socket-io";
-import { environment } from '@environment/environment';
-
-
-@Injectable()
-export class GameSocket extends Socket{
-  constructor(cookieService: CookieService) {
-    // @ts-ignore
-    super({  url: environment.url, options: {query: "uuid=" + cookieService.get('uuid')} });
-    this.on('set-uuid',(msg: any)=>{
-      cookieService.set('uuid', msg.uuid, new Date(new Date().getTime() + 10*60000), '/')
-    });
-  }
-
-}
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -39,11 +25,12 @@ export class GameSocket extends Socket{
 
   ],
   providers: [MessageService, CookieService,
-    {provide: 'googleTagManagerId',  useValue: 'GTM-N6KF3RJ'}, GameSocket
+    {provide: 'googleTagManagerId',  useValue: 'GTM-N6KF3RJ'}
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  environment = environment
   constructor() {
   }
 }

@@ -165,10 +165,13 @@ module.exports = (io, socket, clients,rooms) => {
     socket.conn.on("close", () => {
         console.log('disconnected:', uuid())
         client().status = 'disconnected';
-        if(rooms[client().pin].players.includes(uuid()))
-            leaveLobby(false);
-        else if(rooms[client().pin].reserved.includes(uuid()))
-            leaveReserved();
+        if('pin' in client() && client().pin in rooms){
+
+            if('players' in rooms[client().pin] && rooms[client().pin].players.includes(uuid()))
+                leaveLobby(false);
+            else if('reserved' in rooms[client().pin] && rooms[client().pin].reserved.includes(uuid()))
+                leaveReserved();
+        }
     });
     io.to(socket.id).emit('set-uuid', {'uuid': uuid()})
 }

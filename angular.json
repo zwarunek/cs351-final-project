@@ -21,7 +21,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/MultiplayerWordGame/browser",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -65,8 +65,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -142,7 +142,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/MultiplayerWordGame/server",
+            "outputPath": "dist-server",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json"
           },
@@ -153,6 +153,15 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "staging": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
                 }
               ]
             },
@@ -189,6 +198,10 @@
             "production": {
               "browserTarget": "MultiplayerWordGame:build:production",
               "serverTarget": "MultiplayerWordGame:server:production"
+            },
+            "staging": {
+              "browserTarget": "MultiplayerWordGame:build:staging",
+              "serverTarget": "MultiplayerWordGame:server:staging"
             },
             "development": {
               "browserTarget": "MultiplayerWordGame:build:development",

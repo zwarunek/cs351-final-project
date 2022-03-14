@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  env: "STAGING"
+  env: "STAGING",
+  url: 'https://cs351server-staging.herokuapp.com/'
 };

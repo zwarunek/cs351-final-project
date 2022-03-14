@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {CookieService} from "ngx-cookie-service";
-import {GameSocket} from "@app/app.module";
+import { io } from "socket.io-client";
 import {MessageService} from "primeng/api";
+import {environment} from "@environment/environment";
+import {Router} from "@angular/router";
+import {fromEvent, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +12,22 @@ import {MessageService} from "primeng/api";
 export class SocketService {
   socketIoConfig: any;
 
-  constructor(public cookieService: CookieService, public socket: GameSocket, public messageService: MessageService) {
+  observer: any;
+  observer2: any;
+  private url = environment.url;
+  private socket: any;
+  constructor(public router: Router, public cookieService: CookieService, public messageService: MessageService,private readonly ngZone: NgZone) {
+    this.ngZone.runOutsideAngular(() => {
+      this.socket = io(this.url, {
+        reconnection: true,
+        reconnectionDelay: 5000,
+        reconnectionAttempts: 5,
+        query: {"uuid": cookieService.get('uuid')}
+      });
+      this.socket.on('set-uuid',(msg: any)=>{
+        cookieService.set('uuid', msg.uuid, new Date(new Date().getTime() + 10*60000), '/')
+      });
+    });
   }
 
   public joinLobby(nickname: any, pin: any){
@@ -19,8 +37,8 @@ export class SocketService {
     });
   }
 
-  public getJoined() {
-    return this.socket.fromEvent('joined-room');
+  public getJoined(): Observable<any> {
+    return fromEvent(this.socket, 'joined-room');
   }
 
   readyUp() {
@@ -35,12 +53,12 @@ export class SocketService {
     this.socket.emit('create-room');
   }
 
-  public getCreated() {
-    return this.socket.fromEvent('created-room');
+  public getCreated(): Observable<any> {
+    return fromEvent(this.socket, 'created-room');
   }
 
-  public roomInfo() {
-    return this.socket.fromEvent('room-info');
+  public roomInfo(): Observable<any> {
+    return fromEvent(this.socket, 'room-info');
   }
 
   public getRoomInfo() {
@@ -59,8 +77,8 @@ export class SocketService {
     this.socket.emit('check-lobby', pin.toString());
   }
 
-  public clientInfo() {
-    return this.socket.fromEvent('client-info');
+  public clientInfo(): Observable<any> {
+    return fromEvent(this.socket, 'client-info');
   }
 
   public getClientInfo() {
@@ -71,11 +89,14 @@ export class SocketService {
     this.socket.emit('leave-lobby', true);
   }
 
-  public notification() {
-    return this.socket.fromEvent('notification');
+  public notification(): Observable<any> {
+    return fromEvent(this.socket, 'notification');
   }
 
   joinReserved(pin: any) {
     this.socket.emit('join-reserved', pin.toString());
+  }
+  ngOnDestroy() {
+    this.socket.close();
   }
 }

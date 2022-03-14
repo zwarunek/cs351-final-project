@@ -1,4 +1,4 @@
-import {AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {CookieService} from "ngx-cookie-service";
 import {Socket, SocketIoConfig} from "ngx-socket-io";
@@ -22,12 +22,12 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
   roomExists = false;
   roomNotFoundMessage = '';
 
-  constructor(public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
+  constructor(public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
 
-    this.getCreatedSub = this.socket.getCreated().subscribe((pin: any) => this.getCreated(pin));
-    this.notificationSub = this.socket.notification().subscribe((data: any) => this.notification(data));
-    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.checkLobby(data));
-    this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.clientInfo(data));
+    this.getCreatedSub = this.socket.getCreated().subscribe((pin: any) => this.ngZone.run(() =>{this.getCreated(pin)}));
+    this.notificationSub = this.socket.notification().subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));
+    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.ngZone.run(() =>{this.checkLobby(data)}));
+    this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.ngZone.run(() =>{this.clientInfo(data)}));
     socket.getClientInfo();
   }
 
@@ -56,7 +56,6 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createLobby(){
     this.socket.createLobby();
-    // console.log(this.lobbyPinInput)
   }
   joinLobby(){
     this.router.navigate(['/lobby/' + this.lobbyPinInput.toString()]);
