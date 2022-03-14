@@ -15,9 +15,9 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   lobbyPinInput: any;
   nicknameInput: string = '';
-  roomInfoSub
-  getCreatedSub
-  notificationSub
+  roomInfoSub:any;
+  getCreatedSub:any;
+  notificationSub:any;
   clientInfoSub: any;
   roomExists = false;
   roomNotFoundMessage = '';

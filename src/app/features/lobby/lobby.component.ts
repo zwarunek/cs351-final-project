@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {SocketService} from "@core/services/socket.service";
 import {MessageService} from "primeng/api";
@@ -37,6 +37,12 @@ export class LobbyComponent implements OnDestroy, OnInit {
   ngOnInit() {
   }
   ngOnDestroy() {
+    if(this.client !== undefined)
+      if(!('nickname' in this.client)
+          && 'pin' in this.client
+          && this.client.pin === this.lobbyPin)
+        this.socket.leaveReserved();
+    // console.log(this.client);
     if(this.roomInfoSub !== undefined)
       this.roomInfoSub.unsubscribe();
     this.notificationSub.unsubscribe();
@@ -106,7 +112,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   initialRoomCheck(data: any) {
     this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.ngZone.run(() =>{this.roomInfo(data)}));
     if(data.exists){
-      if(data.players.length+data.players.length < data.capacity){
+      if(data.players.length+data.reserved.length < data.capacity){
         if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
           if ('nickname' in this.client) {
             this.roomInfo(data);
@@ -114,6 +120,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
             this.socket.joinReserved(this.lobbyPin);
             this.displayBasic = true;
           }
+          this.socket.getClientInfo()
         }
         else{
           this.router.navigate(['/lobby/' + this.client.pin])

@@ -99,4 +99,8 @@ export class SocketService {
   ngOnDestroy() {
     this.socket.close();
   }
+
+    leaveReserved() {
+      this.socket.emit('leave-reserved');
+    }
 }

@@ -142,6 +142,7 @@ module.exports = (io, socket, clients,rooms) => {
     socket.on("leave-lobby", leaveLobby);
     socket.on("check-lobby", checkLobby);
     socket.on("join-reserved", joinReserved);
+    socket.on("leave-reserved", leaveReserved);
     socket.on("ready-up", readyUp);
     socket.on("unready-up", unreadyUp);
 
