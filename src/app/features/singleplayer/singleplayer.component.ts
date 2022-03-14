@@ -36,7 +36,7 @@ export class SingleplayerComponent implements OnInit {
   key: any;
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
-  letters = 5;
+  letters = 8;
   numberOfGuesses = 6;
   allowedChars!:any[];
   currentGuessChars!: number;
@@ -61,19 +61,25 @@ export class SingleplayerComponent implements OnInit {
       this.initGameBoard();
     else
       this.loadGameBoard();
-    http.get('assets/wordlists/5-letter-answers.txt', { responseType: 'text' })
-        .subscribe(data => {
-          this.wordlistAnswers = data.split(/\r?\n/);
-          if(this.word === undefined) {
-            this.generateWord()
-            this.saveGameState();
-          }
-        });
-    http.get('assets/wordlists/5-letter.txt', { responseType: 'text' })
-        .subscribe(data => {
-          this.wordlistGuesses = data.split(/\r?\n/);
-        });
+
+    this.loadWordList();
   }
+  loadWordList()
+  {
+    console.log('localhost:4200/assets/wordlists/' + this.letters + '-letter.txt')
+    this.http.get('assets/wordlists/' + this.letters + '-letter.txt', {responseType: 'text'})
+      .subscribe(data => {
+        this.wordlistAnswers = data.split(/\r?\n/);
+        this.wordlistGuesses = this.wordlistAnswers;
+        console.log(this.wordlistAnswers)
+        if(this.word === undefined)
+        {
+          this.generateWord()
+          this.saveGameState();
+        }
+      });
+  }
+
   loadGameBoard(){
     // @ts-ignore
     let data = JSON.parse(localStorage.getItem('gameState'));
