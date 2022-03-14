@@ -1,8 +1,8 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChildren} from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
-import {take} from "rxjs/operators";
+import {KeyboardModule} from "@shared/keyboard/keyboard.module";
 
 @Component({
   selector: 'app-multiplayer',
@@ -14,6 +14,17 @@ export class MultiplayerComponent implements OnInit {
   roomInfoSub: any;
   clientInfoSub: any;
   notificationSub: any;
+  letters = 5;
+  numberOfGuesses = 6;
+  currentGuess: any;
+  guessResults: any;
+  guessedWords: any;
+  guesses: any;
+  keyboardResults: any;
+  gameState: any;
+  word: any;
+  @ViewChildren(KeyboardModule) keyboard: any;
+
 
   constructor(public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
     this.roomInfoSub = this.socket.roomInfo()
@@ -42,10 +53,15 @@ export class MultiplayerComponent implements OnInit {
   }
 
   private roomInfo(data: any) {
-
+    this.word = data.word
   }
 
   private clientInfo(data: any) {
 
   }
+
+  handleKeyPress(key: string){
+    key = key.toLowerCase();
+  }
+
 }

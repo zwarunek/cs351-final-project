@@ -149,6 +149,33 @@ module.exports = (io, socket, clients,rooms) => {
         delete client().pin
         delete client().nickname
     }
+
+    const checkGuessedWord = function (data) {
+        checkWord(data.guess, rooms[client().pin].word, rooms[client().pin].letters)
+    }
+
+    function checkWord(guess, word, letters){
+        let tempLayout = [].constructor(letters).fill('unused')
+        for(let i = 0; i < letters; i++){
+            if(guess.charAt(i) === word.charAt(i)){
+                word = word.substring(0, i) + '*' + word.substring(i + 1);
+                guess = guess.substring(0, i) + '*' + guess.substring(i + 1);
+                tempLayout[i] = 'correct';
+            }
+        }
+        for(let i = 0; i < letters; i++){
+            if(word.includes(guess.charAt(i)) && word.charAt(i) !== '*' && guess.charAt(i) !== '*'){
+                word = word.substring(0, word.indexOf(guess.charAt(i))) + '-' + word.substring(word.indexOf(guess.charAt(i)) + 1);
+                tempLayout[i] = 'present'
+            }
+        }
+        return tempLayout;
+    }
+
+    const startGame = function () {
+
+    }
+
     const uuid = () => {
         return socket.handshake.query.uuid
     };
@@ -167,6 +194,8 @@ module.exports = (io, socket, clients,rooms) => {
     socket.on("leave-reserved", leaveReserved);
     socket.on("ready-up", readyUp);
     socket.on("unready-up", unreadyUp);
+    socket.on("start-game", startGame);
+    socket.on("check-word", checkGuessedWord);
 
     if(uuid() === ''
         || !(uuid() in clients)
