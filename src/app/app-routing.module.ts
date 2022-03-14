@@ -15,6 +15,11 @@ const routes: Routes = [
         .then((m) => m.JoinLobbyPageModule),
   },
   {
+    path: 'multiplayer',
+    loadChildren: () => import('./pages/multiplayer-page/multiplayer-page.module')
+        .then((m) => m.MultiplayerPageModule),
+  },
+  {
     path: 'lobby/:room',
     loadChildren: () => import('./pages/lobby-page/lobby-page.module')
         .then((m) => m.LobbyPageModule),

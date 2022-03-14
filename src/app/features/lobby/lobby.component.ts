@@ -18,9 +18,13 @@ export class LobbyComponent implements OnDestroy, OnInit {
   roomInfoSub: any;
   notificationSub: any;
   clientInfoSub: any;
+  startCountdownSub: any;
+  startGameSub: any;
   displayBasic = false;
   displayLobby = false;
   nickname: any;
+  gameState: any = 'waiting'
+  startingCountdown = 0;
 
   constructor(public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
 
@@ -28,6 +32,8 @@ export class LobbyComponent implements OnDestroy, OnInit {
     this.setPlayers();
     this.notificationSub = socket.notification().subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.ngZone.run(() =>{this.clientInfo(data)}));
+    this.startCountdownSub = socket.lobbyStartCountdown().subscribe((data: any) => this.ngZone.run(() =>{this.startCountdown(data)}));
+    this.startGameSub = socket.lobbyStartGame().subscribe(() => this.ngZone.run(() =>{this.startGame()}));
     this.lobbyPin = this.route.snapshot.paramMap.get('room');
     this.socket.roomInfo().pipe(take(1)).subscribe((data: any) => this.ngZone.run(() =>{this.initialRoomCheck(data)}))
     this.socket.getClientInfo();
@@ -42,11 +48,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
           && 'pin' in this.client
           && this.client.pin === this.lobbyPin)
         this.socket.leaveReserved();
-    // console.log(this.client);
-    if(this.roomInfoSub !== undefined)
-      this.roomInfoSub.unsubscribe();
-    this.notificationSub.unsubscribe();
-    this.clientInfoSub.unsubscribe();
+    this.unsubscribeAll();
   }
 
   setPlayers(){
@@ -94,9 +96,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   private backToJoin(params: any) {
-    this.roomInfoSub.unsubscribe();
-    this.notificationSub.unsubscribe();
-    this.clientInfoSub.unsubscribe();
+    this.unsubscribeAll()
     this.router.navigate(['/join'], {queryParams: params});
 
   }
@@ -143,5 +143,23 @@ export class LobbyComponent implements OnDestroy, OnInit {
 
   readyUp() {
     this.socket.readyUp()
+  }
+
+  startGame() {
+    this.router.navigate(['/multiplayer'])
+  }
+
+  startCountdown(data: any) {
+    this.gameState = 'starting'
+    this.startingCountdown = data;
+  }
+
+  private unsubscribeAll() {
+    if(this.roomInfoSub !== undefined)
+      this.roomInfoSub.unsubscribe();
+    this.notificationSub.unsubscribe();
+    this.clientInfoSub.unsubscribe();
+    this.startGameSub.unsubscribe();
+    this.startCountdownSub.unsubscribe();
   }
 }

@@ -9,14 +9,18 @@ import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
 import {DialogModule} from "primeng/dialog";
 import {SidebarModule} from "primeng/sidebar";
+import { HeaderMultiplayerComponent } from './header-multiplayer/header-multiplayer.component';
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 @NgModule({
   declarations: [
-    HeaderDefaultComponent
+    HeaderDefaultComponent,
+    HeaderMultiplayerComponent
   ],
-  exports: [
-    HeaderDefaultComponent
-  ],
+    exports: [
+        HeaderDefaultComponent,
+        HeaderMultiplayerComponent
+    ],
     imports: [
         CommonModule,
         MenubarModule,
@@ -26,7 +30,8 @@ import {SidebarModule} from "primeng/sidebar";
         ButtonModule,
         RippleModule,
         DialogModule,
-        SidebarModule
+        SidebarModule,
+        ConfirmPopupModule
     ]
 })
 export class HeadersModule { }

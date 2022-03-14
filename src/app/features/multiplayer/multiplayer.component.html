@@ -1,1 +1,26 @@
-<p>multiplayer works!</p>
+<p-toast [baseZIndex]="5000" key="message" position="top-center">
+    <ng-template let-message pTemplate="message">
+        <div class="p-flex p-flex-column" style="flex: 1">
+            <div class="p-text-center">
+                <h2 style="margin: 0">{{message.summary}}</h2>
+                <span [innerHTML]="message.detail"></span>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>
+<div class="flex flex-column h-full layout-content align-items-center" style="justify-content: space-between;
+    max-width: 500px;
+    margin-inline: auto;">
+
+    <app-word-board [currentGuess]="currentGuess"
+                    [guessResults]="guessResults"
+                    [guessedWords]="guessedWords"
+                    [guesses]="guesses"
+                    [letters]="letters"
+                    [numberOfGuesses]="numberOfGuesses" style="height: 100%; width: 100%"></app-word-board>
+    <app-keyboard (keypressFunction)="handleKeyPress($event)" *ngIf="gameState==='playing'"
+                  [keyboardResults]="keyboardResults"
+                  class="mt-auto"
+                  style="width: 100%;display: flex; flex-direction: column; justify-content: flex-end;"></app-keyboard>
+</div>
+Hello Multiplayer/

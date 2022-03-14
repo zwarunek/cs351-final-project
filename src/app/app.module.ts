@@ -7,7 +7,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HeadersModule} from "src/app/features/headers/headers.module";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {CookieService} from "ngx-cookie-service";
 import { environment } from 'src/environments/environment';
 
@@ -24,7 +24,7 @@ import { environment } from 'src/environments/environment';
     HeadersModule,
 
   ],
-  providers: [MessageService, CookieService,
+  providers: [MessageService, CookieService, ConfirmationService,
     {provide: 'googleTagManagerId',  useValue: 'GTM-N6KF3RJ'}
   ],
   bootstrap: [AppComponent]

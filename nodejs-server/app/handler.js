@@ -30,7 +30,7 @@ module.exports = (io, socket, clients,rooms) => {
         let pin = 0
         while(pin === 0 || pin in rooms)
             pin = randomInt(1111, 9999).toString();
-        rooms[pin] = {'pin': pin, 'players': [], 'capacity': 6, 'reserved': []};
+        rooms[pin] = {'pin': pin, 'players': [], 'capacity': 6, 'reserved': [], 'ready': 0};
         socket.emit('created-room', pin);
         console.log('Created lobby', pin);
     };
@@ -88,11 +88,33 @@ module.exports = (io, socket, clients,rooms) => {
 
     const readyUp = function (){
         clients[uuid()].ready = true;
+        rooms[client().pin].ready++;
         getRoomInfo();
+        if(rooms[client().pin].ready === rooms[client().pin].players.length + rooms[client().pin].reserved.length ){
+            allReady(5, client().pin);
+        }
+    }
+
+    function allReady(i, pin){
+        setTimeout(function () {
+            if(i !== 0){
+                io.to(pin).emit('lobby-start-countdown', i);
+                i--;
+                allReady(i, pin);
+            }
+            else
+                lobbyStartGame(pin);
+        }, 1000);
+
+    }
+
+    function lobbyStartGame(pin){
+        io.to(pin).emit('lobby-start-game');
     }
 
     const unreadyUp = function (){
         clients[uuid()].ready = false;
+        rooms[client().pin].ready--;
         getRoomInfo();
     }
 
@@ -105,7 +127,7 @@ module.exports = (io, socket, clients,rooms) => {
 
     const leaveLobby = function (data) {
         if(client().pin in rooms){
-
+            unreadyUp();
             socket.to(client().pin).emit('notification', {'severity': 'info', 'header': 'Info', 'message': client().nickname + ' has left the lobby'})
             socket.leave(client().pin);
             delete rooms[client().pin].players.splice(rooms[client().pin].players.indexOf(uuid()), 1)

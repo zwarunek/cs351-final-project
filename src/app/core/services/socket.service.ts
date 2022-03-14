@@ -93,6 +93,14 @@ export class SocketService {
     return fromEvent(this.socket, 'notification');
   }
 
+  public lobbyStartCountdown(): Observable<any> {
+    return fromEvent(this.socket, 'lobby-start-countdown');
+  }
+
+  public lobbyStartGame(): Observable<any> {
+    return fromEvent(this.socket, 'lobby-start-game');
+  }
+
   joinReserved(pin: any) {
     this.socket.emit('join-reserved', pin.toString());
   }
@@ -103,4 +111,8 @@ export class SocketService {
     leaveReserved() {
       this.socket.emit('leave-reserved');
     }
+
+  startGame() {
+    this.socket.emit('start-game');
+  }
 }

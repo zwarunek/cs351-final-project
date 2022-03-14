@@ -3,7 +3,8 @@
     <div class="flex-column flex" style="height: 100%">
 
       <div class="w-full mb-3 text-6xl flex justify-content-center" style="color: var(--text-color)">
-        <span class=" h-3rem">{{lobbyPin}}</span>
+        <span *ngIf="gameState === 'waiting'" class="h-3rem">{{lobbyPin}}</span>
+        <span *ngIf="gameState === 'starting'" class="h-3rem">Starting: {{startingCountdown}}</span>
       </div>
       <div class="flex-column flex h-full" style="position:relative;">
         <div class="h-full w-full text-4xl justify-content-between player-row" [ngClass]="player.status.toString()"
