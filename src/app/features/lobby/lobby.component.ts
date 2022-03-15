@@ -112,7 +112,11 @@ export class LobbyComponent implements OnDestroy, OnInit {
   initialRoomCheck(data: any) {
     this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.ngZone.run(() =>{this.roomInfo(data)}));
     if(data.exists){
-      if(data.players.length+data.reserved.length < data.capacity){
+      console.log(data)
+      if(!data.open){
+        this.backToJoin({'E': 'CLOSED'});
+      }
+      else if(data.players.length+data.reserved.length < data.capacity){
         if(!('pin' in this.client) || this.client.pin === this.lobbyPin) {
           if ('nickname' in this.client) {
             this.roomInfo(data);

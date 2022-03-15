@@ -29,7 +29,7 @@ export class MultiplayerComponent implements OnInit {
   constructor(public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
     this.roomInfoSub = this.socket.roomInfo()
         .subscribe((data: any) => this.ngZone.run(() =>{this.roomInfo(data)}))
-    this.roomInfoSub = this.socket.clientInfo()
+    this.clientInfoSub = this.socket.clientInfo()
         .subscribe((data: any) => this.ngZone.run(() =>{this.clientInfo(data)}))
     this.notificationSub = socket.notification()
         .subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));

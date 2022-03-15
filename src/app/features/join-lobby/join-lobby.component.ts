@@ -49,6 +49,9 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
           case 'CAP':
             this.messageService.add({severity: 'error', summary: 'Error', detail: 'Lobby is full'});
             break;
+          case 'CLOSED':
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'Lobby is closed'});
+            break;
         }
       }
     });

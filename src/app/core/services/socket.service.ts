@@ -94,11 +94,11 @@ export class SocketService {
   }
 
   public lobbyStartCountdown(): Observable<any> {
-    return fromEvent(this.socket, 'lobby-start-countdown');
+    return fromEvent(this.socket, 'start-countdown');
   }
 
   public lobbyStartGame(): Observable<any> {
-    return fromEvent(this.socket, 'lobby-start-game');
+    return fromEvent(this.socket, 'start-game');
   }
 
   joinReserved(pin: any) {

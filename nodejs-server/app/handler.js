@@ -1,4 +1,5 @@
 const {randomInt, randomUUID} = require("crypto");
+const fs = require('fs');
 module.exports = (io, socket, clients,rooms) => {
     const joinRoom = function (data) {
         if(data.pin in rooms){
@@ -30,7 +31,7 @@ module.exports = (io, socket, clients,rooms) => {
         let pin = 0
         while(pin === 0 || pin in rooms)
             pin = randomInt(1111, 9999).toString();
-        rooms[pin] = {'pin': pin, 'players': [], 'capacity': 6, 'reserved': [], 'ready': 0};
+        rooms[pin] = {'pin': pin, 'players': [], 'capacity': 6, 'reserved': [], 'ready': 0, 'open': true, 'status': 'lobby'};
         socket.emit('created-room', pin);
         console.log('Created lobby', pin);
     };
@@ -51,7 +52,7 @@ module.exports = (io, socket, clients,rooms) => {
             for(const id of room.reserved){
                 reserved.push(clients[id]);
             }
-            io.to(pin).emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader})
+            io.to(pin).emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader, 'open': room.open})
         }
         else
             socket.emit('room-info', {'exists': false})
@@ -68,7 +69,7 @@ module.exports = (io, socket, clients,rooms) => {
             for(const id of room.reserved){
                 reserved.push(clients[id]);
             }
-            socket.emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader})
+            socket.emit('room-info', {'exists': true, 'capacity': room.capacity, 'players': players, 'reserved': reserved, 'pin': pin, 'leader': room.leader, 'open': room.open})
         }
         else
             socket.emit('room-info', {'exists': false})
@@ -91,25 +92,29 @@ module.exports = (io, socket, clients,rooms) => {
         rooms[client().pin].ready++;
         getRoomInfo();
         if(rooms[client().pin].ready === rooms[client().pin].players.length + rooms[client().pin].reserved.length ){
-            allReady(5, client().pin);
+            rooms[client().pin].open = false;
+
+            countdownTimer(5, client().pin, lobbyStartGame)
+
         }
     }
 
-    function allReady(i, pin){
+    const countdownTimer = function (i, pin, callback){
         setTimeout(function () {
             if(i !== 0){
-                io.to(pin).emit('lobby-start-countdown', i);
+                io.to(pin).emit('start-countdown', i);
                 i--;
-                allReady(i, pin);
+                countdownTimer(i, pin, callback);
             }
             else
-                lobbyStartGame(pin);
+                callback(pin);
         }, 1000);
-
     }
 
     function lobbyStartGame(pin){
-        io.to(pin).emit('lobby-start-game');
+        rooms[pin].playersJoining = rooms[pin].players;
+        rooms[pin].status = 'waiting';
+        io.to(pin).emit('start-game');
     }
 
     const unreadyUp = function (){
@@ -140,6 +145,7 @@ module.exports = (io, socket, clients,rooms) => {
                 delete client().pin
                 delete client().nickname
             }
+            console.log(uuid(), 'left the lobby', client())
         }
     };
     const leaveReserved = function () {
@@ -172,8 +178,32 @@ module.exports = (io, socket, clients,rooms) => {
         return tempLayout;
     }
 
-    const startGame = function () {
+    const playerWaiting = function () {
+        let room = rooms[client().pin]
+        if(room.playersJoining.includes(uuid())){
+            delete room.playersJoining.splice(room.playersJoining.indexOf(uuid()), 1)
+        }
+        if(room.status === 'waiting' && room.playersJoining.length <= room.players.length - room.players.length/2){
+            room.status = 'starting';
 
+            countdownTimer(10, client().pin, startGame)
+        }
+    }
+
+    const startGame = function (pin){
+        io.to(pin).emit('start-game', {
+            'word': generateWord(5)
+        })
+    }
+
+    function generateWord(letters){
+        try {
+            const data = fs.readFileSync(__dirname + '/assets/wordlists/'+letters+'-letters.txt', 'utf8')
+            console.log(data)
+        } catch (err) {
+            console.error(err)
+        }
+        return data;
     }
 
     const uuid = () => {
@@ -194,7 +224,7 @@ module.exports = (io, socket, clients,rooms) => {
     socket.on("leave-reserved", leaveReserved);
     socket.on("ready-up", readyUp);
     socket.on("unready-up", unreadyUp);
-    socket.on("start-game", startGame);
+    socket.on("start-game", playerWaiting);
     socket.on("check-word", checkGuessedWord);
 
     if(uuid() === ''
