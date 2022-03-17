@@ -116,8 +116,8 @@ export class SocketService {
     this.socket.emit('start-game');
   }
 
-  wordEntered(key: string) {
-    this.socket.emit('word-entered', key)
+  wordEntered(keys: any) {
+    this.socket.emit('word-entered', keys)
   }
 
   backspace() {
@@ -126,5 +126,17 @@ export class SocketService {
 
   keyEntered(key: string) {
     this.socket.emit('key-entered', key)
+  }
+
+  public displayResults(): Observable<any> {
+    return fromEvent(this.socket, 'display-results');
+  }
+
+  public displayKey(): Observable<any> {
+    return fromEvent(this.socket, 'display-key');
+  }
+
+  public invalidWord(): Observable<any> {
+    return fromEvent(this.socket, 'invalid-word');
   }
 }

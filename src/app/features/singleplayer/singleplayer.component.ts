@@ -1,4 +1,13 @@
-import {Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  Renderer2,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {MessageService} from "primeng/api";
 import {GoogleTagManagerService} from "angular-google-tag-manager";
@@ -6,13 +15,14 @@ import {environment} from "@environment/environment";
 import * as confetti from "canvas-confetti";
 import {KeyboardModule} from "@shared/keyboard/keyboard.module";
 import {ConfettiComponent} from "@features/confetti/confetti.component";
+import {KeyboardComponent} from "@shared/keyboard/keyboard.component";
 
 @Component({
   selector: 'app-singleplayer',
   templateUrl: './singleplayer.component.html',
   styleUrls: ['./singleplayer.component.scss']
 })
-export class SingleplayerComponent implements OnInit {
+export class SingleplayerComponent implements OnInit, AfterViewInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if(this.gameState !== 'playing')
@@ -24,7 +34,7 @@ export class SingleplayerComponent implements OnInit {
     this.width = event.target.innerWidth;
     this.height = event.target.innerHeight;
   }
-  @ViewChildren(KeyboardModule) keyboard: any;
+  @ViewChild(KeyboardComponent) keyboard: any;
   @ViewChild(ConfettiComponent) confettiComponent: any;
 
   myConfetti: any;
@@ -73,6 +83,9 @@ export class SingleplayerComponent implements OnInit {
         .subscribe(data => {
           this.wordlistGuesses = data.split(/\r?\n/);
         });
+  }
+  ngAfterViewInit() {
+    console.log(this.keyboard)
   }
   loadGameBoard(){
     // @ts-ignore
