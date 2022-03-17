@@ -37,8 +37,8 @@ export class SingleplayerComponent implements OnInit {
   key: any;
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
-  // letters = 8;
-  @ViewChildren(HeadersModule) letters: any;
+  letters = 5;
+  // @ViewChildren(HeadersModule) letters: any
   numberOfGuesses = 5;
   allowedChars!:any[];
   currentGuessChars!: number;
@@ -49,6 +49,8 @@ export class SingleplayerComponent implements OnInit {
   guessedWords!: any[];
   startTime: any;
   gameStateForInput: any;
+  min:number = 5;
+  max:number = 9;
   constructor(public http: HttpClient,
               private messageService: MessageService,
               private renderer2: Renderer2,
@@ -74,11 +76,8 @@ export class SingleplayerComponent implements OnInit {
         this.wordlistAnswers = data.split(/\r?\n/);
         this.wordlistGuesses = this.wordlistAnswers;
         console.log(this.wordlistAnswers)
-        if(this.word === undefined)
-        {
-          this.generateWord()
-          this.saveGameState();
-        }
+        this.generateWord()
+        this.saveGameState();
       });
   }
 
@@ -105,9 +104,8 @@ export class SingleplayerComponent implements OnInit {
       console.log(this.word);
   }
   initGameBoard(){
-    if(this.wordlistAnswers.length !== 0) {
-      this.generateWord();
-    }
+    this.loadWordList();
+    console.log(this.letters);
     this.guessResults = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => 'unknown'))
 
     this.guesses = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => ''))
@@ -121,6 +119,7 @@ export class SingleplayerComponent implements OnInit {
     this.guessedWords = [];
     this.startTime = undefined;
     this.saveGameState();
+
   }
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
@@ -298,4 +297,8 @@ export class SingleplayerComponent implements OnInit {
     localStorage.setItem('gameState', JSON.stringify(data));
   }
 
+  lettersChanged($event: any) {
+    let lettersInput = $event.value;
+    console.log(lettersInput)
+  }
 }
