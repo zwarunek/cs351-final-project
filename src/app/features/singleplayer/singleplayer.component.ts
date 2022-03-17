@@ -6,6 +6,7 @@ import {environment} from "@environment/environment";
 import * as confetti from "canvas-confetti";
 import {KeyboardModule} from "@shared/keyboard/keyboard.module";
 import {ConfettiComponent} from "@features/confetti/confetti.component";
+import {HeadersModule} from "@features/headers/headers.module";
 
 @Component({
   selector: 'app-singleplayer',
@@ -36,8 +37,9 @@ export class SingleplayerComponent implements OnInit {
   key: any;
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
-  letters = 8;
-  numberOfGuesses = 6;
+  // letters = 8;
+  @ViewChildren(HeadersModule) letters: any;
+  numberOfGuesses = 5;
   allowedChars!:any[];
   currentGuessChars!: number;
   currentGuess!: number;

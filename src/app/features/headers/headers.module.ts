@@ -9,6 +9,8 @@ import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
 import {DialogModule} from "primeng/dialog";
 import {SidebarModule} from "primeng/sidebar";
+import {InputNumberModule} from "primeng/inputnumber";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -17,16 +19,18 @@ import {SidebarModule} from "primeng/sidebar";
   exports: [
     HeaderDefaultComponent
   ],
-    imports: [
-        CommonModule,
-        MenubarModule,
-        SharedModule,
-        AvatarModule,
-        MenuModule,
-        ButtonModule,
-        RippleModule,
-        DialogModule,
-        SidebarModule
-    ]
+  imports: [
+    CommonModule,
+    MenubarModule,
+    SharedModule,
+    AvatarModule,
+    MenuModule,
+    ButtonModule,
+    RippleModule,
+    DialogModule,
+    SidebarModule,
+    InputNumberModule,
+    FormsModule
+  ]
 })
 export class HeadersModule { }
