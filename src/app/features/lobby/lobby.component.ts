@@ -150,6 +150,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
   }
 
   startGame() {
+    console.log('GOING TO MULTIPLAYER')
     this.router.navigate(['/multiplayer'])
   }
 

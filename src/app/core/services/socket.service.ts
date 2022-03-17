@@ -115,4 +115,16 @@ export class SocketService {
   startGame() {
     this.socket.emit('start-game');
   }
+
+  wordEntered(key: string) {
+    this.socket.emit('word-entered', key)
+  }
+
+  backspace() {
+    this.socket.emit('backspace')
+  }
+
+  keyEntered(key: string) {
+    this.socket.emit('key-entered', key)
+  }
 }

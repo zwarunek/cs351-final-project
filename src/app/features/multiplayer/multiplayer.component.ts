@@ -5,6 +5,7 @@ import {MessageService} from "primeng/api";
 import {KeyboardModule} from "@shared/keyboard/keyboard.module";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "@environment/environment";
+import {KeyboardComponent} from "@shared/keyboard/keyboard.component";
 
 @Component({
   selector: 'app-multiplayer',
@@ -17,8 +18,8 @@ export class MultiplayerComponent implements OnInit {
   clientInfoSub: any;
   notificationSub: any;
   gameStartedSub: any;
-  letters: any;
-  numberOfGuesses: any;
+  letters = 5;
+  numberOfGuesses = 6;
   currentGuess: any;
   currentGuessChars: any;
   guessResults: any;
@@ -32,6 +33,7 @@ export class MultiplayerComponent implements OnInit {
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
   @ViewChildren(KeyboardModule) keyboard: any;
+  @ViewChildren(KeyboardComponent) allowedChars: any;
 
 
   constructor(public http: HttpClient, public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
@@ -43,15 +45,8 @@ export class MultiplayerComponent implements OnInit {
         .subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));
     this.gameStartedSub = socket.gameStarted()
         .subscribe((data: any) => this.ngZone.run(() =>{this.gameStarted(data)}));
-    this.gameState = 'waiting'
-    this.gameStateForInput = 'waiting'
     this.socket.startGame();
 
-  }
-  generateWord(){
-    this.word = this.wordlistAnswers[Math.floor(Math.random() * this.wordlistAnswers.length)];
-    if (environment.env === 'DEV')
-      console.log(this.word);
   }
 
   ngOnDestroy() {
@@ -72,32 +67,106 @@ export class MultiplayerComponent implements OnInit {
   }
 
   private roomInfo(data: any) {
-    this.word = data.word;
+    console.log(data)
+    this.letters = data.letters;
+    this.numberOfGuesses = data.guesses;
+    this.gameStateForInput = data.gameState;
+    this.gameState = data.gameState;
   }
 
   private gameStarted(data: any) {
     console.log(data)
-    this.word = data.word;
+    this.letters = data.letters;
+    this.numberOfGuesses = data.numberOfGuesses;
+    this.gameStateForInput = data.gameState;
+    this.gameState = data.gameState;
+  }
+
+  private clientInfo(data: any) {
+    console.log(data)
     this.guessResults = data.guessResults;
     this.guesses = data.guesses;
     this.keyboardResults = data.keyboardResults;
-    this.gameStateForInput = data.gameState;
-    this.gameState = data.gameState;
     this.currentGuess = data.currentGuess;
     this.currentGuessChars = data.currentGuessChars;
     this.guessedWords = data.guessedWords;
     this.startTime = undefined;
-    this.letters = data.letters;
-    this.numberOfGuesses = data.numberOfGuesses;
-    console.log(this.word)
   }
 
-  private clientInfo(data: any) {
-
-  }
 
   handleKeyPress(key: string){
     key = key.toLowerCase();
+    if(this.allowedChars.includes(key) && this.gameStateForInput === 'playing') {
+      let rowElement = document.getElementById('board-row-'+this.currentGuess);
+
+      if (key === 'enter') {
+        // let guess = this.guesses[this.currentGuess].join("");
+        // if(guess.length == this.letters && (this.wordlistGuesses.includes(guess) || this.wordlistAnswers.includes(guess))) {
+        //   if(this.currentGuess===0){
+        //     this.startTime = Date.now();
+        //   }
+        //   this.currentGuess++;
+        //   this.currentGuessChars = 0;
+        //   this.guessedWords.push(guess);
+        //   let results = this.checkWord(guess, this.word);
+        //   this.displayResults(guess, results);
+        //   if(guess === this.word) {
+        //     this.gameStateForInput = 'won';
+        //     this.gtmService.pushTag({'event': 'game-won',
+        //       'word': this.word,
+        //       'guesses': this.currentGuess,
+        //       'letters': this.letters,
+        //       'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
+        //     setTimeout(() => {
+        //       this.gameState = 'won';
+        //       this.showWin();
+        //     }, 1500)
+        //   }
+        //   else if(this.currentGuess === this.numberOfGuesses) {
+        //     this.gameStateForInput = 'lost';
+        //     this.gtmService.pushTag({'event': 'game-lost',
+        //       'word': this.word,
+        //       'letters': this.letters,
+        //       'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
+        //     setTimeout(() => {
+        //       this.gameState = 'lost';
+        //     }, 1500)
+        //   }
+        //   else{
+        //     this.saveGameState()
+        //     this.gtmService.pushTag({'event': 'guess',
+        //       'guessed-word': guess,
+        //       'word': this.word,
+        //       'letters': this.letters});
+        //   }
+        //   setTimeout(() => {
+        //     this.saveGameState()
+        //   }, 1200)
+        // }
+        // else{
+        //   if(rowElement) {
+        //     rowElement.classList.add('invalid')
+        //     setTimeout(function () {
+        //       if(rowElement)
+        //         rowElement.classList.remove('invalid');
+        //     }, 600);
+        //   }
+        //
+        // }
+
+      }
+      else if (key === 'backspace') {
+        if(this.currentGuessChars > 0){
+          this.socket.backspace();
+        }
+      }
+      else{
+        if (this.currentGuessChars < this.letters) {
+          this.socket.keyEntered(key);
+        }
+
+      }
+    }
   }
 
 }

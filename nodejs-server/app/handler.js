@@ -92,7 +92,9 @@ module.exports = (io, socket, clients, rooms) => {
                 'reserved': reserved,
                 'pin': pin,
                 'leader': room.leader,
-                'open': room.open
+                'open': room.open,
+                'letters': room.letters,
+                'guesses': room.guesses
             })
         } else
             socket.emit('room-info', {'exists': false})
@@ -116,7 +118,9 @@ module.exports = (io, socket, clients, rooms) => {
                 'reserved': reserved,
                 'pin': pin,
                 'leader': room.leader,
-                'open': room.open
+                'open': room.open,
+                'letters': room.letters,
+                'guesses': room.guesses
             })
         } else
             socket.emit('room-info', {'exists': false})
@@ -139,7 +143,8 @@ module.exports = (io, socket, clients, rooms) => {
         getRoomInfo();
         if (rooms[client().pin].ready === rooms[client().pin].players.length + rooms[client().pin].reserved.length) {
             rooms[client().pin].open = false;
-
+            rooms[client().pin].gameState = 'waiting'
+            getRoomInfoPinSingle(client().pin)
             countdownTimer(5, client().pin, lobbyStartGame)
 
         }
@@ -230,11 +235,20 @@ module.exports = (io, socket, clients, rooms) => {
     const playerWaiting = function () {
         let room = rooms[client().pin]
         if (room.playersJoining.includes(uuid())) {
+            clients[uuid()].guessResults = Array.from({length: room.guesses}, (_) => Array.from({length: room.letters}, (_) => 'unknown'))
+            clients[uuid()].guesses = Array.from({length: room.guesses}, (_) => Array.from({length: room.letters}, (_) => ''))
+            clients[uuid()].keyboardResults = Array.from({length: 27}, (_) => 'unknown')
+            clients[uuid()].currentGuess = 0
+            clients[uuid()].currentGuessChars = 0
+            clients[uuid()].guessedWords = []
             delete room.playersJoining.splice(room.playersJoining.indexOf(uuid()), 1)
+            socket.emit('client-info', client());
         }
         if (room.status === 'waiting' && room.playersJoining.length <= room.players.length - room.players.length / 2) {
             room.status = 'starting';
-
+            room.word = generateWord(room.letters);
+            getRoomInfoPin()
+            room.gameState = 'playing'
             countdownTimer(2, client().pin, startGame)
         }
     }
@@ -252,6 +266,24 @@ module.exports = (io, socket, clients, rooms) => {
             'letters': rooms[pin].letters,
             'numberOfGuesses': rooms[pin].guesses
         })
+    }
+
+    const wordEntered = function (data){
+        clients[uuid()].guesses[clients[uuid()].currentGuess][clients[uuid()].currentGuessChars]= data;
+        clients[uuid()].currentGuessChars ++;
+        getClientInfo()
+    }
+
+    const backspace = function (){
+        clients[uuid()].currentGuessChars --;
+        clients[uuid()].guesses[clients[uuid()].currentGuess][clients[uuid()].currentGuessChars]= "";
+        getClientInfo()
+    }
+
+    const keyEntered = function (data){
+        clients[uuid()].guesses[clients[uuid()].currentGuess][clients[uuid()].currentGuessChars]= data;
+        clients[uuid()].currentGuessChars ++;
+        getClientInfo()
     }
 
     function generateWord(letters) {
@@ -278,6 +310,9 @@ module.exports = (io, socket, clients, rooms) => {
     socket.on("unready-up", unreadyUp);
     socket.on("start-game", playerWaiting);
     socket.on("check-word", checkGuessedWord);
+    socket.on("key-entered", keyEntered);
+    socket.on("backspace", backspace);
+    socket.on("word-entered", wordEntered);
 
     if (uuid() === ''
         || !(uuid() in clients)

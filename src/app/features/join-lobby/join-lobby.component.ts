@@ -37,6 +37,7 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.roomInfoSub.unsubscribe();
     this.getCreatedSub.unsubscribe();
     this.notificationSub.unsubscribe();
+    this.clientInfoSub.unsubscribe();
   }
 
   ngAfterViewInit(): void {
