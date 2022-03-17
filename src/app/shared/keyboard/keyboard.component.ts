@@ -30,6 +30,8 @@ export class KeyboardComponent implements OnInit {
   }
 
   handleKeyPress(key: string) {
-    this.keypressFunction.emit(key);
+    key = key.toLowerCase()
+    if (this.allowedChars.includes(key))
+      this.keypressFunction.emit(key);
   }
 }

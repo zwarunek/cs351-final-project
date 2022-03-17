@@ -254,18 +254,7 @@ module.exports = (io, socket, clients, rooms) => {
     }
 
     const startGame = function (pin) {
-        io.to(pin).emit('start-game', {
-            'word': generateWord(rooms[pin].letters),
-            'guessResults': Array.from({length: rooms[pin].guesses}, (_) => Array.from({length: rooms[pin].letters}, (_) => 'unknown')),
-            'guesses': Array.from({length: rooms[pin].guesses}, (_) => Array.from({length: rooms[pin].letters}, (_) => '')),
-            'keyboardResults': Array.from({length: 27}, (_) => 'unknown'),
-            'gameState': 'playing',
-            'currentGuess': 0,
-            'currentGuessChars': 0,
-            'guessedWords': [],
-            'letters': rooms[pin].letters,
-            'numberOfGuesses': rooms[pin].guesses
-        })
+        io.to(pin).emit('room-info', rooms[pin])
     }
 
     const wordEntered = function (data){

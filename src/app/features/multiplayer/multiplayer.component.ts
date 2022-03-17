@@ -17,7 +17,6 @@ export class MultiplayerComponent implements OnInit {
   roomInfoSub: any;
   clientInfoSub: any;
   notificationSub: any;
-  gameStartedSub: any;
   letters = 5;
   numberOfGuesses = 6;
   currentGuess: any;
@@ -33,7 +32,6 @@ export class MultiplayerComponent implements OnInit {
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
   @ViewChildren(KeyboardModule) keyboard: any;
-  @ViewChildren(KeyboardComponent) allowedChars: any;
 
 
   constructor(public http: HttpClient, public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public messageService: MessageService, public router: Router) {
@@ -43,10 +41,7 @@ export class MultiplayerComponent implements OnInit {
         .subscribe((data: any) => this.ngZone.run(() =>{this.clientInfo(data)}))
     this.notificationSub = socket.notification()
         .subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));
-    this.gameStartedSub = socket.gameStarted()
-        .subscribe((data: any) => this.ngZone.run(() =>{this.gameStarted(data)}));
     this.socket.startGame();
-
   }
 
   ngOnDestroy() {
@@ -57,7 +52,6 @@ export class MultiplayerComponent implements OnInit {
     this.roomInfoSub.unsubscribe();
     this.notificationSub.unsubscribe();
     this.clientInfoSub.unsubscribe();
-    this.gameStartedSub.unsubscribe();
   }
   ngOnInit(): void {
   }
@@ -67,21 +61,11 @@ export class MultiplayerComponent implements OnInit {
   }
 
   private roomInfo(data: any) {
-    console.log(data)
     this.letters = data.letters;
     this.numberOfGuesses = data.guesses;
     this.gameStateForInput = data.gameState;
     this.gameState = data.gameState;
   }
-
-  private gameStarted(data: any) {
-    console.log(data)
-    this.letters = data.letters;
-    this.numberOfGuesses = data.numberOfGuesses;
-    this.gameStateForInput = data.gameState;
-    this.gameState = data.gameState;
-  }
-
   private clientInfo(data: any) {
     console.log(data)
     this.guessResults = data.guessResults;
@@ -95,8 +79,7 @@ export class MultiplayerComponent implements OnInit {
 
 
   handleKeyPress(key: string){
-    key = key.toLowerCase();
-    if(this.allowedChars.includes(key) && this.gameStateForInput === 'playing') {
+    if(this.gameStateForInput === 'playing') {
       let rowElement = document.getElementById('board-row-'+this.currentGuess);
 
       if (key === 'enter') {
