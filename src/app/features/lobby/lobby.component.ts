@@ -33,7 +33,7 @@ export class LobbyComponent implements OnDestroy, OnInit {
     this.notificationSub = socket.notification().subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));
     this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.ngZone.run(() =>{this.clientInfo(data)}));
     this.startCountdownSub = socket.lobbyStartCountdown().subscribe((data: any) => this.ngZone.run(() =>{this.startCountdown(data)}));
-    this.startGameSub = socket.lobbyStartGame().subscribe(() => this.ngZone.run(() =>{this.startGame()}));
+    this.startGameSub = socket.gameStarted().subscribe(() => this.ngZone.run(() =>{this.startGame()}));
     this.lobbyPin = this.route.snapshot.paramMap.get('room');
     this.socket.roomInfo().pipe(take(1)).subscribe((data: any) => this.ngZone.run(() =>{this.initialRoomCheck(data)}))
     this.socket.getClientInfo();

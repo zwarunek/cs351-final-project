@@ -4,6 +4,8 @@ import { MultiplayerComponent } from './multiplayer.component';
 import {ToastModule} from "primeng/toast";
 import {WordBoardModule} from "@shared/word-board/word-board.module";
 import {KeyboardModule} from "@shared/keyboard/keyboard.module";
+import {MessagesModule} from "primeng/messages";
+import {ButtonModule} from "primeng/button";
 
 
 
@@ -18,7 +20,9 @@ import {KeyboardModule} from "@shared/keyboard/keyboard.module";
         CommonModule,
         ToastModule,
         WordBoardModule,
-        KeyboardModule
+        KeyboardModule,
+        MessagesModule,
+        ButtonModule
     ]
 })
 export class MultiplayerModule { }

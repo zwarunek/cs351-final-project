@@ -97,7 +97,7 @@ export class SocketService {
     return fromEvent(this.socket, 'start-countdown');
   }
 
-  public lobbyStartGame(): Observable<any> {
+  public gameStarted(): Observable<any> {
     return fromEvent(this.socket, 'start-game');
   }
 

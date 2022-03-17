@@ -12,7 +12,7 @@
     max-width: 500px;
     margin-inline: auto;">
 
-    <app-word-board [currentGuess]="currentGuess"
+    <app-word-board *ngIf="gameState==='playing'" [currentGuess]="currentGuess"
                     [guessResults]="guessResults"
                     [guessedWords]="guessedWords"
                     [guesses]="guesses"
@@ -22,5 +22,40 @@
                   [keyboardResults]="keyboardResults"
                   class="mt-auto"
                   style="width: 100%;display: flex; flex-direction: column; justify-content: flex-end;"></app-keyboard>
+
+    <div *ngIf="gameState!=='playing'" style="width: 70%; margin-inline: auto;display: flex;">
+        <div *ngIf="gameState==='lost'" style="height: 156px; width: 100%">
+            <p-messages severity="error">
+                <ng-template pTemplate>
+                    <div class="p-flex p-flex-column" style="flex: 1">
+                        <div class="p-text-center">
+                            <h2 style="text-align: center; margin: 0">You Lost!</h2>
+                            <p class="mb-1" style="text-align: center; margin: 0">The word was <b>{{word}}</b></p>
+                        </div>
+                        <div class="p-grid p-fluid">
+                            <div class="p-col-6">
+                                <button class="p-button" label="Play Again" pButton type="button"></button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-messages>
+        </div>
+        <div *ngIf="gameState==='won'" style="height: 156px; width: 100%">
+            <p-messages severity="success">
+                <ng-template pTemplate>
+                    <div class="p-flex p-flex-column" style="flex: 1">
+                        <div class="p-text-center">
+                            <h2 style="text-align: center">You Won!</h2>
+                        </div>
+                        <div class="p-grid p-fluid">
+                            <div class="p-col-6">
+                                <button class="p-button" label="Play Again" pButton type="button"></button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-messages>
+        </div>
+    </div>
 </div>
-Hello Multiplayer/
