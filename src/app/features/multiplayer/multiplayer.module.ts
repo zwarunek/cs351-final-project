@@ -6,6 +6,7 @@ import {WordBoardModule} from "@shared/word-board/word-board.module";
 import {KeyboardModule} from "@shared/keyboard/keyboard.module";
 import {MessagesModule} from "primeng/messages";
 import {ButtonModule} from "primeng/button";
+import {ConfettiModule} from "@features/confetti/confetti.module";
 
 
 
@@ -22,7 +23,8 @@ import {ButtonModule} from "primeng/button";
         WordBoardModule,
         KeyboardModule,
         MessagesModule,
-        ButtonModule
+        ButtonModule,
+        ConfettiModule
     ]
 })
 export class MultiplayerModule { }

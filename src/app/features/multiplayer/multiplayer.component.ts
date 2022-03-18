@@ -1,10 +1,11 @@
-import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, NgZone, OnInit, ViewChild} from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
 import {HttpClient} from "@angular/common/http";
 import {GoogleTagManagerService} from "angular-google-tag-manager";
 import {KeyboardComponent} from "@shared/keyboard/keyboard.component";
+import {ConfettiComponent} from "@features/confetti/confetti.component";
 
 @Component({
   selector: 'app-multiplayer',
@@ -13,12 +14,21 @@ import {KeyboardComponent} from "@shared/keyboard/keyboard.component";
 })
 export class MultiplayerComponent implements OnInit {
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.width = event.target.innerWidth;
+    this.height = event.target.innerHeight;
+  }
+  width: any
+  height: any;
   roomInfoSub: any;
   clientInfoSub: any;
   notificationSub: any;
   displayResultsSub: any;
   displayKeySub: any;
   invalidWordSub: any;
+  gameWonSub: any;
+  gameLostSub: any;
   letters = 5;
   numberOfGuesses = 6;
   currentGuess: any;
@@ -29,9 +39,11 @@ export class MultiplayerComponent implements OnInit {
   keyboardResults: any;
   gameStateForInput: any;
   gameState: any;
+  roomState: any;
   word: any;
   startTime: any;
   @ViewChild(KeyboardComponent) keyboard: any;
+  @ViewChild(ConfettiComponent) confettiComponent: any;
 
 
   constructor(public http: HttpClient,
@@ -65,6 +77,14 @@ export class MultiplayerComponent implements OnInit {
       .subscribe(() => this.ngZone.run(() => {
         this.invalidWord()
       }));
+    this.gameWonSub = socket.gameWon()
+        .subscribe((data: any) => this.ngZone.run(() => {
+          this.gameWon(data)
+        }));
+    this.gameLostSub = socket.gameLost()
+        .subscribe((data: any) => this.ngZone.run(() => {
+          this.gameLost(data)
+        }));
     this.socket.startGame();
   }
 
@@ -73,6 +93,8 @@ export class MultiplayerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
   }
 
   notification(data: any) {
@@ -170,9 +192,12 @@ export class MultiplayerComponent implements OnInit {
     this.displayResultsSub.unsubscribe();
     this.displayKeySub.unsubscribe();
     this.invalidWordSub.unsubscribe();
+    this.gameWonSub.unsubscribe();
+    this.gameLostSub.unsubscribe();
   }
 
   private roomInfo(data: any) {
+    console.log(data);
     if(data === undefined){
       this.unsubscribeAll()
       this.router.navigate(['/join']);
@@ -180,13 +205,11 @@ export class MultiplayerComponent implements OnInit {
     else {
       this.letters = data.letters;
       this.numberOfGuesses = data.guesses;
-      this.gameStateForInput = data.gameState;
-      this.gameState = data.gameState;
+      this.roomState = data.gameState;
     }
   }
 
   private clientInfo(data: any) {
-    console.log(data);
     this.guessResults = JSON.parse(JSON.stringify(data.guessResults))
     this.guesses = data.guesses;
     this.keyboardResults = data.keyboardResults;
@@ -194,6 +217,8 @@ export class MultiplayerComponent implements OnInit {
     this.currentGuessChars = data.currentGuessChars;
     this.guessedWords = data.guessedWords;
     this.startTime = data.startTime;
+    this.gameStateForInput = data.gameState;
+    this.gameState = data.gameState;
   }
 
   private displayKey(data: any) {
@@ -215,5 +240,56 @@ export class MultiplayerComponent implements OnInit {
           rowElement.classList.remove('invalid');
       }, 600);
     }
+  }
+
+  gameWon(data: any){
+    this.gameStateForInput = data;
+    this.gtmService.pushTag({'event': 'game-won',
+      'word': this.word,
+      'guesses': this.currentGuess,
+      'letters': this.letters,
+      'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
+    setTimeout(() =>{
+      this.gameState = data;
+      this.showWin();
+    }, 500)
+  }
+
+  gameLost(data: any){
+    this.gameStateForInput = data;
+    this.gtmService.pushTag({'event': 'game-lost',
+      'word': this.word,
+      'letters': this.letters,
+      'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
+    setTimeout(() => {
+      this.gameState = data;
+    })
+  }
+
+  showWin(){
+    let i = 0;
+    const loop = () => {
+      setTimeout( () => {
+        // @ts-ignore
+        document.getElementById('board-tile-'+(this.currentGuess-1)+'-'+i).classList.add('game-won');
+        i++
+        if(i < this.letters){
+          loop();
+        }
+      }, 100)
+    };
+    loop();
+    let angle1 = Math.atan2(this.height, this.width/2)*180/Math.PI;
+    let angle2 = 90 + 90-angle1;
+    setTimeout(() => {
+      this.confettiComponent.winConfetti(.5, 1, 90,90);
+    }, 200*this.letters)
+    let num = Math.round(Math.random())
+    setTimeout(() => {
+      this.confettiComponent.winConfetti(num, 1, num===0?angle1:angle2,num===0?angle1:angle2);
+    }, 200*this.letters+200)
+    setTimeout(() => {
+      this.confettiComponent.winConfetti(Math.abs(num-1), 1, Math.abs(num-1)===0?angle1:angle2,Math.abs(num-1)===0?angle1:angle2);
+    }, 200*this.letters+400)
   }
 }

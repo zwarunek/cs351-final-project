@@ -139,4 +139,12 @@ export class SocketService {
   public invalidWord(): Observable<any> {
     return fromEvent(this.socket, 'invalid-word');
   }
+
+  public gameWon(): Observable<any> {
+    return fromEvent(this.socket, 'game-won');
+  }
+
+  public gameLost(): Observable<any> {
+    return fromEvent(this.socket, 'game-lost');
+  }
 }

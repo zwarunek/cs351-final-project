@@ -54,7 +54,6 @@ module.exports = (io, socket, clients, rooms) => {
   };
 
   const getClientInfo = function () {
-    console.log('here')
     socket.emit('client-info', client());
   };
 
@@ -207,7 +206,6 @@ module.exports = (io, socket, clients, rooms) => {
         delete client().pin
         delete client().nickname
       }
-      console.log(uuid(), 'left the lobby', client())
     }
   };
   const leaveReserved = function () {
@@ -253,6 +251,7 @@ module.exports = (io, socket, clients, rooms) => {
       clients[uuid()].currentGuess = 0
       clients[uuid()].currentGuessChars = 0
       clients[uuid()].guessedWords = []
+      clients[uuid()].gameState = 'playing'
       clients[uuid()].startTime = undefined;
       delete room.playersJoining.splice(room.playersJoining.indexOf(uuid()), 1)
 
@@ -285,7 +284,16 @@ module.exports = (io, socket, clients, rooms) => {
       clients[uuid()].currentGuessChars = 0;
       clients[uuid()].guessedWords.push(guess);
       let results = checkWord(guess, room.word, room.letters);
-      displayResults(guess, results, keys)
+      displayResults(guess, results, keys).then(() => {
+        if(guess === room.word) {
+          clients[uuid()].gameState = 'won'
+          socket.emit('game-won', clients[uuid()].gameState)
+        }
+        else if(client().currentGuess === room.guesses) {
+          clients[uuid()].gameState = 'lost'
+          socket.emit('game-lost', clients[uuid()].gameState)
+        }
+      })
       // getClientInfo()
       // this.displayResults(guess, results);
       // if (guess === room.word) {
@@ -334,29 +342,29 @@ module.exports = (io, socket, clients, rooms) => {
     // getClientInfo()
   }
   const displayResults = function (guess, results, keys) {
-    let i = 0;
-
-    const loop = (currentGuess) => {
-      setTimeout(() => {
-        clients[uuid()].guessResults[currentGuess][i] = results[i]
-        if (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'unknown'
-          || (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'present' && results[i] === 'correct')
-          || (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'unused' && (results[i] === 'correct' || results[i] === 'present')))
-          clients[uuid()].keyboardResults[keys.indexOf(guess.charAt(i))] = results[i]
-        socket.emit('display-results', {
-          'client': client(),
-          'result': results[i],
-          'i': i,
-          'keyIndex': keys.indexOf(guess.charAt(i)),
-          'keyResult': clients[uuid()].keyboardResults[keys.indexOf(guess.charAt(i))]
-        })
-        if (i < results.length) {
-          i++
-          loop(currentGuess);
-        }
-      }, 200)
-    };
-    loop(client().currentGuess - 1);
+    return new Promise(function (resolve) {
+      (function myLoop(currentGuess, i, end) {
+        setTimeout(function() {
+          clients[uuid()].guessResults[currentGuess][i] = results[i]
+          if (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'unknown'
+            || (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'present' && results[i] === 'correct')
+            || (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'unused' && (results[i] === 'correct' || results[i] === 'present')))
+            clients[uuid()].keyboardResults[keys.indexOf(guess.charAt(i))] = results[i]
+          socket.emit('display-results', {
+            'client': client(),
+            'result': results[i],
+            'i': i,
+            'keyIndex': keys.indexOf(guess.charAt(i)),
+            'keyResult': clients[uuid()].keyboardResults[keys.indexOf(guess.charAt(i))]
+          })
+          if (i < end) {
+            myLoop(currentGuess, i+1, end);
+          }
+          else
+            resolve()
+        }, 200)
+      })(client().currentGuess - 1, 0, results.length)
+    })
 
   }
   const backspace = function () {

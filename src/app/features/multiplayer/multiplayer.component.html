@@ -12,7 +12,7 @@
     max-width: 500px;
     margin-inline: auto;">
 
-    <app-word-board *ngIf="gameState==='playing'" [currentGuess]="currentGuess"
+    <app-word-board *ngIf="roomState!=='waiting'" [currentGuess]="currentGuess"
                     [guessResults]="guessResults"
                     [guessedWords]="guessedWords"
                     [guesses]="guesses"
@@ -23,7 +23,7 @@
                   class="mt-auto"
                   style="width: 100%;display: flex; flex-direction: column; justify-content: flex-end;"></app-keyboard>
 
-    <div *ngIf="gameState!=='playing'" style="width: 70%; margin-inline: auto;display: flex;">
+    <div *ngIf="gameState!=='playing' && roomState!=='waiting'" style="width: 70%; margin-inline: auto;display: flex;">
         <div *ngIf="gameState==='lost'" style="height: 156px; width: 100%">
             <p-messages severity="error">
                 <ng-template pTemplate>
@@ -41,7 +41,7 @@
                 </ng-template>
             </p-messages>
         </div>
-        <div *ngIf="gameState==='won'" style="height: 156px; width: 100%">
+        <div *ngIf="gameState==='won' && roomState!=='waiting'" style="height: 156px; width: 100%">
             <p-messages severity="success">
                 <ng-template pTemplate>
                     <div class="p-flex p-flex-column" style="flex: 1">
@@ -59,3 +59,4 @@
         </div>
     </div>
 </div>
+<app-confetti></app-confetti>
