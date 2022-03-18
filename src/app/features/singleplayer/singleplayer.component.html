@@ -17,6 +17,7 @@
                   [guessedWords]="guessedWords"
                   [guesses]="guesses"
                   [letters]="letters"
+                  [verticalSpaceNotInUse]="58+156"
                   [numberOfGuesses]="numberOfGuesses" style="height: 100%; width: 100%"></app-word-board>
   <app-keyboard (keypressFunction)="handleKeyPress($event)" *ngIf="gameState==='playing'"
                 [keyboardResults]="keyboardResults"

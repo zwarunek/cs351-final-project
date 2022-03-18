@@ -16,6 +16,7 @@ export class WordBoardComponent implements OnInit {
   @Input() currentGuess!: any;
   @Input() guessResults!: any;
   @Input() guessedWords!: any;
+  @Input() verticalSpaceNotInUse!: any;
 
   constructor(public http: HttpClient,
               private messageService: MessageService,
@@ -30,7 +31,7 @@ export class WordBoardComponent implements OnInit {
     return document.getElementById(id)?.getBoundingClientRect().width
   }
   getHeight(){
-    return document.body.getBoundingClientRect().height-214
+    return document.body.getBoundingClientRect().height-this.verticalSpaceNotInUse
   }
   getDefinition(word: any) {
     this.http.get('https://api.dictionaryapi.dev/api/v2/entries/en/' + word).subscribe((data: any) => {

@@ -12,9 +12,9 @@
     max-width: 500px;
     margin-inline: auto;">
   <div id="score-container" style="width: 100%; padding-top: 20px">
-    <div class="flex flex-row justify-content-evenly" [ngStyle]="{'height': (getWidth('score-container')/6) + 'px'}">
+    <div class="flex flex-row justify-content-evenly" [ngStyle]="{'height': (getWidth('score-container')/5) + 'px'}">
       <div *ngFor="let player of players" class="flex flex-column"
-           style=" width: calc(100%/6); text-align: center; border: solid 1px var(--surface-400)">
+           style=" width: calc(100%/5); text-align: center; border: solid 1px var(--surface-400)">
         <div class="w-full score-text">
           {{player.nickname}}
         </div>
@@ -41,7 +41,8 @@
                   [guessedWords]="guessedWords"
                   [guesses]="guesses"
                   [letters]="letters"
-                  [numberOfGuesses]="numberOfGuesses" style="height: 100%; width: 100%"></app-word-board>
+                  [verticalSpaceNotInUse]="58+156+(getWidth('score-container')/5)+20"
+                  [numberOfGuesses]="numberOfGuesses" style="width: 100%" [ngStyle]="{'height': '100%'}"></app-word-board>
   <app-keyboard (keypressFunction)="handleKeyPress($event)" *ngIf="gameState==='playing'"
                 [keyboardResults]="keyboardResults"
                 class="mt-auto"
