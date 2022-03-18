@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { JoinLobbyComponent } from './join-lobby.component';
+import {JoinLobbyComponent} from './join-lobby.component';
 
 describe('JoinLobbyComponent', () => {
   let component: JoinLobbyComponent;
@@ -8,9 +8,9 @@ describe('JoinLobbyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ JoinLobbyComponent ]
+      declarations: [JoinLobbyComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

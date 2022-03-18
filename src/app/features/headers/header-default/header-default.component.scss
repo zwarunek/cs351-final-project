@@ -1,13 +1,14 @@
-.nav-left, .nav-fill,.nav-right{
+.nav-left, .nav-fill, .nav-right {
   height: 60px;
   background: #131921;
 }
-.nav-fill{
+
+.nav-fill {
   width: 100%;
   padding: 5px 0 0 0;
 }
 
-.nav-logo-link{
+.nav-logo-link {
 
   height: 50px;
   width: 100%;
@@ -16,7 +17,8 @@
   padding: 1px 8px 0 6px;
   margin: 1px;
 }
-.nav-location{
+
+.nav-location {
 
   height: 50px;
   width: 100%;
@@ -25,22 +27,27 @@
   padding: 1px 8px 0 6px;
   margin: 1px;
 }
-#nav-location-slot{
+
+#nav-location-slot {
 
   margin-left: 2px;
   width: 120px;
   padding: 0;
 }
-::ng-deep .no-label>.p-button-label {
+
+::ng-deep .no-label > .p-button-label {
   display: none;
 }
-::ng-deep .p-dialog .p-dialog-header{
+
+::ng-deep .p-dialog .p-dialog-header {
   background-color: var(--surface-b);
 }
-::ng-deep .p-dialog .p-dialog-content{
+
+::ng-deep .p-dialog .p-dialog-content {
   background-color: var(--surface-b);
 }
-.menu-bar{
+
+.menu-bar {
   padding: 0.5rem 1rem;
   background-color: var(--surface-a);
   border-radius: 4px;
@@ -48,48 +55,54 @@
 }
 
 
-.unused{
-  background-color:var(--unused);
-  color:var(--unused-text);
+.unused {
+  background-color: var(--unused);
+  color: var(--unused-text);
 }
-.correct{
-  background-color:var(--correct);
-  color:var(--correct-text);
+
+.correct {
+  background-color: var(--correct);
+  color: var(--correct-text);
 }
-.present{
-  background-color:var(--present);
-  color:var(--present-text);
+
+.present {
+  background-color: var(--present);
+  color: var(--present-text);
 }
-.unknown{
+
+.unknown {
   background-color: var(--unknown);
   color: var(--unknown-text);
 }
-.main-text{
+
+.main-text {
   cursor: pointer;
   user-select: none;
 }
-.menu-side{
+
+.menu-side {
   width: 15%;
   min-width: 100px
 }
-.menu-main-text{
+
+.menu-main-text {
   width: 80%
 }
+
 @media (min-width: 565px) {
-  .main-text
-  {
+  .main-text {
     font-size: 2.5rem;
   }
 }
+
 @media (max-width: 565px) {
-  .main-text
-  {
+  .main-text {
     font-size: 1.5rem;
   }
 }
+
 @media (max-width: 420px) {
-  .main-text
-  {
+  .main-text {
     font-size: 1rem;
   }
 }

@@ -9,9 +9,11 @@ import * as confetti from "canvas-confetti";
 export class ConfettiComponent implements OnInit {
 
   myConfetti: any;
+
   constructor(
-      private renderer2: Renderer2,
-      private elementRef: ElementRef,) { }
+    private renderer2: Renderer2,
+    private elementRef: ElementRef,) {
+  }
 
   ngOnInit(): void {
     const canvas = this.renderer2.createElement('canvas');
@@ -23,7 +25,7 @@ export class ConfettiComponent implements OnInit {
     });
   }
 
-  winConfetti(x: any, y: any, minAngle: any, maxAngle: any){
+  winConfetti(x: any, y: any, minAngle: any, maxAngle: any) {
     this.fire(0.25, {
       spread: 10,
       startVelocity: 55,
@@ -57,10 +59,11 @@ export class ConfettiComponent implements OnInit {
       angle: {min: minAngle, max: maxAngle}
     });
   }
-  fire(particleRatio: number, opts: { spread?: number; startVelocity?: number; decay?: number; scalar?: number; angle?:any; origin?: any}) {
+
+  fire(particleRatio: number, opts: { spread?: number; startVelocity?: number; decay?: number; scalar?: number; angle?: any; origin?: any }) {
     this.myConfetti({
       colors: [this.readProperty('primary-color'), this.readProperty('secondary-color')],
-      angle: this.randomInRange(opts.angle?opts.angle.min:75, opts.angle?opts.angle.max:105),
+      angle: this.randomInRange(opts.angle ? opts.angle.min : 75, opts.angle ? opts.angle.max : 105),
       particleCount: (200 * particleRatio),
       origin: opts.origin,
       spread: opts.spread,
@@ -69,9 +72,11 @@ export class ConfettiComponent implements OnInit {
       decay: opts.decay
     });
   }
+
   randomInRange(min: number, max: number) {
     return Math.random() * (max - min) + min;
   }
+
   readProperty(name: string): string {
     return window.getComputedStyle(document.body).getPropertyValue('--' + name);
   }

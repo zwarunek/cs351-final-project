@@ -27,18 +27,22 @@ export class WordBoardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getWidth(id: string){
+  getWidth(id: string) {
     return document.getElementById(id)?.getBoundingClientRect().width
   }
-  getHeight(){
-    return document.body.getBoundingClientRect().height-this.verticalSpaceNotInUse
+
+  getHeight() {
+    return document.body.getBoundingClientRect().height - this.verticalSpaceNotInUse
   }
+
   getDefinition(word: any) {
     this.http.get('https://api.dictionaryapi.dev/api/v2/entries/en/' + word).subscribe((data: any) => {
       this.messageService.clear();
-      this.messageService.add({severity:'custom',key: 'message',  sticky: true, summary: word.charAt(0).toUpperCase() + word.slice(1),
+      this.messageService.add({
+        severity: 'custom', key: 'message', sticky: true, summary: word.charAt(0).toUpperCase() + word.slice(1),
         detail: (data[0].meanings[0].partOfSpeech.charAt(0).toUpperCase() + data[0].meanings[0].partOfSpeech.slice(1)).bold()
-            +': ' + data[0].meanings[0].definitions[0].definition});
+          + ': ' + data[0].meanings[0].definitions[0].definition
+      });
     })
     this.gtmService.pushTag({'event': 'definition', 'word': word,});
   }

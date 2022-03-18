@@ -1,31 +1,37 @@
-.main-container{
+.main-container {
   width: 100%;
   max-width: 500px;
 }
-.ready{
+
+.ready {
   color: var(--text-color);
 }
-.notReady{
+
+.notReady {
   color: var(--text-color);
 }
-.empty{
+
+.empty {
   color: var(--surface-200);
 }
-.reserved{
+
+.reserved {
   color: var(--surface-300);
 }
-.player-row{
+
+.player-row {
   border-bottom: 2px var(--surface-100) solid;
   display: flex;
   align-items: center;
   padding: 14px
 }
-.player-row:first-child{
+
+.player-row:first-child {
   border-top: 2px var(--surface-100) solid;
 }
+
 @media (min-height: 250px) {
-  .main-container
-  {
+  .main-container {
     height: 625px;
   }
 }

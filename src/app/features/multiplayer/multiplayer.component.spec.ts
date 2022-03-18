@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MultiplayerComponent } from './multiplayer.component';
+import {MultiplayerComponent} from './multiplayer.component';
 
 describe('MultiplayerComponent', () => {
   let component: MultiplayerComponent;
@@ -8,9 +8,9 @@ describe('MultiplayerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MultiplayerComponent ]
+      declarations: [MultiplayerComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

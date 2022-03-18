@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FooterDefaultComponent} from "@features/footers/footer-default/footer-default.component";
 
 
@@ -8,9 +8,9 @@ describe('FooterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FooterDefaultComponent ]
+      declarations: [FooterDefaultComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

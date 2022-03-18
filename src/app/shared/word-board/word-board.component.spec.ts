@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { WordBoardComponent } from './word-board.component';
+import {WordBoardComponent} from './word-board.component';
 
 describe('WordBoardComponent', () => {
   let component: WordBoardComponent;
@@ -8,9 +8,9 @@ describe('WordBoardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WordBoardComponent ]
+      declarations: [WordBoardComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

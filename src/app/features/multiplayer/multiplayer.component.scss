@@ -2,62 +2,73 @@
   background-color: var(--surface-b);
   color: var(--text-color);
 }
-.board-container{
+
+.board-container {
   height: 100%;
   display: flex;
   align-content: center;
   align-items: center;
 }
+
 canvas {
   height: 100%;
   width: 100%;
   top: 0;
   position: absolute;
-  pointer-events:none;
+  pointer-events: none;
 }
+
 :host ::ng-deep {
   .p-toast-message-custom {
     background-color: var(--primary-color);
     border: var(--surface-border);
     border-width: 0 0 0 6px;
     color: var(--primary-color-text);
+
     .p-toast-icon-close {
       color: var(--primary-color-text);
     }
   }
-  .p-toast{
+
+  .p-toast {
     z-index: 5;
   }
 }
 
-.unused{
-  background-color:var(--unused);
-  color:var(--unused-text);
+.unused {
+  background-color: var(--unused);
+  color: var(--unused-text);
 }
-.correct{
-  background-color:var(--correct);
-  color:var(--correct-text);
+
+.correct {
+  background-color: var(--correct);
+  color: var(--correct-text);
 }
-.present{
-  background-color:var(--present);
-  color:var(--present-text);
+
+.present {
+  background-color: var(--present);
+  color: var(--present-text);
 }
-.unknown{
+
+.unknown {
   background-color: var(--unknown);
   color: var(--unknown-text);
 }
+
 @media (max-width: 400px) {
-  .score-text{
+  .score-text {
     font-size: .5rem;
   }
 }
+
 @media (min-width: 400px) {
-  .score-text{
+  .score-text {
     font-size: .6rem;
   }
 }
+
 @media (min-width: 500px) {
-  .score-text{
+  .score-text {
     font-size: .8rem;
   }
 }

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SingleplayerComponent } from './singleplayer.component';
+import {SingleplayerComponent} from './singleplayer.component';
 
 describe('SingleplayerComponent', () => {
   let component: SingleplayerComponent;
@@ -8,9 +8,9 @@ describe('SingleplayerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SingleplayerComponent ]
+      declarations: [SingleplayerComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

@@ -7,15 +7,10 @@ import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@ang
 })
 export class KeyboardComponent implements OnInit {
 
-  @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    this.handleKeyPress(event.key);
-  }
-
   @Input() keyboardResults!: any;
   @Output() keypressFunction = new EventEmitter();
   keyboardKeys!: any[];
-  allowedChars!:any[];
+  allowedChars!: any[];
   currentInput: any;
 
   constructor() {
@@ -24,6 +19,11 @@ export class KeyboardComponent implements OnInit {
     ];
     this.allowedChars = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "enter", "backspace"];
 
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    this.handleKeyPress(event.key);
   }
 
   ngOnInit(): void {

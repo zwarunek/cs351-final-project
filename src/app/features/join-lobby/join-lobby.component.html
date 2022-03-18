@@ -7,15 +7,19 @@
         </div>
         <div class="p-inputgroup">
           <span class="p-float-label">
-            <p-inputNumber (onInput)="checkPinInput($event)" [maxlength]="4" id="pin-input" (keydown.enter)="joinLobby()" [(ngModel)]="lobbyPinInput" class="p-inputtext-sm" [useGrouping]="false"></p-inputNumber>
+            <p-inputNumber (keydown.enter)="joinLobby()" (onInput)="checkPinInput($event)" [(ngModel)]="lobbyPinInput"
+                           [maxlength]="4" [useGrouping]="false" class="p-inputtext-sm"
+                           id="pin-input"></p-inputNumber>
             <label for="pin-input">Lobby Pin</label>
           </span>
-          <button type="button" class="w-4" pButton pRipple label="Join" (click)="joinLobby()" [disabled]="!roomExists"></button>
+          <button (click)="joinLobby()" [disabled]="!roomExists" class="w-4" label="Join" pButton pRipple
+                  type="button"></button>
         </div>
       </div>
       <div class="w-full p-3">
         <div class="p-inputgroup">
-          <button type="button" class="w-full p-button-secondary" pButton pRipple label="Create Lobby" (click)="createLobby()"></button>
+          <button (click)="createLobby()" class="w-full p-button-secondary" label="Create Lobby" pButton pRipple
+                  type="button"></button>
         </div>
       </div>
     </div>

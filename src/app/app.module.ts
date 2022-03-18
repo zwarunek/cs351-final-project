@@ -1,6 +1,6 @@
-import {Injectable, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
@@ -9,14 +9,14 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HeadersModule} from "src/app/features/headers/headers.module";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {CookieService} from "ngx-cookie-service";
-import { environment } from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserModule.withServerTransition({appId: 'serverApp'}),
     AppRoutingModule,
     ProgressSpinnerModule,
     HttpClientModule,
@@ -25,12 +25,13 @@ import { environment } from 'src/environments/environment';
 
   ],
   providers: [MessageService, CookieService, ConfirmationService,
-    {provide: 'googleTagManagerId',  useValue: 'GTM-N6KF3RJ'}
+    {provide: 'googleTagManagerId', useValue: 'GTM-N6KF3RJ'}
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
   environment = environment
+
   constructor() {
   }
 }

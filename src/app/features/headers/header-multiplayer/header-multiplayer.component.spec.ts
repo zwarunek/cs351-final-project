@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { HeaderMultiplayerComponent } from './header-multiplayer.component';
+import {HeaderMultiplayerComponent} from './header-multiplayer.component';
 
 describe('HeaderMultiplayerComponent', () => {
   let component: HeaderMultiplayerComponent;
@@ -8,9 +8,9 @@ describe('HeaderMultiplayerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeaderMultiplayerComponent ]
+      declarations: [HeaderMultiplayerComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

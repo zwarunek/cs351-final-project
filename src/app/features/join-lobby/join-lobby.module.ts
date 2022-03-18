@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { JoinLobbyComponent } from './join-lobby.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {JoinLobbyComponent} from './join-lobby.component';
 import {ToolbarModule} from "primeng/toolbar";
 import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
@@ -12,7 +12,6 @@ import {MessagesModule} from "primeng/messages";
 import {MessageModule} from "primeng/message";
 
 
-
 @NgModule({
   declarations: [
     JoinLobbyComponent
@@ -20,17 +19,18 @@ import {MessageModule} from "primeng/message";
   exports: [
     JoinLobbyComponent
   ],
-    imports: [
-        CommonModule,
-        ToolbarModule,
-        ButtonModule,
-        InputTextModule,
-        RippleModule,
-        FormsModule,
-        InputNumberModule,
-        ToastModule,
-        MessagesModule,
-        MessageModule
-    ]
+  imports: [
+    CommonModule,
+    ToolbarModule,
+    ButtonModule,
+    InputTextModule,
+    RippleModule,
+    FormsModule,
+    InputNumberModule,
+    ToastModule,
+    MessagesModule,
+    MessageModule
+  ]
 })
-export class JoinLobbyModule { }
+export class JoinLobbyModule {
+}

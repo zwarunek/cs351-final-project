@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FooterDefaultComponent} from "@features/footers/footer-default/footer-default.component";
-
 
 
 @NgModule({
@@ -15,4 +14,5 @@ import {FooterDefaultComponent} from "@features/footers/footer-default/footer-de
     CommonModule
   ]
 })
-export class FootersModule { }
+export class FootersModule {
+}

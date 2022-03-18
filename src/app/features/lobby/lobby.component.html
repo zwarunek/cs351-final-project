@@ -7,8 +7,8 @@
         <span *ngIf="gameState === 'starting'" class="h-3rem">Starting: {{startingCountdown}}</span>
       </div>
       <div class="flex-column flex h-full" style="position:relative;">
-        <div class="h-full w-full text-4xl justify-content-between player-row" [ngClass]="player.status.toString()"
-             *ngFor="let player of players; let i = index">
+        <div *ngFor="let player of players; let i = index" [ngClass]="player.status.toString()"
+             class="h-full w-full text-4xl justify-content-between player-row">
           <div class="flex align-items-center">
             <div>
               {{player.name}}
@@ -17,10 +17,12 @@
           </div>
           <div *ngIf="i=== 0">
             <div *ngIf="player.status === 'ready'">
-              <button type="button" class="w-full p-button-secondary p-button-danger" pButton pRipple label="Unready" (click)="unreadyUp()"></button>
+              <button (click)="unreadyUp()" class="w-full p-button-secondary p-button-danger" label="Unready" pButton pRipple
+                      type="button"></button>
             </div>
             <div *ngIf="player.status === 'notReady'">
-              <button type="button" class="w-full p-button-secondary p-button-success" pButton pRipple label="Ready Up" (click)="readyUp()"></button>
+              <button (click)="readyUp()" class="w-full p-button-secondary p-button-success" label="Ready Up" pButton pRipple
+                      type="button"></button>
             </div>
           </div>
           <div *ngIf="i !== 0">
@@ -36,7 +38,8 @@
     </div>
     <div class="w-full mt-5">
       <div class="p-inputgroup">
-        <button type="button" class="w-full p-button-secondary" pButton pRipple label="Leave Lobby" (click)="leaveLobby()"></button>
+        <button (click)="leaveLobby()" class="w-full p-button-secondary" label="Leave Lobby" pButton pRipple
+                type="button"></button>
       </div>
     </div>
   </div>
@@ -48,14 +51,16 @@
       <div class="w-full p-3">
         <div class="p-inputgroup">
           <span class="p-float-label">
-            <input id="nickname-input" pInputText [(ngModel)]="nickname" class="p-inputtext-sm" (keydown.enter)="joinLobby()" (ngModelChange)="nickname = $event.toUpperCase()">
+            <input (keydown.enter)="joinLobby()" (ngModelChange)="nickname = $event.toUpperCase()" [(ngModel)]="nickname" class="p-inputtext-sm"
+                   id="nickname-input" pInputText>
             <label for="nickname-input">Nickname</label>
           </span>
         </div>
       </div>
       <div class="w-full p-3">
         <div class="p-inputgroup">
-          <button type="button" class="w-full p-button-secondary" pButton pRipple label="Join Lobby" (click)="joinLobby()"></button>
+          <button (click)="joinLobby()" class="w-full p-button-secondary" label="Join Lobby" pButton pRipple
+                  type="button"></button>
         </div>
       </div>
     </div>

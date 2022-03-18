@@ -1,10 +1,8 @@
-import {AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {CookieService} from "ngx-cookie-service";
-import {Socket, SocketIoConfig} from "ngx-socket-io";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
-import {InputNumber} from "primeng/inputnumber";
 
 @Component({
   selector: 'app-join-lobby',
@@ -15,24 +13,33 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
 
   lobbyPinInput: any;
   nicknameInput: string = '';
-  roomInfoSub:any;
-  getCreatedSub:any;
-  notificationSub:any;
+  roomInfoSub: any;
+  getCreatedSub: any;
+  notificationSub: any;
   clientInfoSub: any;
   roomExists = false;
   roomNotFoundMessage = '';
 
   constructor(public ngZone: NgZone, public socket: SocketService, public route: ActivatedRoute, public cookieService: CookieService, public router: Router, public messageService: MessageService) {
 
-    this.getCreatedSub = this.socket.getCreated().subscribe((pin: any) => this.ngZone.run(() =>{this.getCreated(pin)}));
-    this.notificationSub = this.socket.notification().subscribe((data: any) => this.ngZone.run(() =>{this.notification(data)}));
-    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.ngZone.run(() =>{this.checkLobby(data)}));
-    this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.ngZone.run(() =>{this.clientInfo(data)}));
+    this.getCreatedSub = this.socket.getCreated().subscribe((pin: any) => this.ngZone.run(() => {
+      this.getCreated(pin)
+    }));
+    this.notificationSub = this.socket.notification().subscribe((data: any) => this.ngZone.run(() => {
+      this.notification(data)
+    }));
+    this.roomInfoSub = this.socket.roomInfo().subscribe((data: any) => this.ngZone.run(() => {
+      this.checkLobby(data)
+    }));
+    this.clientInfoSub = socket.clientInfo().subscribe((data: any) => this.ngZone.run(() => {
+      this.clientInfo(data)
+    }));
     socket.getClientInfo();
   }
 
   ngOnInit(): void {
   }
+
   ngOnDestroy() {
     this.roomInfoSub.unsubscribe();
     this.getCreatedSub.unsubscribe();
@@ -43,7 +50,7 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     setTimeout(() => {
       if ('E' in this.route.snapshot.queryParams) {
-        switch (this.route.snapshot.queryParams['E']){
+        switch (this.route.snapshot.queryParams['E']) {
           case 'NF':
             this.messageService.add({severity: 'error', summary: 'Error', detail: 'Lobby not found'});
             break;
@@ -58,41 +65,42 @@ export class JoinLobbyComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  createLobby(){
+  createLobby() {
     this.socket.createLobby();
   }
-  joinLobby(){
+
+  joinLobby() {
     this.router.navigate(['/lobby/' + this.lobbyPinInput.toString()]);
   }
-  getCreated(pin: any){
+
+  getCreated(pin: any) {
     this.router.navigate(['/lobby/' + pin]);
   }
+
   notification(data: any) {
-    this.messageService.add({severity:data.severity, summary: data.header, detail: data.message});
+    this.messageService.add({severity: data.severity, summary: data.header, detail: data.message});
   }
 
   checkLobby(data: any) {
-    if(data.exists){
+    if (data.exists) {
       this.roomExists = true;
-    }
-    else{
+    } else {
       this.roomExists = false;
       this.roomNotFoundMessage = 'Lobby Not Found';
     }
   }
 
   clientInfo(data: any) {
-    if ('pin' in data){
+    if ('pin' in data) {
       this.router.navigate(['/lobby/' + data.pin]);
     }
   }
 
   checkPinInput($event: any) {
-    let pin =  $event.originalEvent.target.value;
-    if(pin.length === 4){
+    let pin = $event.originalEvent.target.value;
+    if (pin.length === 4) {
       this.socket.checkRoom(pin);
-    }
-    else {
+    } else {
       this.roomNotFoundMessage = '';
       this.roomExists = false;
     }
