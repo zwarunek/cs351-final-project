@@ -54,6 +54,7 @@ module.exports = (io, socket, clients, rooms) => {
   };
 
   const getClientInfo = function () {
+    console.log('here')
     socket.emit('client-info', client());
   };
 
@@ -169,7 +170,7 @@ module.exports = (io, socket, clients, rooms) => {
   }
 
   function lobbyStartGame(pin) {
-    rooms[pin].playersJoining = rooms[pin].players;
+    rooms[pin].playersJoining = [...rooms[pin].players];// copy array
     rooms[pin].status = 'waiting';
     io.to(pin).emit('start-game');
   }
@@ -240,7 +241,11 @@ module.exports = (io, socket, clients, rooms) => {
   }
 
   const playerWaiting = function () {
-    let room = rooms[client().pin]
+    let room = rooms[client().pin];
+    if (room === undefined) {
+      socket.emit('room-info');
+      return
+    }
     if (room.playersJoining.includes(uuid())) {
       clients[uuid()].guessResults = Array.from({length: room.guesses}, (_) => Array.from({length: room.letters}, (_) => 'unknown'))
       clients[uuid()].guesses = Array.from({length: room.guesses}, (_) => Array.from({length: room.letters}, (_) => ''))
@@ -252,15 +257,14 @@ module.exports = (io, socket, clients, rooms) => {
       delete room.playersJoining.splice(room.playersJoining.indexOf(uuid()), 1)
 
     }
-    socket.emit('client-info', client());
+    getClientInfo()
     if (room.status === 'waiting' && room.playersJoining.length <= room.players.length - room.players.length / 2) {
       room.status = 'starting';
       room.word = generateWord(room.letters);
-      getRoomInfoPin()
+      startGame(room.pin)
       room.gameState = 'playing'
       countdownTimer(2, client().pin, startGame)
-    }
-    else
+    } else
       startGame(room.pin)
   }
 
@@ -320,17 +324,16 @@ module.exports = (io, socket, clients, rooms) => {
       // setTimeout(() => {
       //   this.saveGameState()
       // }, 1200)
-    // } else if (rowElement) {
+      // } else if (rowElement) {
       // rowElement.classList.add('invalid')
       // setTimeout(function () {
       //   if (rowElement)
       //     rowElement.classList.remove('invalid');
       // }, 600);
-    }
-    else socket.emit('invalid-word');
+    } else socket.emit('invalid-word');
     // getClientInfo()
-}
-const displayResults = function (guess, results, keys){
+  }
+  const displayResults = function (guess, results, keys) {
     let i = 0;
 
     const loop = (currentGuess) => {
@@ -340,7 +343,13 @@ const displayResults = function (guess, results, keys){
           || (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'present' && results[i] === 'correct')
           || (client().keyboardResults[keys.indexOf(guess.charAt(i))] === 'unused' && (results[i] === 'correct' || results[i] === 'present')))
           clients[uuid()].keyboardResults[keys.indexOf(guess.charAt(i))] = results[i]
-        socket.emit('display-results', {'client': client(), 'result': results[i],'i':i, 'keyIndex': keys.indexOf(guess.charAt(i)), 'keyResult': clients[uuid()].keyboardResults[keys.indexOf(guess.charAt(i))]})
+        socket.emit('display-results', {
+          'client': client(),
+          'result': results[i],
+          'i': i,
+          'keyIndex': keys.indexOf(guess.charAt(i)),
+          'keyResult': clients[uuid()].keyboardResults[keys.indexOf(guess.charAt(i))]
+        })
         if (i < results.length) {
           i++
           loop(currentGuess);
@@ -349,67 +358,75 @@ const displayResults = function (guess, results, keys){
     };
     loop(client().currentGuess - 1);
 
-}
-const backspace = function () {
-  clients[uuid()].currentGuessChars--;
-  clients[uuid()].guesses[clients[uuid()].currentGuess][clients[uuid()].currentGuessChars] = "";
-  socket.emit('display-key', {'client':client(), 'guess': clients[uuid()].currentGuess, 'guessChars': clients[uuid()].currentGuessChars})
-}
-
-const keyEntered = function (data) {
-  clients[uuid()].guesses[clients[uuid()].currentGuess][clients[uuid()].currentGuessChars] = data;
-  clients[uuid()].currentGuessChars++;
-  socket.emit('display-key', {'client':client(), 'guess': clients[uuid()].currentGuess, 'guessChars': clients[uuid()].currentGuessChars - 1})
-}
-
-function generateWord(letters) {
-  return wordlistAnswers[letters][Math.floor(Math.random() * wordlistAnswers[letters].length)];
-}
-
-socket.on("join-lobby", joinRoom);
-socket.on("get-client-info", getClientInfo);
-socket.on("create-room", createRoom);
-socket.on("get-room-info", getRoomInfo);
-socket.on("get-room-info-pin", getRoomInfoPin);
-socket.on("get-room-info-pin-single", getRoomInfoPinSingle);
-socket.on("leave-lobby", leaveLobby);
-socket.on("check-lobby", checkLobby);
-socket.on("join-reserved", joinReserved);
-socket.on("leave-reserved", leaveReserved);
-socket.on("ready-up", readyUp);
-socket.on("unready-up", unreadyUp);
-socket.on("start-game", playerWaiting);
-socket.on("check-word", checkGuessedWord);
-socket.on("key-entered", keyEntered);
-socket.on("backspace", backspace);
-socket.on("word-entered", wordEntered);
-
-if (uuid() === ''
-  || !(uuid() in clients)
-  || client().status === 'connected') {
-  socket.handshake.query.uuid = randomUUID();
-  clients[uuid()] = {};
-  console.log('connected - New:', uuid());
-} else {
-  console.log('connected:', uuid());
-  if ('pin' in client() && 'nickname' in client())
-    joinRoom({'pin': client().pin, 'nickname': client().nickname})
-}
-client().timestamp = Date.now();
-client().status = 'connected';
-client().ready = false;
-client().uuid = uuid();
-
-socket.conn.on("close", () => {
-  console.log('disconnected:', uuid())
-  client().status = 'disconnected';
-  if ('pin' in client() && client().pin in rooms) {
-
-    if ('players' in rooms[client().pin] && rooms[client().pin].players.includes(uuid()))
-      leaveLobby(false);
-    else if ('reserved' in rooms[client().pin] && rooms[client().pin].reserved.includes(uuid()))
-      leaveReserved();
   }
-});
-io.to(socket.id).emit('set-uuid', {'uuid': uuid()})
+  const backspace = function () {
+    clients[uuid()].currentGuessChars--;
+    clients[uuid()].guesses[clients[uuid()].currentGuess][clients[uuid()].currentGuessChars] = "";
+    socket.emit('display-key', {
+      'client': client(),
+      'guess': clients[uuid()].currentGuess,
+      'guessChars': clients[uuid()].currentGuessChars
+    })
+  }
+
+  const keyEntered = function (data) {
+    clients[uuid()].guesses[clients[uuid()].currentGuess][clients[uuid()].currentGuessChars] = data;
+    clients[uuid()].currentGuessChars++;
+    socket.emit('display-key', {
+      'client': client(),
+      'guess': clients[uuid()].currentGuess,
+      'guessChars': clients[uuid()].currentGuessChars - 1
+    })
+  }
+
+  function generateWord(letters) {
+    return wordlistAnswers[letters][Math.floor(Math.random() * wordlistAnswers[letters].length)];
+  }
+
+  socket.on("join-lobby", joinRoom);
+  socket.on("get-client-info", getClientInfo);
+  socket.on("create-room", createRoom);
+  socket.on("get-room-info", getRoomInfo);
+  socket.on("get-room-info-pin", getRoomInfoPin);
+  socket.on("get-room-info-pin-single", getRoomInfoPinSingle);
+  socket.on("leave-lobby", leaveLobby);
+  socket.on("check-lobby", checkLobby);
+  socket.on("join-reserved", joinReserved);
+  socket.on("leave-reserved", leaveReserved);
+  socket.on("ready-up", readyUp);
+  socket.on("unready-up", unreadyUp);
+  socket.on("start-game", playerWaiting);
+  socket.on("check-word", checkGuessedWord);
+  socket.on("key-entered", keyEntered);
+  socket.on("backspace", backspace);
+  socket.on("word-entered", wordEntered);
+
+  if (uuid() === ''
+    || !(uuid() in clients)
+    || client().status === 'connected') {
+    socket.handshake.query.uuid = randomUUID();
+    clients[uuid()] = {};
+    console.log('connected - New:', uuid());
+  } else {
+    console.log('connected:', uuid());
+    if ('pin' in client() && 'nickname' in client())
+      joinRoom({'pin': client().pin, 'nickname': client().nickname})
+  }
+  client().timestamp = Date.now();
+  client().status = 'connected';
+  client().ready = false;
+  client().uuid = uuid();
+
+  socket.conn.on("close", () => {
+    console.log('disconnected:', uuid())
+    client().status = 'disconnected';
+    if ('pin' in client() && client().pin in rooms) {
+
+      if ('players' in rooms[client().pin] && rooms[client().pin].players.includes(uuid()))
+        leaveLobby(false);
+      else if ('reserved' in rooms[client().pin] && rooms[client().pin].reserved.includes(uuid()))
+        leaveReserved();
+    }
+  });
+  io.to(socket.id).emit('set-uuid', {'uuid': uuid()})
 }

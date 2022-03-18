@@ -1,12 +1,10 @@
-import {Component, NgZone, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {SocketService} from "@core/services/socket.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
-import {KeyboardModule} from "@shared/keyboard/keyboard.module";
 import {HttpClient} from "@angular/common/http";
 import {GoogleTagManagerService} from "angular-google-tag-manager";
 import {KeyboardComponent} from "@shared/keyboard/keyboard.component";
-import {results} from "../../../../../../anaconda3/Lib/site-packages/bokeh/server/static/js/types/testing";
 
 @Component({
   selector: 'app-multiplayer',
@@ -33,8 +31,6 @@ export class MultiplayerComponent implements OnInit {
   gameState: any;
   word: any;
   startTime: any;
-  wordlistAnswers: string[] = [];
-  wordlistGuesses: string[] = [];
   @ViewChild(KeyboardComponent) keyboard: any;
 
 
@@ -172,16 +168,25 @@ export class MultiplayerComponent implements OnInit {
     this.notificationSub.unsubscribe();
     this.clientInfoSub.unsubscribe();
     this.displayResultsSub.unsubscribe();
+    this.displayKeySub.unsubscribe();
+    this.invalidWordSub.unsubscribe();
   }
 
   private roomInfo(data: any) {
-    this.letters = data.letters;
-    this.numberOfGuesses = data.guesses;
-    this.gameStateForInput = data.gameState;
-    this.gameState = data.gameState;
+    if(data === undefined){
+      this.unsubscribeAll()
+      this.router.navigate(['/join']);
+    }
+    else {
+      this.letters = data.letters;
+      this.numberOfGuesses = data.guesses;
+      this.gameStateForInput = data.gameState;
+      this.gameState = data.gameState;
+    }
   }
 
   private clientInfo(data: any) {
+    console.log(data);
     this.guessResults = JSON.parse(JSON.stringify(data.guessResults))
     this.guesses = data.guesses;
     this.keyboardResults = data.keyboardResults;
