@@ -188,10 +188,10 @@ export class MultiplayerComponent implements OnInit {
   }
 
   displayResults(data: any) {
-    this.startTime = data.client.startTime;
-    this.currentGuess = data.client.currentGuess
-    this.currentGuessChars = data.client.currentGuessChars
-    this.guessedWords = data.client.guessedWords
+    this.startTime = data.gameInfo.startTime;
+    this.currentGuess = data.gameInfo.currentGuess
+    this.currentGuessChars = data.gameInfo.currentGuessChars
+    this.guessedWords = data.gameInfo.guessedWords
     this.guessResults[this.currentGuess - 1][data.i] = data.result;
     this.keyboardResults[data.keyIndex] = data.keyResult;
   }
@@ -225,24 +225,24 @@ export class MultiplayerComponent implements OnInit {
     for(let i = 0; i < this.players.length; i++)
       if(this.players[i].uuid === data.uuid)
         this.players.splice(i, 1)
-    this.guessResults = JSON.parse(JSON.stringify(data.guessResults))
-    this.guesses = data.guesses;
-    this.keyboardResults = data.keyboardResults;
-    this.currentGuess = data.currentGuess;
-    this.currentGuessChars = data.currentGuessChars;
-    this.guessedWords = data.guessedWords;
-    this.startTime = data.startTime;
-    this.gameStateForInput = data.gameState;
-    this.gameState = data.gameState;
+    this.guessResults = JSON.parse(JSON.stringify(data.gameInfo.guessResults))
+    this.guesses = data.gameInfo.guesses;
+    this.keyboardResults = data.gameInfo.keyboardResults;
+    this.currentGuess = data.gameInfo.currentGuess;
+    this.currentGuessChars = data.gameInfo.currentGuessChars;
+    this.guessedWords = data.gameInfo.guessedWords;
+    this.startTime = data.gameInfo.startTime;
+    this.gameStateForInput = data.gameInfo.gameState;
+    this.gameState = data.gameInfo.gameState;
   }
 
   private displayKey(data: any) {
-    this.startTime = data.client.startTime;
-    this.currentGuess = data.client.currentGuess
-    this.currentGuessChars = data.client.currentGuessChars
-    this.guessedWords = data.client.guessedWords
-    this.guesses[data.guess][data.guessChars] = data.client.guesses[data.guess][data.guessChars]
-    this.currentGuessChars = data.client.currentGuessChars;
+    this.startTime = data.client.gameInfo.startTime;
+    this.currentGuess = data.client.gameInfo.currentGuess
+    this.currentGuessChars = data.client.gameInfo.currentGuessChars
+    this.guessedWords = data.client.gameInfo.guessedWords
+    this.guesses[data.guess][data.guessChars] = data.client.gameInfo.guesses[data.guess][data.guessChars]
+    this.currentGuessChars = data.client.gameInfo.currentGuessChars;
   }
 
   private invalidWord() {
@@ -309,11 +309,11 @@ export class MultiplayerComponent implements OnInit {
   }
 
   opponentGuessedWord(data: any) {
-    data.guessResults = data.guessResults.filter((v:any) => v !== null);
+    data.gameInfo.guessResults = data.gameInfo.guessResults.filter((v:any) => v !== null);
 
-    for(let i = 0; i < data.guessResults.length; i++){
-      if(data.guessResults[i].length > this.letters)
-        data.guessResults[i].pop();
+    for(let i = 0; i < data.gameInfo.guessResults.length; i++){
+      if(data.gameInfo.guessResults[i].length > this.letters)
+        data.gameInfo.guessResults[i].pop();
     }
     for(let i = 0; i < this.players.length; i++){
       if(this.players[i].uuid === data.uuid)

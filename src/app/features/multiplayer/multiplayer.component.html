@@ -20,7 +20,7 @@
         </div>
         <div class="flex w-full h-full justify-content-center">
           <div class="flex flex-column w-8 h-full">
-            <div *ngFor="let resultRow of player.guessResults" class="flex flex-row w-full h-full">
+            <div *ngFor="let resultRow of player.gameInfo.guessResults" class="flex flex-row w-full h-full">
               <div *ngFor="let result of resultRow" class="flex w-full h-full" style="padding: 1px">
                 <div [ngClass]="{
                 'present': result === 'present',

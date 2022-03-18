@@ -151,4 +151,8 @@ export class SocketService {
   public opponentGuessedWord(): Observable<any> {
     return fromEvent(this.socket, 'opponent-guessed-word');
   }
+
+  public timerStopped(): Observable<any> {
+    return fromEvent(this.socket, 'timer-stopped');
+  }
 }
