@@ -293,53 +293,10 @@ module.exports = (io, socket, clients, rooms) => {
           clients[uuid()].gameState = 'lost'
           socket.emit('game-lost', clients[uuid()].gameState)
         }
+        console.log(results)
+        socket.to(client().pin).emit('opponent-guessed-word', client())
       })
-      // getClientInfo()
-      // this.displayResults(guess, results);
-      // if (guess === room.word) {
-      //   this.gameStateForInput = 'won';
-      //   this.gtmService.pushTag({
-      //     'event': 'game-won',
-      //     'word': room.word,
-      //     'guesses': client().currentGuess,
-      //     'letters': room.letters,
-      //     'time': new Date(Date.now() - client().startTime).toISOString().substr(11, 12)
-      //   });
-      //   setTimeout(() => {
-      //     this.gameState = 'won';
-      //     this.showWin();
-      //   }, 1500)
-      // } else if (this.currentGuess === this.numberOfGuesses) {
-      //   this.gameStateForInput = 'lost';
-      //   this.gtmService.pushTag({
-      //     'event': 'game-lost',
-      //     'word': room.word,
-      //     'letters': room.letters,
-      //     'time': new Date(Date.now() - client().startTime).toISOString().substr(11, 12)
-      //   });
-      //   setTimeout(() => {
-      //     this.gameState = 'lost';
-      //   }, 1500)
-      // } else {
-      //   this.saveGameState()
-      //   this.gtmService.pushTag({
-      //     'event': 'guess',
-      //     'guessed-word': guess,
-      //     'word': room.word,
-      //     'letters': room.letters
-      //   });
-      // }
-      // setTimeout(() => {
-      //   this.saveGameState()
-      // }, 1200)
-      // } else if (rowElement) {
-      // rowElement.classList.add('invalid')
-      // setTimeout(function () {
-      //   if (rowElement)
-      //     rowElement.classList.remove('invalid');
-      // }, 600);
     } else socket.emit('invalid-word');
-    // getClientInfo()
   }
   const displayResults = function (guess, results, keys) {
     return new Promise(function (resolve) {

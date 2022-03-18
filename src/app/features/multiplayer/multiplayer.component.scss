@@ -29,3 +29,20 @@ canvas {
     z-index: 5;
   }
 }
+
+.unused{
+  background-color:var(--unused);
+  color:var(--unused-text);
+}
+.correct{
+  background-color:var(--correct);
+  color:var(--correct-text);
+}
+.present{
+  background-color:var(--present);
+  color:var(--present-text);
+}
+.unknown{
+  background-color: var(--unknown);
+  color: var(--unknown-text);
+}

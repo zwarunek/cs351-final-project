@@ -29,6 +29,7 @@ export class MultiplayerComponent implements OnInit {
   invalidWordSub: any;
   gameWonSub: any;
   gameLostSub: any;
+  opponentGuessedWordSub: any;
   letters = 5;
   numberOfGuesses = 6;
   currentGuess: any;
@@ -42,6 +43,7 @@ export class MultiplayerComponent implements OnInit {
   roomState: any;
   word: any;
   startTime: any;
+  players: any[] = [];
   @ViewChild(KeyboardComponent) keyboard: any;
   @ViewChild(ConfettiComponent) confettiComponent: any;
 
@@ -53,6 +55,11 @@ export class MultiplayerComponent implements OnInit {
               public messageService: MessageService,
               public router: Router,
               public gtmService: GoogleTagManagerService) {
+    this.socket.socket.once('room-info',(data: any) =>{
+      this.players = data.players;
+      console.log('GOT THE PLAYERS', data.players)
+    });
+    this.socket.getRoomInfo();
     this.roomInfoSub = this.socket.roomInfo()
       .subscribe((data: any) => this.ngZone.run(() => {
         this.roomInfo(data)
@@ -84,6 +91,10 @@ export class MultiplayerComponent implements OnInit {
     this.gameLostSub = socket.gameLost()
         .subscribe((data: any) => this.ngZone.run(() => {
           this.gameLost(data)
+        }));
+    this.opponentGuessedWordSub = socket.opponentGuessedWord()
+        .subscribe((data: any) => this.ngZone.run(() => {
+          this.opponentGuessedWord(data)
         }));
     this.socket.startGame();
   }
@@ -194,6 +205,7 @@ export class MultiplayerComponent implements OnInit {
     this.invalidWordSub.unsubscribe();
     this.gameWonSub.unsubscribe();
     this.gameLostSub.unsubscribe();
+    this.opponentGuessedWordSub.unsubscribe();
   }
 
   private roomInfo(data: any) {
@@ -210,6 +222,9 @@ export class MultiplayerComponent implements OnInit {
   }
 
   private clientInfo(data: any) {
+    for(let i = 0; i < this.players.length; i++)
+      if(this.players[i].uuid === data.uuid)
+        this.players.splice(i, 1)
     this.guessResults = JSON.parse(JSON.stringify(data.guessResults))
     this.guesses = data.guesses;
     this.keyboardResults = data.keyboardResults;
@@ -291,5 +306,19 @@ export class MultiplayerComponent implements OnInit {
     setTimeout(() => {
       this.confettiComponent.winConfetti(Math.abs(num-1), 1, Math.abs(num-1)===0?angle1:angle2,Math.abs(num-1)===0?angle1:angle2);
     }, 200*this.letters+400)
+  }
+
+  opponentGuessedWord(data: any) {
+    data.guessResults = data.guessResults.filter((v:any) => v !== null);
+
+    for(let i = 0; i < data.guessResults.length; i++){
+      if(data.guessResults[i].length > this.letters)
+        data.guessResults[i].pop();
+    }
+    for(let i = 0; i < this.players.length; i++){
+      if(this.players[i].uuid === data.uuid)
+        this.players[i] = data;
+    }
+    console.log(data, this.players)
   }
 }

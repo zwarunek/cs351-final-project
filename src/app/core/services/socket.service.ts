@@ -15,7 +15,7 @@ export class SocketService {
   observer: any;
   observer2: any;
   private url = environment.url;
-  private socket: any;
+  public socket: any;
   constructor(public router: Router, public cookieService: CookieService, public messageService: MessageService,private readonly ngZone: NgZone) {
     this.ngZone.runOutsideAngular(() => {
       this.socket = io(this.url, {
@@ -146,5 +146,9 @@ export class SocketService {
 
   public gameLost(): Observable<any> {
     return fromEvent(this.socket, 'game-lost');
+  }
+
+  public opponentGuessedWord(): Observable<any> {
+    return fromEvent(this.socket, 'opponent-guessed-word');
   }
 }
