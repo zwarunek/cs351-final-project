@@ -46,3 +46,18 @@ canvas {
   background-color: var(--unknown);
   color: var(--unknown-text);
 }
+@media (max-width: 400px) {
+  .score-text{
+    font-size: .5rem;
+  }
+}
+@media (min-width: 400px) {
+  .score-text{
+    font-size: .6rem;
+  }
+}
+@media (min-width: 500px) {
+  .score-text{
+    font-size: .8rem;
+  }
+}

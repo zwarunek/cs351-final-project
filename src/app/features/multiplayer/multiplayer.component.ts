@@ -56,6 +56,13 @@ export class MultiplayerComponent implements OnInit {
               public router: Router,
               public gtmService: GoogleTagManagerService) {
     this.socket.socket.once('room-info',(data: any) =>{
+      for(let j = 0; j < data.players.length; j++){
+        if(data.players[j].gameInfo.guessResults)
+          for(let i = 0; i < data.players[j].gameInfo.guessResults.length; i++){
+            if(data.players[j].gameInfo.guessResults[i].length > this.letters)
+              data.players[j].gameInfo.guessResults[i].pop();
+          }
+      }
       this.players = data.players;
       console.log('GOT THE PLAYERS', data.players)
     });
@@ -217,15 +224,20 @@ export class MultiplayerComponent implements OnInit {
     else {
       this.letters = data.letters;
       this.numberOfGuesses = data.guesses;
-      this.roomState = data.gameState;
+      this.roomState = data.status;
     }
   }
 
   private clientInfo(data: any) {
+    console.log(data)
+    for(let i = 0; i < data.gameInfo.guessResults.length; i++){
+      if(data.gameInfo.guessResults[i].length > this.letters)
+        data.gameInfo.guessResults[i].pop();
+    }
     for(let i = 0; i < this.players.length; i++)
       if(this.players[i].uuid === data.uuid)
         this.players.splice(i, 1)
-    this.guessResults = JSON.parse(JSON.stringify(data.gameInfo.guessResults))
+    this.guessResults = data.gameInfo.guessResults
     this.guesses = data.gameInfo.guesses;
     this.keyboardResults = data.gameInfo.keyboardResults;
     this.currentGuess = data.gameInfo.currentGuess;
@@ -258,26 +270,28 @@ export class MultiplayerComponent implements OnInit {
   }
 
   gameWon(data: any){
-    this.gameStateForInput = data;
+    this.word = data.word
+    this.gameStateForInput = data.gameState;
     this.gtmService.pushTag({'event': 'game-won',
       'word': this.word,
       'guesses': this.currentGuess,
       'letters': this.letters,
       'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
     setTimeout(() =>{
-      this.gameState = data;
+      this.gameState = data.gameState;
       this.showWin();
     }, 500)
   }
 
   gameLost(data: any){
-    this.gameStateForInput = data;
+    this.word = data.word
+    this.gameStateForInput = data.gameState;
     this.gtmService.pushTag({'event': 'game-lost',
       'word': this.word,
       'letters': this.letters,
       'time': new Date(Date.now()-this.startTime).toISOString().substr(11, 12)});
     setTimeout(() => {
-      this.gameState = data;
+      this.gameState = data.gameState;
     })
   }
 
@@ -320,5 +334,10 @@ export class MultiplayerComponent implements OnInit {
         this.players[i] = data;
     }
     console.log(data, this.players)
+  }
+
+  getWidth(id: string){
+    // @ts-ignore
+    return document.getElementById(id).getBoundingClientRect().width
   }
 }

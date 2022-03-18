@@ -32,7 +32,8 @@ module.exports = (io, socket, clients, rooms) => {
     if (data.pin in rooms) {
       client().pin = data.pin;
       client().nickname = data.nickname;
-      client().gameInfo = {}
+      if(client().gameInfo === undefined)
+        client().gameInfo = {}
       if (rooms[data.pin].players.length === 0)
         rooms[data.pin].leader = uuid();
       delete rooms[data.pin].reserved.splice(rooms[data.pin].reserved.indexOf(uuid()), 1);
@@ -222,6 +223,7 @@ module.exports = (io, socket, clients, rooms) => {
       if (data) {
         delete client().pin
         delete client().nickname
+        delete client().gameInfo
       }
     }
   };
@@ -280,10 +282,14 @@ module.exports = (io, socket, clients, rooms) => {
       room.status = 'starting';
       room.word = generateWord(room.letters);
       startGame(room.pin)
-      room.gameState = 'playing'
-      countdownTimer(2, client().pin, startGame)
+      countdownTimer(2, client().pin, startGamePlaying)
     } else
       startGame(room.pin)
+  }
+
+  const startGamePlaying = (pin) =>{
+    rooms[pin].status = 'playing'
+    startGame(pin)
   }
 
   const startGame = function (pin) {
@@ -304,14 +310,16 @@ module.exports = (io, socket, clients, rooms) => {
       client().gameInfo.guessedWords.push(guess);
       let results = checkWord(guess, room.word, room.letters);
       displayResults(guess, results, keys).then(() => {
+
         if(guess === room.word) {
           client().gameInfo.gameState = 'won'
-          socket.emit('game-won', client().gameInfo.gameState)
+          socket.emit('game-won', {'gameState': client().gameInfo.gameState, 'word': room.word})
         }
-        else if(client().currentGuess === room.guesses) {
+        else if(client().gameInfo.currentGuess === room.guesses) {
           client().gameInfo.gameState = 'lost'
-          socket.emit('game-lost', client().gameInfo.gameState)
+          socket.emit('game-lost', {'gameState': client().gameInfo.gameState, 'word': room.word})
         }
+
         socket.to(client().pin).emit('opponent-guessed-word', client())
       })
     } else socket.emit('invalid-word');
