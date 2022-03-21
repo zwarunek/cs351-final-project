@@ -39,7 +39,7 @@ export class SingleplayerComponent implements OnInit {
   wordlistGuesses: string[] = [];
   letters = 5;
   // @ViewChildren(HeadersModule) letters: any
-  numberOfGuesses = 5;
+  numberOfGuesses = 6;
   allowedChars!:any[];
   currentGuessChars!: number;
   currentGuess!: number;
