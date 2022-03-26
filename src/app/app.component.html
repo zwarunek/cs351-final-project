@@ -1,7 +1,9 @@
 <router-outlet></router-outlet>
-<div id="bg" tabindex="1" class="progress-spinner" *ngIf="loading" >
-  <p-progressSpinner [style]="{width: '50px', height: '50px'}" styleClass="custom-spinner" strokeWidth="8" animationDuration=".5s"></p-progressSpinner>
+<div *ngIf="loading" class="progress-spinner" id="bg" tabindex="1">
+  <p-progressSpinner [style]="{width: '50px', height: '50px'}" animationDuration=".5s" strokeWidth="8"
+                     styleClass="custom-spinner"></p-progressSpinner>
 </div>
-<div *ngIf="!prod" class="env-overlay flex justify-content-center align-items-center" [ngClass]="{'dev': env === 'DEV', 'staging' : env === 'STAGING' }">
+<div *ngIf="!prod" [ngClass]="{'dev': env === 'DEV', 'staging' : env === 'STAGING' }"
+     class="env-overlay flex justify-content-center align-items-center">
   <h1>{{env}}</h1>
 </div>

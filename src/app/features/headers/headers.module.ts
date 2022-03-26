@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {MenubarModule} from "primeng/menubar";
 import {SharedModule} from "primeng/api";
 import {HeaderDefaultComponent} from "@features/headers/header-default/header-default.component";
@@ -9,15 +9,19 @@ import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
 import {DialogModule} from "primeng/dialog";
 import {SidebarModule} from "primeng/sidebar";
+import {HeaderMultiplayerComponent} from './header-multiplayer/header-multiplayer.component';
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {InputNumberModule} from "primeng/inputnumber";
 import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
-    HeaderDefaultComponent
+    HeaderDefaultComponent,
+    HeaderMultiplayerComponent
   ],
   exports: [
-    HeaderDefaultComponent
+    HeaderDefaultComponent,
+    HeaderMultiplayerComponent
   ],
   imports: [
     CommonModule,
@@ -29,8 +33,10 @@ import {FormsModule} from "@angular/forms";
     RippleModule,
     DialogModule,
     SidebarModule,
+    ConfirmPopupModule,
     InputNumberModule,
     FormsModule
   ]
 })
-export class HeadersModule { }
+export class HeadersModule {
+}

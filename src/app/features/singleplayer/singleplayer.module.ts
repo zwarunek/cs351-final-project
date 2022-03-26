@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SingleplayerComponent } from './singleplayer.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SingleplayerComponent} from './singleplayer.component';
 import {ToastModule} from "primeng/toast";
 import {KeyboardModule} from "@shared/keyboard/keyboard.module";
 import {WordBoardModule} from "@shared/word-board/word-board.module";
@@ -12,14 +12,13 @@ import {InputNumberModule} from "primeng/inputnumber";
 import {FormsModule} from "@angular/forms";
 
 
-
 @NgModule({
-    declarations: [
-        SingleplayerComponent
-    ],
-    exports: [
-        SingleplayerComponent
-    ],
+  declarations: [
+    SingleplayerComponent
+  ],
+  exports: [
+    SingleplayerComponent
+  ],
   imports: [
     CommonModule,
     ToastModule,
@@ -34,4 +33,5 @@ import {FormsModule} from "@angular/forms";
     FormsModule
   ]
 })
-export class SingleplayerModule { }
+export class SingleplayerModule {
+}

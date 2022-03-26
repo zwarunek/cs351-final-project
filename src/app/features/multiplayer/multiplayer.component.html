@@ -1,0 +1,88 @@
+<p-toast [baseZIndex]="5000" key="message" position="top-center">
+  <ng-template let-message pTemplate="message">
+    <div class="p-flex p-flex-column" style="flex: 1">
+      <div class="p-text-center">
+        <h2 style="margin: 0">{{message.summary}}</h2>
+        <span [innerHTML]="message.detail"></span>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>
+<div class="flex flex-column h-full layout-content align-items-center" style="justify-content: space-between;
+    max-width: 500px;
+    margin-inline: auto;">
+  <div id="score-container" style="width: 100%; padding-top: 20px">
+    <div [ngStyle]="{'height': (getWidth('score-container')/5) + 'px'}" class="flex flex-row justify-content-evenly">
+      <div *ngFor="let player of players" class="flex flex-column"
+           style=" width: calc(100%/5); text-align: center; border: solid 1px var(--surface-400)">
+        <div class="w-full score-text">
+          {{player.nickname}}
+        </div>
+        <div class="flex w-full h-full justify-content-center">
+          <div class="flex flex-column w-8 h-full">
+            <div *ngFor="let resultRow of player.gameInfo.guessResults" class="flex flex-row w-full h-full">
+              <div *ngFor="let result of resultRow" class="flex w-full h-full" style="padding: 1px">
+                <div [ngClass]="{
+                'present': result === 'present',
+                'correct': result === 'correct',
+                'unused':  result === 'unused',
+                'unknown': result === 'unknown'}" class="w-full h-full" style="border-radius: 100%">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-word-board *ngIf="roomState!=='waiting'" [currentGuess]="currentGuess"
+                  [guessResults]="guessResults"
+                  [guessedWords]="guessedWords"
+                  [guesses]="guesses"
+                  [letters]="letters"
+                  [ngStyle]="{'height': '100%'}"
+                  [numberOfGuesses]="numberOfGuesses" [verticalSpaceNotInUse]="58+156+(getWidth('score-container')/5)+20"
+                  style="width: 100%"></app-word-board>
+  <app-keyboard (keypressFunction)="handleKeyPress($event)" *ngIf="gameState==='playing'"
+                [keyboardResults]="keyboardResults"
+                class="mt-auto"
+                style="width: 100%;display: flex; flex-direction: column; justify-content: flex-end;"></app-keyboard>
+
+  <div *ngIf="gameState!=='playing' && roomState!=='waiting'" style="width: 70%; margin-inline: auto;display: flex;">
+    <div *ngIf="gameState==='lost'" style="height: 156px; width: 100%">
+      <p-messages severity="error">
+        <ng-template pTemplate>
+          <div class="p-flex p-flex-column" style="flex: 1">
+            <div class="p-text-center">
+              <h2 style="text-align: center; margin: 0">You Lost!</h2>
+              <p class="mb-1" style="text-align: center; margin: 0">The word was <b>{{word}}</b></p>
+            </div>
+            <div class="p-grid p-fluid">
+              <div class="p-col-6">
+                <button class="p-button" label="Play Again" pButton type="button"></button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-messages>
+    </div>
+    <div *ngIf="gameState==='won' && roomState!=='waiting'" style="height: 156px; width: 100%">
+      <p-messages severity="success">
+        <ng-template pTemplate>
+          <div class="p-flex p-flex-column" style="flex: 1">
+            <div class="p-text-center">
+              <h2 style="text-align: center">You Won!</h2>
+            </div>
+            <div class="p-grid p-fluid">
+              <div class="p-col-6">
+                <button class="p-button" label="Play Again" pButton type="button"></button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-messages>
+    </div>
+  </div>
+</div>
+<app-confetti></app-confetti>

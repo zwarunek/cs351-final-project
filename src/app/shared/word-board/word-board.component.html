@@ -1,3 +1,4 @@
+
 <div id="board-container" class="board-container" style="position:relative;margin-inline: auto;"
      [ngStyle]="{'max-width': 'calc(((' + getHeight() + 'px - 7px * ('+numberOfGuesses+' - 1)) / '+numberOfGuesses+') * '+letters+' + 7px * ('+letters+' - 1) - 20px)'}">
   <div class="fle w-full flex-column" style="position: relative;"
@@ -11,8 +12,8 @@
                 'correct': guessResults[row][col] === 'correct',
                 'unused': guessResults[row][col] === 'unused',
                 'unknown': guessResults[row][col] === 'unknown',
-                'reveal': guessResults[row][col] !== 'unknown'}"
-           *ngFor="let guess of rowGuess; let col = index">
+                'reveal': guessResults[row][col] !== 'unknown'}" class="tile" id="board-tile-{{row}}-{{col}}"
+           style="width: calc((100%  - 7px * 4) / 5)">
           <span
                   style="position: absolute; width: 100%; height: 100%; display: inline-flex; justify-content: center; align-items: center;">
             {{guess}}

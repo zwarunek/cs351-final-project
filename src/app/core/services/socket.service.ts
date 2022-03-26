@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core';
 import {CookieService} from "ngx-cookie-service";
-import { io } from "socket.io-client";
+import {io} from "socket.io-client";
 import {MessageService} from "primeng/api";
 import {environment} from "@environment/environment";
 import {Router} from "@angular/router";
@@ -14,9 +14,10 @@ export class SocketService {
 
   observer: any;
   observer2: any;
+  public socket: any;
   private url = environment.url;
-  private socket: any;
-  constructor(public router: Router, public cookieService: CookieService, public messageService: MessageService,private readonly ngZone: NgZone) {
+
+  constructor(public router: Router, public cookieService: CookieService, public messageService: MessageService, private readonly ngZone: NgZone) {
     this.ngZone.runOutsideAngular(() => {
       this.socket = io(this.url, {
         reconnection: true,
@@ -24,21 +25,25 @@ export class SocketService {
         reconnectionAttempts: 5,
         query: {"uuid": cookieService.get('uuid')}
       });
-      this.socket.on('set-uuid',(msg: any)=>{
-        cookieService.set('uuid', msg.uuid, new Date(new Date().getTime() + 10*60000), '/')
+      this.socket.on('set-uuid', (msg: any) => {
+        cookieService.set('uuid', msg.uuid, new Date(new Date().getTime() + 10 * 60000), '/')
       });
     });
   }
 
-  public joinLobby(nickname: any, pin: any){
+  public joinLobby(nickname: any, pin: any) {
     this.socket.emit('join-lobby', {
       'nickname': nickname,
       'pin': pin
     });
   }
 
-  public getJoined(): Observable<any> {
-    return fromEvent(this.socket, 'joined-room');
+  readyUp() {
+    this.socket.emit('ready-up');
+  }
+
+  unreadyUp() {
+    this.socket.emit('unready-up');
   }
 
   createLobby() {
@@ -57,10 +62,6 @@ export class SocketService {
     this.socket.emit('get-room-info');
   }
 
-  public getRoomInfoPin(pin: any) {
-    this.socket.emit('get-room-info-pin', pin.toString());
-  }
-
   public getRoomInfoPinSingle(pin: any) {
     this.socket.emit('get-room-info-pin-single', pin.toString());
   }
@@ -77,7 +78,7 @@ export class SocketService {
     this.socket.emit('get-client-info');
   }
 
-  public leaveLobby(){
+  public leaveLobby() {
     this.socket.emit('leave-lobby', true);
   }
 
@@ -85,10 +86,67 @@ export class SocketService {
     return fromEvent(this.socket, 'notification');
   }
 
+  public lobbyStartCountdown(): Observable<any> {
+    return fromEvent(this.socket, 'start-countdown');
+  }
+
+  public gameStarted(): Observable<any> {
+    return fromEvent(this.socket, 'start-game');
+  }
+
   joinReserved(pin: any) {
     this.socket.emit('join-reserved', pin.toString());
   }
+
   ngOnDestroy() {
     this.socket.close();
+  }
+
+  leaveReserved() {
+    this.socket.emit('leave-reserved');
+  }
+
+  startGame() {
+    this.socket.emit('start-game');
+  }
+
+  wordEntered(keys: any) {
+    this.socket.emit('word-entered', keys)
+  }
+
+  backspace() {
+    this.socket.emit('backspace')
+  }
+
+  keyEntered(key: string) {
+    this.socket.emit('key-entered', key)
+  }
+
+  public displayResults(): Observable<any> {
+    return fromEvent(this.socket, 'display-results');
+  }
+
+  public displayKey(): Observable<any> {
+    return fromEvent(this.socket, 'display-key');
+  }
+
+  public invalidWord(): Observable<any> {
+    return fromEvent(this.socket, 'invalid-word');
+  }
+
+  public gameWon(): Observable<any> {
+    return fromEvent(this.socket, 'game-won');
+  }
+
+  public gameLost(): Observable<any> {
+    return fromEvent(this.socket, 'game-lost');
+  }
+
+  public opponentGuessedWord(): Observable<any> {
+    return fromEvent(this.socket, 'opponent-guessed-word');
+  }
+
+  public timerStopped(): Observable<any> {
+    return fromEvent(this.socket, 'timer-stopped');
   }
 }

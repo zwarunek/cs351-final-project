@@ -9,10 +9,11 @@
   bottom: 0;
   right: 0;
   backdrop-filter: blur(3px);
-  display:flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
+
 :host ::ng-deep .custom-spinner .p-progress-spinner-circle {
   animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 6s ease-in-out infinite;
 }
@@ -44,10 +45,12 @@
     stroke-dashoffset: -124px;
   }
 }
+
 .layout-content {
   background-color: var(--surface-b);
   color: var(--text-color);
 }
+
 .env-overlay {
   position: absolute;
   top: 30px;
@@ -55,12 +58,14 @@
   width: 20rem;
   height: 5rem;
   transform: rotate(
-    315deg);
+                  315deg);
   pointer-events: none;
 }
-.dev{
+
+.dev {
   background-color: rgb(255 255 0 / 10%);
 }
-.staging{
+
+.staging {
   background-color: rgb(0 255 0 / 10%);
 }

@@ -27,21 +27,21 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.router.events
-    .pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.activatedRoute),
-      map((route) => {
-        while (route.firstChild) {
-          route = route.firstChild;
-        }
-        return route;
-      }),
-      filter((route) => route.outlet === 'primary'),
-      mergeMap((route) => route.data),
-      tap(({title, description}: Data) => {
-        this.seoService.setSeoData(title, description);
-      })
-    ).subscribe();
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.activatedRoute),
+        map((route) => {
+          while (route.firstChild) {
+            route = route.firstChild;
+          }
+          return route;
+        }),
+        filter((route) => route.outlet === 'primary'),
+        mergeMap((route) => route.data),
+        tap(({title, description}: Data) => {
+          this.seoService.setSeoData(title, description);
+        })
+      ).subscribe();
   }
 
   loadingAdd() {
