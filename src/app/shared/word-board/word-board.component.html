@@ -6,7 +6,7 @@
       <i class="fa-solid fa-book dict-icon" *ngIf="currentGuess > row"
          style="position: absolute; left: 105%; cursor: pointer"
          (click)="getDefinition(guessedWords[row])"></i>
-      <div id="board-tile-{{row}}-{{col}}" class="tile" style="width: calc((100%  - 7px * 4) / 5)" [ngClass]="{
+      <div id="board-tile-{{row}}-{{col}}" class="tile" [ngStyle]="{'width': 'calc((100%  - 7px * ('+letters+' - 1)) / '+letters+')'}" [ngClass]="{
                 'present': guessResults[row][col] === 'present',
                 'correct': guessResults[row][col] === 'correct',
                 'unused': guessResults[row][col] === 'unused',

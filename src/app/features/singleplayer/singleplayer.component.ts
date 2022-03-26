@@ -37,9 +37,8 @@ export class SingleplayerComponent implements OnInit {
   key: any;
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
-  letters = 5;
-  // @ViewChildren(HeadersModule) letters: any
-  numberOfGuesses = 6;
+  letters!: number;
+  numberOfGuesses!: number;
   allowedChars!:any[];
   currentGuessChars!: number;
   currentGuess!: number;
@@ -49,8 +48,6 @@ export class SingleplayerComponent implements OnInit {
   guessedWords!: any[];
   startTime: any;
   gameStateForInput: any;
-  min:number = 5;
-  max:number = 9;
   constructor(public http: HttpClient,
               private messageService: MessageService,
               private renderer2: Renderer2,
@@ -75,7 +72,6 @@ export class SingleplayerComponent implements OnInit {
       .subscribe(data => {
         this.wordlistAnswers = data.split(/\r?\n/);
         this.wordlistGuesses = this.wordlistAnswers;
-        console.log(this.wordlistAnswers)
         this.generateWord()
         this.saveGameState();
       });
@@ -94,6 +90,8 @@ export class SingleplayerComponent implements OnInit {
     this.currentGuessChars = data.currentGuessChars;
     this.guessedWords = data.guessedWords;
     this.startTime = data.startTime;
+    this.letters = data.letters;
+    this.numberOfGuesses = data.numberOfGuesses;
     if (environment.env === 'DEV')
       console.log(this.word);
 
@@ -104,8 +102,7 @@ export class SingleplayerComponent implements OnInit {
       console.log(this.word);
   }
   initGameBoard(){
-    this.loadWordList();
-    console.log(this.letters);
+    this.loadWordList()
     this.guessResults = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => 'unknown'))
 
     this.guesses = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => ''))
@@ -119,7 +116,6 @@ export class SingleplayerComponent implements OnInit {
     this.guessedWords = [];
     this.startTime = undefined;
     this.saveGameState();
-
   }
   handleKeyPress(key: string){
     this.key = key.toLowerCase();
@@ -292,13 +288,11 @@ export class SingleplayerComponent implements OnInit {
       'currentGuess': this.currentGuess,
       'currentGuessChars': this.currentGuessChars,
       'guessedWords': this.guessedWords,
-      'startTime': this.startTime
+      'startTime': this.startTime,
+      'letters': this.letters,
+      'numberOfGuesses': this.numberOfGuesses
     }
     localStorage.setItem('gameState', JSON.stringify(data));
   }
 
-  lettersChanged($event: any) {
-    let lettersInput = $event.value;
-    console.log(lettersInput)
-  }
 }
