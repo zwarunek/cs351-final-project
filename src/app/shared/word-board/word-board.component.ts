@@ -27,6 +27,7 @@ export class WordBoardComponent implements OnInit {
   }
 
   getWidth(id: string){
+    console.log(document.getElementById(id)?.getBoundingClientRect().width)
     return document.getElementById(id)?.getBoundingClientRect().width
   }
   getHeight(){

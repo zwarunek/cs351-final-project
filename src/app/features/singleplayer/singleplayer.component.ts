@@ -37,9 +37,8 @@ export class SingleplayerComponent implements OnInit {
   key: any;
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
-  // letters = 8;
-  @ViewChildren(HeadersModule) letters: any;
-  numberOfGuesses = 5;
+  letters!: number;
+  numberOfGuesses!: number;
   allowedChars!:any[];
   currentGuessChars!: number;
   currentGuess!: number;
@@ -95,6 +94,8 @@ export class SingleplayerComponent implements OnInit {
     this.currentGuessChars = data.currentGuessChars;
     this.guessedWords = data.guessedWords;
     this.startTime = data.startTime;
+    this.letters = data.letters;
+    this.numberOfGuesses = data.numberOfGuesses;
     if (environment.env === 'DEV')
       console.log(this.word);
 
@@ -293,7 +294,9 @@ export class SingleplayerComponent implements OnInit {
       'currentGuess': this.currentGuess,
       'currentGuessChars': this.currentGuessChars,
       'guessedWords': this.guessedWords,
-      'startTime': this.startTime
+      'startTime': this.startTime,
+      'letters': this.letters,
+      'numberOfGuesses': this.numberOfGuesses
     }
     localStorage.setItem('gameState', JSON.stringify(data));
   }
