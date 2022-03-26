@@ -8,6 +8,8 @@ import {MessagesModule} from "primeng/messages";
 import {MessageModule} from "primeng/message";
 import {ButtonModule} from "primeng/button";
 import {ConfettiModule} from "@features/confetti/confetti.module";
+import {InputNumberModule} from "primeng/inputnumber";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -26,7 +28,9 @@ import {ConfettiModule} from "@features/confetti/confetti.module";
     MessagesModule,
     MessageModule,
     ButtonModule,
-    ConfettiModule
+    ConfettiModule,
+    InputNumberModule,
+    FormsModule
   ]
 })
 export class SingleplayerModule {

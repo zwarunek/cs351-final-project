@@ -11,6 +11,8 @@ import {DialogModule} from "primeng/dialog";
 import {SidebarModule} from "primeng/sidebar";
 import {HeaderMultiplayerComponent} from './header-multiplayer/header-multiplayer.component';
 import {ConfirmPopupModule} from "primeng/confirmpopup";
+import {InputNumberModule} from "primeng/inputnumber";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import {ConfirmPopupModule} from "primeng/confirmpopup";
     RippleModule,
     DialogModule,
     SidebarModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    InputNumberModule,
+    FormsModule
   ]
 })
 export class HeadersModule {

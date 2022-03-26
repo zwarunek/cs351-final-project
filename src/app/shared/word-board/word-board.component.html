@@ -1,15 +1,13 @@
-<div [ngStyle]="{'max-width': 'calc(((' + getHeight() + 'px - 7px * ('+numberOfGuesses+' - 1)) / '+numberOfGuesses+') * '+letters+' + 7px * ('+letters+' - 1) - 20px)'}"
-     class="board-container" id="board-container"
-     style="position:relative;margin-inline: auto;">
-  <div [ngStyle]="{'height': 'calc(((' + getWidth('board-container') + 'px - 7px * ('+letters+' - 1)) / '+letters+') * '+numberOfGuesses+' + 7px * ('+numberOfGuesses+' - 1))'}"
-       class="fle w-full flex-column"
-       style="position: relative;">
-    <div *ngFor="let rowGuess of guesses; let row = index" class="relative flex w-full mb-2" id="board-row-{{row}}"
-         style="height: calc((100%  - 7px * 5) / 6)">
-      <i (click)="getDefinition(guessedWords[row])" *ngIf="currentGuess > row"
-         class="fa-solid fa-book dict-icon"
-         style="position: absolute; left: 105%; cursor: pointer"></i>
-      <div *ngFor="let guess of rowGuess; let col = index" [ngClass]="{
+
+<div id="board-container" class="board-container" style="position:relative;margin-inline: auto;"
+     [ngStyle]="{'max-width': 'calc(((' + getHeight() + 'px - 7px * ('+numberOfGuesses+' - 1)) / '+numberOfGuesses+') * '+letters+' + 7px * ('+letters+' - 1) - 20px)'}">
+  <div class="fle w-full flex-column" style="position: relative;"
+       [ngStyle]="{'height': 'calc(((' + getWidth('board-container') + 'px - 7px * ('+letters+' - 1)) / '+letters+') * '+numberOfGuesses+' + 7px * ('+numberOfGuesses+' - 1))'}">
+    <div id="board-row-{{row}}" *ngFor="let rowGuess of guesses; let row = index" class="relative flex w-full mb-2" style="height: calc((100%  - 7px * 5) / 6)">
+      <i class="fa-solid fa-book dict-icon" *ngIf="currentGuess > row"
+         style="position: absolute; left: 105%; cursor: pointer"
+         (click)="getDefinition(guessedWords[row])"></i>
+      <div id="board-tile-{{row}}-{{col}}" class="tile" [ngStyle]="{'width': 'calc((100%  - 7px * ('+letters+' - 1)) / '+letters+')'}" [ngClass]="{
                 'present': guessResults[row][col] === 'present',
                 'correct': guessResults[row][col] === 'correct',
                 'unused': guessResults[row][col] === 'unused',

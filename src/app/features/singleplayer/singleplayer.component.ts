@@ -5,6 +5,7 @@ import {GoogleTagManagerService} from "angular-google-tag-manager";
 import {environment} from "@environment/environment";
 import {ConfettiComponent} from "@features/confetti/confetti.component";
 import {KeyboardComponent} from "@shared/keyboard/keyboard.component";
+import {HeadersModule} from "@features/headers/headers.module";
 
 @Component({
   selector: 'app-singleplayer',
@@ -23,9 +24,9 @@ export class SingleplayerComponent implements OnInit, AfterViewInit {
   key: any;
   wordlistAnswers: string[] = [];
   wordlistGuesses: string[] = [];
-  letters = 5;
-  numberOfGuesses = 6;
-  allowedChars!: any[];
+  letters!: number;
+  numberOfGuesses!: number;
+  allowedChars!:any[];
   currentGuessChars!: number;
   currentGuess!: number;
   keyboardResults!: any[];
@@ -49,19 +50,6 @@ export class SingleplayerComponent implements OnInit, AfterViewInit {
       this.initGameBoard();
     else
       this.loadGameBoard();
-    http.get('assets/wordlists/5-letter-answers.txt', {responseType: 'text'})
-      .subscribe(data => {
-        this.wordlistAnswers = data.split(/\r?\n/);
-        if (this.word === undefined) {
-          this.generateWord()
-          this.saveGameState();
-        }
-      });
-    http.get('assets/wordlists/5-letter.txt', {responseType: 'text'})
-      .subscribe(data => {
-        this.wordlistGuesses = data.split(/\r?\n/);
-      });
-  }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -80,6 +68,22 @@ export class SingleplayerComponent implements OnInit, AfterViewInit {
   }
 
   loadGameBoard() {
+
+    this.loadWordList();
+  }
+  loadWordList()
+  {
+    console.log('localhost:4200/assets/wordlists/' + this.letters + '-letter.txt')
+    this.http.get('assets/wordlists/' + this.letters + '-letter.txt', {responseType: 'text'})
+      .subscribe(data => {
+        this.wordlistAnswers = data.split(/\r?\n/);
+        this.wordlistGuesses = this.wordlistAnswers;
+        this.generateWord()
+        this.saveGameState();
+      });
+  }
+
+  loadGameBoard(){
     // @ts-ignore
     let data = JSON.parse(localStorage.getItem('gameState'));
     this.word = data.word;
@@ -92,6 +96,8 @@ export class SingleplayerComponent implements OnInit, AfterViewInit {
     this.currentGuessChars = data.currentGuessChars;
     this.guessedWords = data.guessedWords;
     this.startTime = data.startTime;
+    this.letters = data.letters;
+    this.numberOfGuesses = data.numberOfGuesses;
     if (environment.env === 'DEV')
       console.log(this.word);
 
@@ -102,11 +108,8 @@ export class SingleplayerComponent implements OnInit, AfterViewInit {
     if (environment.env === 'DEV')
       console.log(this.word);
   }
-
-  initGameBoard() {
-    if (this.wordlistAnswers.length !== 0) {
-      this.generateWord();
-    }
+  initGameBoard(){
+    this.loadWordList()
     this.guessResults = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => 'unknown'))
 
     this.guesses = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => ''))
@@ -298,7 +301,9 @@ export class SingleplayerComponent implements OnInit, AfterViewInit {
       'currentGuess': this.currentGuess,
       'currentGuessChars': this.currentGuessChars,
       'guessedWords': this.guessedWords,
-      'startTime': this.startTime
+      'startTime': this.startTime,
+      'letters': this.letters,
+      'numberOfGuesses': this.numberOfGuesses
     }
     localStorage.setItem('gameState', JSON.stringify(data));
   }

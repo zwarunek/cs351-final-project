@@ -8,6 +8,10 @@
     </div>
   </ng-template>
 </p-toast>
+<div class="p-field p-col-12 p-md-3">
+  <label>Word Length</label>
+  <p-inputNumber [(ngModel)]="letters" [showButtons]="true" inputId="stacked" (onInput)='initGameBoard()' [max]="9" [min]="4"></p-inputNumber>
+</div>
 <div class="flex flex-column h-full layout-content align-items-center" style="justify-content: space-between;
     max-width: 500px;
     margin-inline: auto;">
