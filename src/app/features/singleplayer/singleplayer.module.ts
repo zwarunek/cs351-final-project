@@ -8,6 +8,8 @@ import {MessagesModule} from "primeng/messages";
 import {MessageModule} from "primeng/message";
 import {ButtonModule} from "primeng/button";
 import {ConfettiModule} from "@features/confetti/confetti.module";
+import {InputNumberModule} from "primeng/inputnumber";
+import {FormsModule} from "@angular/forms";
 
 
 
@@ -18,16 +20,18 @@ import {ConfettiModule} from "@features/confetti/confetti.module";
     exports: [
         SingleplayerComponent
     ],
-    imports: [
-        CommonModule,
-        ToastModule,
-        KeyboardModule,
-        WordBoardModule,
-        ToastModule,
-        MessagesModule,
-        MessageModule,
-        ButtonModule,
-        ConfettiModule
-    ]
+  imports: [
+    CommonModule,
+    ToastModule,
+    KeyboardModule,
+    WordBoardModule,
+    ToastModule,
+    MessagesModule,
+    MessageModule,
+    ButtonModule,
+    ConfettiModule,
+    InputNumberModule,
+    FormsModule
+  ]
 })
 export class SingleplayerModule { }
