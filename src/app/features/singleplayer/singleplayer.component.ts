@@ -72,12 +72,8 @@ export class SingleplayerComponent implements OnInit {
       .subscribe(data => {
         this.wordlistAnswers = data.split(/\r?\n/);
         this.wordlistGuesses = this.wordlistAnswers;
-        console.log(this.wordlistAnswers)
-        if(this.word === undefined)
-        {
-          this.generateWord()
-          this.saveGameState();
-        }
+        this.generateWord()
+        this.saveGameState();
       });
   }
 
@@ -106,9 +102,7 @@ export class SingleplayerComponent implements OnInit {
       console.log(this.word);
   }
   initGameBoard(){
-    if(this.wordlistAnswers.length !== 0) {
-      this.generateWord();
-    }
+    this.loadWordList()
     this.guessResults = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => 'unknown'))
 
     this.guesses = Array.from({length: this.numberOfGuesses}, (_) => Array.from({length: this.letters}, (_) => ''))
